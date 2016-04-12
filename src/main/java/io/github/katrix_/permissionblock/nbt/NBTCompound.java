@@ -27,7 +27,10 @@ import java.util.UUID;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class NBTCompound extends NBTTag {
 
-	private Map<String, NBTTag> values = new LinkedHashMap<>(); //So that we retain the order
+	/*
+	LinkedHashMap so that we retain the order. While order is not guaranteed with NBT, people will be annoyed if it shifts.
+	 */
+	private Map<String, NBTTag> values = new LinkedHashMap<>();
 
 	public int size() {
 		return values.size();
@@ -251,9 +254,8 @@ public class NBTCompound extends NBTTag {
 	public String toString() {
 		StringBuilder b = new StringBuilder("{");
 
-		for (Map.Entry<String, NBTTag> entry : values.entrySet()) {
-			if (b.length() != 1)
-			{
+		for(Map.Entry<String, NBTTag> entry : values.entrySet()) {
+			if(b.length() != 1) {
 				b.append(',');
 			}
 			b.append(entry.getKey()).append(':').append(entry.getValue());

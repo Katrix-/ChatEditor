@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.github.katrix_.permissionblock.nbt.NBTByte;
 import io.github.katrix_.permissionblock.nbt.NBTCompound;
@@ -40,6 +41,8 @@ import io.github.katrix_.permissionblock.nbt.NBTType;
 public class NBTParser {
 
 	public static void main(String[] args) {
+
+		NBTParser parser = new NBTParser();
 		String nbt = "{DropChances:[0:0.085f,1:0.085f,2:0.085f,3:0.085f,4:0.085f],Age:0,UUIDLeast:-6587974176882625461L,"
 				+ "Attributes:[0:{Name:\"generic.maxHealth\",Base:4.0d},1:{Name:\"generic.knockbackResistance\",Base:0.0d},2:{Name:\"generic"
 				+ ".movementSpeed\",Base:0.25d},3:{Name:\"generic.followRange\",Base:16.0d,Modifiers:[0:{Name:\"Random spawn bonus\","
@@ -50,7 +53,6 @@ public class NBTParser {
 				+ "WorldUUIDLeast:-8214179146566002376L,Air:300s,Pos:[0:328.5118353835865d,1:43.0d,2:-7152.507890682375d],CanPickUpLoot:0b,"
 				+ "EggLayTime:5219,PortalCooldown:0,PersistenceRequired:1b,Leashed:0b,WorldUUIDMost:-6365660778832771081L,FallDistance:0.0f,"
 				+ "Rotation:[0:179.36337f,1:0.0f],Spigot.ticksLived:1087}";
-		NBTParser parser = new NBTParser();
 
 		try {
 			NBTCompound tag = parser.parse(nbt);
@@ -63,35 +65,33 @@ public class NBTParser {
 
 	public NBTCompound parse(String string) throws NBTParseException {
 		string = string.trim();
-		NBTCompound tag = new NBTCompound();
 		Iterator<Token> tokens = tokenize(string).iterator();
 
-		if(!tokens.next().getType().equals(NBTTokenType.COMPOUND_START)) {
-			throw new NBTParseException("NBT did not start with {");
-		}
+		testHasNest(tokens);
+		Token token = tokens.next();
+		if(token.getType() != NBTTokenType.COMPOUND_START) throw new NBTParseException("NBT did not start with {", token);
 
 		return getCompound(tokens);
 	}
 
 	private NBTCompound getCompound(Iterator<Token> tokens) throws NBTParseException {
 		NBTCompound compound = new NBTCompound();
+		testHasNest(tokens);
 		Token token = tokens.next();
 
 		if(token.getType() == NBTTokenType.COMPOUND_END) return compound;
 
 		while(tokens.hasNext()) {
 
-			if(token.getType() != NBTTokenType.TAG_NAME) {
-				throw new NBTParseException("Expected name, got " + token.getType());
-			}
+			if(token.getType() != NBTTokenType.TAG_NAME) throw new NBTParseException("Expected name, got " + token.getType(), token);
 
 			String name = token.getValue();
+
+			testHasNest(tokens);
 			token = tokens.next();
+			if(token.getType() != NBTTokenType.COLON) throw new NBTParseException("Expected colon after name", token);
 
-			if(token.getType() != NBTTokenType.COLON) {
-				throw new NBTParseException("Expected colon after name");
-			}
-
+			testHasNest(tokens);
 			token = tokens.next();
 			String value = token.getValue();
 			String primitive = value.substring(0, value.length() - 1);
@@ -126,9 +126,10 @@ public class NBTParser {
 					compound.setTag(name, getCompound(tokens));
 					break;
 				default:
-					throw new NBTParseException("Unexpected token " + token.getType());
+					throw new NBTParseException("Unexpected token " + token.getType(), token);
 			}
 
+			testHasNest(tokens);
 			token = tokens.next();
 			System.out.println(token);
 
@@ -137,10 +138,11 @@ public class NBTParser {
 					break;
 				}
 				else {
-					throw new NBTParseException("Didn't encounter a '}' at the end of the compound");
+					throw new NBTParseException("Didn't encounter a '}' at the end of the compound", token);
 				}
 			}
 
+			testHasNest(tokens);
 			token = tokens.next();
 		}
 
@@ -149,29 +151,23 @@ public class NBTParser {
 
 	private NBTList getList(Iterator<Token> tokens) throws NBTParseException {
 		NBTList list = new NBTList(NBTType.UNKNOWN);
+		testHasNest(tokens);
 		Token token = tokens.next();
 
 		int i = 0;
 		while(tokens.hasNext()) {
 
 			String stringIndex = token.getValue();
+			if(token.getType() != NBTTokenType.NBT_INT) throw new NBTParseException("Expected index, got " + token.getType() + " " + stringIndex, token);
 
-			if(token.getType() != NBTTokenType.NBT_INT) {
-				throw new NBTParseException("Expected index, got " + token.getType() + " " + stringIndex);
-			}
-
+			testHasNest(tokens);
 			token = tokens.next();
-
-			if(token.getType() != NBTTokenType.COLON) {
-				throw new NBTParseException("Expected colon after index");
-			}
+			if(token.getType() != NBTTokenType.COLON) throw new NBTParseException("Expected colon after index", token);
 
 			int index = Integer.parseInt(stringIndex); //Safe because of test earlier
+			if(index != i) throw new NBTParseException("Index did not follow sequential order", token);
 
-			if(index != i) {
-				throw new NBTParseException("Index did not follow sequential order");
-			}
-
+			testHasNest(tokens);
 			token = tokens.next();
 			String value = token.getValue();
 			String primitive = value.substring(0, value.length() - 1);
@@ -206,7 +202,7 @@ public class NBTParser {
 						list.add(getCompound(tokens));
 						break;
 					default:
-						throw new NBTParseException("Unexpected token " + token.getType());
+						throw new NBTParseException("Unexpected token " + token.getType(), token);
 				}
 			}
 			else {
@@ -239,10 +235,11 @@ public class NBTParser {
 						list.add(getCompound(tokens));
 						break;
 					default:
-						throw new NBTParseException("Unexpected type " + token.getType());
+						throw new NBTParseException("Unexpected type " + token.getType(), token);
 				}
 			}
 
+			testHasNest(tokens);
 			token = tokens.next();
 			System.out.println(token);
 
@@ -251,15 +248,116 @@ public class NBTParser {
 					break;
 				}
 				else {
-					throw new NBTParseException("Didn't encounter a ']' at the end of the list");
+					throw new NBTParseException("Didn't encounter a ']' at the end of the list", token);
 				}
 			}
 
+			testHasNest(tokens);
 			token = tokens.next();
 			i++;
 		}
 
 		return list;
+	}
+
+	private void testHasNest(Iterator<Token> tokens) throws NBTParseException {
+		if(!tokens.hasNext()) throw new NBTParseException("Unexpected end of tokens");
+	}
+
+	private static class Lexer {
+
+		private int pos = 0;
+		private final Matcher matcher;
+		private final String input;
+
+		private Lexer(String input) {
+			this.input = input;
+
+			StringBuilder patternBuilder = new StringBuilder();
+			for(NBTTokenType token : NBTTokenType.values()) {
+				patternBuilder.append(String.format("|(?<%s>%s)", token.name(), token.getPattern()));
+			}
+			matcher = Pattern.compile(patternBuilder.toString().substring(1)).matcher(input);
+		}
+
+		private List<Token2> lex() throws NBTParseException {
+			List<Token2> list = new ArrayList<>();
+
+			while(hasNext()) {
+				list.add(next());
+			}
+
+			return list;
+		}
+
+		private boolean hasNext() {
+			return false; //TODO
+		}
+
+		private Token2 next() throws NBTParseException {
+			if(matcher.find(pos)) {
+				for(NBTTokenType tokenType : NBTTokenType.values()) {
+					String result = matcher.group(tokenType.name());
+					if(result != null) {
+						int length = matcher.end() - matcher.start();
+						Token2 token = new Token2(tokenType, result, getCol(), getRow());
+						pos += length;
+						return token;
+					}
+				}
+				throw new NBTParseException("No patters matched", getCol(), getRow());
+			}
+			else throw new NBTParseException("Unrecognized character", getCol(), getRow());
+		}
+
+		private int getRow() {
+			return 0; //TODO
+		}
+
+		private int getCol() {
+			return 0; //TODO
+		}
+	}
+
+	public static class Token2 {
+
+		private final NBTTokenType type;
+		private final String value;
+		private final int col;
+		private final int row;
+
+		private Token2(NBTTokenType type, String value, int col, int row) {
+			this.type = type;
+			this.value = value;
+			this.col = col;
+			this.row = row;
+		}
+
+		public NBTTokenType getType() {
+			return type;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public int getCol() {
+			return col;
+		}
+
+		public int getRow() {
+			return row;
+		}
+
+		@Override
+		public String toString() {
+			return "Token2{" +
+					"type=" + type +
+					", value='" + value + '\'' +
+					", col=" + col +
+					", row=" + row +
+					'}';
+		}
 	}
 
 	private static List<Token> tokenize(String input) {
@@ -291,7 +389,8 @@ public class NBTParser {
 		return list;
 	}
 
-	private static class Token {
+	public static class Token {
+
 		private final NBTTokenType type;
 		private final String value;
 
@@ -300,20 +399,17 @@ public class NBTParser {
 			this.value = value;
 		}
 
-		private NBTTokenType getType() {
+		public NBTTokenType getType() {
 			return type;
 		}
 
-		private String getValue() {
+		public String getValue() {
 			return value;
 		}
 
 		@Override
 		public String toString() {
-			return "Token{" +
-					"type=" + type +
-					", value='" + value + '\'' +
-					'}';
+			return "Token{" + "type=" + type + ", value='" + value + '\'' + '}';
 		}
 	}
 }

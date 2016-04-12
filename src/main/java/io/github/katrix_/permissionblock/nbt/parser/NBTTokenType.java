@@ -42,7 +42,7 @@ public enum NBTTokenType {
 	private final Pattern pattern;
 
 	NBTTokenType(String regex) {
-		this.pattern = Pattern.compile("^(" + regex + ")");
+		pattern = Pattern.compile("^(" + regex + ")");
 	}
 
 	NBTTokenType(Pattern pattern) {

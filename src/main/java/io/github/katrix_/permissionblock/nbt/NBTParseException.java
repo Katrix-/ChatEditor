@@ -20,9 +20,40 @@
  */
 package io.github.katrix_.permissionblock.nbt;
 
+import io.github.katrix_.permissionblock.nbt.parser.NBTParser;
+
 public class NBTParseException extends Exception {
+
+	private NBTParser.Token2 token2;
+	private NBTParser.Token token;
+	private int col;
+	private int row;
+
+	public NBTParseException(String message, int col, int row) {
+		super(message);
+		this.col = col;
+		this.row = row;
+	}
+
+	public NBTParseException(String message, NBTParser.Token2 token2) {
+		super(message);
+		this.token2 = token2;
+	}
+
+	public NBTParseException(String message, NBTParser.Token token) {
+		super(message);
+		this.token = token;
+	}
 
 	public NBTParseException(String message) {
 		super(message);
+	}
+
+	public NBTParser.Token2 getToken2() {
+		return token2;
+	}
+
+	public NBTParser.Token getToken() {
+		return token;
 	}
 }

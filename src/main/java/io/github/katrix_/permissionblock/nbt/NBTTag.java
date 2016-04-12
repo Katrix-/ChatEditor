@@ -27,8 +27,10 @@ public abstract class NBTTag {
 	public abstract NBTType getType();
 
 	//Ensure that all NBT set this.
+	@Override
 	public abstract String toString();
 
+	@Override
 	public abstract boolean equals(Object that);
 
 	public abstract static class NBTPrimitive extends NBTTag {

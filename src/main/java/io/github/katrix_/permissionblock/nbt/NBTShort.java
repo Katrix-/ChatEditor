@@ -87,7 +87,7 @@ public class NBTShort extends NBTTag.NBTPrimitive {
 
 	@Override
 	public int hashCode() {
-		return (int)value;
+		return value;
 	}
 
 	@Override

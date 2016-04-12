@@ -119,13 +119,13 @@ public class NBTList extends NBTTag {
 	public NBTList getList(int i) {
 		if(i < 0 || i > values.size() || type != NBTType.TAG_LIST) return new NBTList(NBTType.UNKNOWN);
 
-		return ((NBTList)values.get(i));
+		return (NBTList)values.get(i);
 	}
 
 	public NBTCompound getCompound(int i) {
 		if(i < 0 || i > values.size() || type != NBTType.TAG_COMPOUND) return new NBTCompound();
 
-		return ((NBTCompound)values.get(i));
+		return (NBTCompound)values.get(i);
 	}
 
 	protected void setType(NBTType type) {
@@ -181,8 +181,8 @@ public class NBTList extends NBTTag {
 	public String toString() {
 		StringBuilder b = new StringBuilder("[");
 
-		for (int i = 0; i < values.size(); ++i) {
-			if (i != 0) {
+		for(int i = 0; i < values.size(); ++i) {
+			if(i != 0) {
 				b.append(',');
 			}
 			b.append(i).append(':').append(values.get(i));

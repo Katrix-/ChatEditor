@@ -86,7 +86,7 @@ public class NBTByte extends NBTTag.NBTPrimitive {
 
 	@Override
 	public int hashCode() {
-		return (int)value;
+		return value;
 	}
 
 	@Override

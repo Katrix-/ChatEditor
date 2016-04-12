@@ -65,7 +65,7 @@ public class NBTIntArray extends NBTTag {
 	public String toString() {
 		StringBuilder b = new StringBuilder("[");
 
-		for (int i : values) {
+		for(int i : values) {
 			b.append(i);
 			b.append(',');
 		}
