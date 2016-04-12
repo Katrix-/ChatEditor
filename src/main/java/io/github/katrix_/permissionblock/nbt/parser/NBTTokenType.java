@@ -31,13 +31,13 @@ public enum NBTTokenType {
 	COLON("[:]"),
 	COMMA("[,]"),
 
-	BYTE("\\d+b"),
-	SHORT("\\d+s"),
-	LONG("\\d+L"),
-	FLOAT("\\d*\\.?\\d+f"),
-	DOUBLE("\\d*\\.?\\d+d"),
-	INT("\\d+"),
-	STRING("([\"])(?:(?=(\\\\?))\\2.)*?\\1");
+	NBT_BYTE("\\d+b"),
+	NBT_SHORT("\\d+s"),
+	NBT_LONG("\\d+L"),
+	NBT_FLOAT("\\d*\\.?\\d+f"),
+	NBT_DOUBLE("\\d*\\.?\\d+d"),
+	NBT_INT("\\d+"),
+	NBT_STRING("([\"])(?:(?=(\\\\?))\\2.)*?\\1");
 
 	private final Pattern pattern;
 
