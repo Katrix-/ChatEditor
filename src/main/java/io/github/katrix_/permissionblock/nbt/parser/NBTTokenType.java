@@ -23,26 +23,30 @@ package io.github.katrix_.permissionblock.nbt.parser;
 import java.util.regex.Pattern;
 
 public enum NBTTokenType {
-	TAG_NAME("\\w+( +\\w+)*"),
-	COMPOUND_START("[\\}]"),
+	COMPOUND_START("[\\{]"),
 	COMPOUND_END("[\\}]"),
 	LIST_START("[\\[]"),
 	LIST_END("[\\]]"),
 	COLON("[:]"),
 	COMMA("[,]"),
 
-	NBT_BYTE("\\d+b"),
-	NBT_SHORT("\\d+s"),
-	NBT_LONG("\\d+L"),
-	NBT_FLOAT("\\d*\\.?\\d+f"),
-	NBT_DOUBLE("\\d*\\.?\\d+d"),
-	NBT_INT("\\d+"),
-	NBT_STRING("([\"])(?:(?=(\\\\?))\\2.)*?\\1");
+	NBT_BYTE("-?\\d+b"),
+	NBT_SHORT("-?\\d+s"),
+	NBT_LONG("-?\\d+L"),
+	NBT_FLOAT("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?f"),
+	NBT_DOUBLE("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?d"),
+	NBT_INT("-?\\d+"),
+	NBT_STRING(Pattern.compile("^([\"])(?:(?=(\\\\?))\\2.)*?\\1")),
+	TAG_NAME("^([^:]+)");
 
 	private final Pattern pattern;
 
 	NBTTokenType(String regex) {
 		this.pattern = Pattern.compile("^(" + regex + ")");
+	}
+
+	NBTTokenType(Pattern pattern) {
+		this.pattern = pattern;
 	}
 
 	public Pattern getPattern() {

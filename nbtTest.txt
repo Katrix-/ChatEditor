@@ -18,7 +18,7 @@
 			Base:0.0d
 		},
 		2:{
-			Name:"generic"".movementSpeed",
+			Name:"generic.movementSpeed",
 			Base:0.25d
 		},
 		3:{

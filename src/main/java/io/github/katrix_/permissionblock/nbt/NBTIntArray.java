@@ -42,6 +42,11 @@ public class NBTIntArray extends NBTTag {
 	}
 
 	@Override
+	public NBTType getType() {
+		return NBTType.TAG_INT_ARRAY;
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
@@ -49,7 +54,6 @@ public class NBTIntArray extends NBTTag {
 		NBTIntArray that = (NBTIntArray)o;
 
 		return Arrays.equals(values, that.values);
-
 	}
 
 	@Override

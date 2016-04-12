@@ -18,54 +18,31 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.nbt.parser;
+package io.github.katrix_.permissionblock.nbt;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
+public enum NBTType {
 
-public class NBTTokenizer {
+	TAG_BYTE(true),
+	TAG_SHORT(true),
+	TAG_INT(true),
+	TAG_LONG(true),
+	TAG_FLOAT(true),
+	TAG_DOUBLE(true),
+	TAG_BYTE_ARRAY(false),
+	TAG_STRING(false),
+	TAG_LIST(false),
+	TAG_COMPOUND(false),
+	TAG_INT_ARRAY(false),
 
-	static List<Token> tokenize(String input) {
-		List<Token> list = new ArrayList<>();
+	UNKNOWN(false);
 
-		while(!input.equals("")) {
+	private final boolean primitive;
 
-			boolean match = false;
-
-			while(!match) {
-				for(NBTTokenType tokenType : NBTTokenType.values()) {
-					Matcher matcher = tokenType.getPattern().matcher(input);
-					if(matcher.find()) {
-						match = true;
-
-						input = matcher.replaceFirst("");
-
-						Token token = new Token(tokenType, matcher.group());
-						list.add(token);
-					}
-				}
-			}
-		}
-
-		return list;
+	NBTType(boolean primitive) {
+		this.primitive = primitive;
 	}
 
-	static class Token {
-		private final NBTTokenType type;
-		private final String value;
-
-		public Token(NBTTokenType type, String value) {
-			this.type = type;
-			this.value = value;
-		}
-
-		public NBTTokenType getType() {
-			return type;
-		}
-
-		public String getValue() {
-			return value;
-		}
+	public boolean isPrimitive() {
+		return primitive;
 	}
 }

@@ -71,6 +71,11 @@ public class NBTShort extends NBTTag.NBTPrimitive {
 	}
 
 	@Override
+	public NBTType getType() {
+		return NBTType.TAG_SHORT;
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
@@ -78,7 +83,6 @@ public class NBTShort extends NBTTag.NBTPrimitive {
 		NBTShort nbtShort = (NBTShort)o;
 
 		return value == nbtShort.value;
-
 	}
 
 	@Override

@@ -20,13 +20,14 @@
  */
 package io.github.katrix_.permissionblock.nbt;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class NBTCompound extends NBTTag {
 
-	private Map<String, NBTTag> values;
+	private Map<String, NBTTag> values = new LinkedHashMap<>(); //So that we retain the order
 
 	public int size() {
 		return values.size();
@@ -88,7 +89,7 @@ public class NBTCompound extends NBTTag {
 	public byte getByte(String key) {
 		NBTTag tag = getTag(key);
 
-		if(tag.isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getByte();
+		if(tag.getType().isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getByte();
 
 		return 0;
 	}
@@ -96,7 +97,7 @@ public class NBTCompound extends NBTTag {
 	public short getShort(String key) {
 		NBTTag tag = getTag(key);
 
-		if(tag.isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getShort();
+		if(tag.getType().isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getShort();
 
 		return 0;
 	}
@@ -104,7 +105,7 @@ public class NBTCompound extends NBTTag {
 	public int getInt(String key) {
 		NBTTag tag = getTag(key);
 
-		if(tag.isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getInt();
+		if(tag.getType().isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getInt();
 
 		return 0;
 	}
@@ -112,7 +113,7 @@ public class NBTCompound extends NBTTag {
 	public long getLong(String key) {
 		NBTTag tag = getTag(key);
 
-		if(tag.isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getLong();
+		if(tag.getType().isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getLong();
 
 		return 0;
 	}
@@ -120,7 +121,7 @@ public class NBTCompound extends NBTTag {
 	public float getFloat(String key) {
 		NBTTag tag = getTag(key);
 
-		if(tag.isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getFloat();
+		if(tag.getType().isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getFloat();
 
 		return 0F;
 	}
@@ -128,7 +129,7 @@ public class NBTCompound extends NBTTag {
 	public double getDouble(String key) {
 		NBTTag tag = getTag(key);
 
-		if(tag.isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getDouble();
+		if(tag.getType().isPrimitive()) return ((NBTTag.NBTPrimitive)tag).getDouble();
 
 		return 0D;
 	}
@@ -165,20 +166,19 @@ public class NBTCompound extends NBTTag {
 		return new NBTCompound();
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends NBTTag> NBTList<T> getList(String key, Class<T> type) {
+	public NBTList getList(String key, NBTType type) {
 		NBTTag tag = getTag(key);
 
 		if(tag instanceof NBTList) {
 			NBTList list = (NBTList)tag;
-			if(type.isAssignableFrom(list.getType())) {
+			if(type == list.getListType()) {
 				return list;
 			}
 			else {
-				return new NBTList<>(type);
+				return new NBTList(type);
 			}
 		}
-		return new NBTList<>(type);
+		return new NBTList(type);
 	}
 
 	public boolean getBoolean(String key) {
@@ -224,6 +224,11 @@ public class NBTCompound extends NBTTag {
 		}
 
 		return tag;
+	}
+
+	@Override
+	public NBTType getType() {
+		return NBTType.TAG_COMPOUND;
 	}
 
 	@Override

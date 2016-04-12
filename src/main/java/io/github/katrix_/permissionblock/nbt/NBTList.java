@@ -23,26 +23,113 @@ package io.github.katrix_.permissionblock.nbt;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NBTList<T extends NBTTag> extends NBTTag {
+import io.github.katrix_.permissionblock.helper.LogHelper;
 
-	private List<T> values = new ArrayList<>();
-	private final Class<T> type;
+public class NBTList extends NBTTag {
 
-	public NBTList(Class<T> type) {
+	private List<NBTTag> values = new ArrayList<>();
+	private NBTType type;
+
+	public NBTList(NBTType type) {
 		this.type = type;
 	}
 
-	public T get(int i) {
-
+	public NBTTag get(int i) {
 		return values.get(i);
 	}
 
-	public void add(T value) {
+	public void add(NBTTag value) {
+		if(type == NBTType.UNKNOWN) {
+			type = value.getType();
+		}
+		else if(type != value.getType()) {
+			LogHelper.error("Tried to add wrong type to NBT list");
+			return;
+		}
+
 		values.add(value);
 	}
 
-	public void set(T value, int i) {
+	public void set(NBTTag value, int i) {
+		if(type == NBTType.UNKNOWN) {
+			type = value.getType();
+		}
+		else if(type != value.getType()) {
+			LogHelper.error("Tried to add wrong type to NBT list");
+			return;
+		}
+
 		values.set(i, value);
+	}
+
+	public byte getByte(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_BYTE) return 0;
+
+		return ((NBTByte)values.get(i)).getByte();
+	}
+
+	public short getShort(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_SHORT) return 0;
+
+		return ((NBTShort)values.get(i)).getShort();
+	}
+
+	public int getInt(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_INT) return 0;
+
+		return ((NBTInt)values.get(i)).getInt();
+	}
+
+	public long getLong(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_LONG) return 0;
+
+		return ((NBTLong)values.get(i)).getLong();
+	}
+
+	public float getFloat(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_FLOAT) return 0;
+
+		return ((NBTFloat)values.get(i)).getFloat();
+	}
+
+	public double getDouble(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_DOUBLE) return 0;
+
+		return ((NBTDouble)values.get(i)).getDouble();
+	}
+
+	public byte[] getByteArray(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_BYTE_ARRAY) return new byte[0];
+
+		return ((NBTByteArray)values.get(i)).get();
+	}
+
+	public int[] getIntArray(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_INT_ARRAY) return new int[0];
+
+		return ((NBTIntArray)values.get(i)).get();
+	}
+
+	public String getString(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_STRING) return "";
+
+		return ((NBTString)values.get(i)).get();
+	}
+
+	public NBTList getList(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_LIST) return new NBTList(NBTType.UNKNOWN);
+
+		return ((NBTList)values.get(i));
+	}
+
+	public NBTCompound getCompound(int i) {
+		if(i < 0 || i > values.size() || type != NBTType.TAG_COMPOUND) return new NBTCompound();
+
+		return ((NBTCompound)values.get(i));
+	}
+
+	protected void setType(NBTType type) {
+		this.type = type;
 	}
 
 	public void remove(int i) {
@@ -53,8 +140,13 @@ public class NBTList<T extends NBTTag> extends NBTTag {
 		return values.size();
 	}
 
-	public Class<T> getType() {
+	public NBTType getListType() {
 		return type;
+	}
+
+	@Override
+	public NBTType getType() {
+		return NBTType.TAG_LIST;
 	}
 
 	@Override
@@ -73,10 +165,9 @@ public class NBTList<T extends NBTTag> extends NBTTag {
 		if(this == o) return true;
 		if(o == null || getClass() != o.getClass()) return false;
 
-		NBTList<?> nbtList = (NBTList<?>)o;
+		NBTList nbtList = (NBTList)o;
 
-		return values.equals(nbtList.values) && type.equals(nbtList.type);
-
+		return values.equals(nbtList.values) && type == nbtList.type;
 	}
 
 	@Override
