@@ -20,6 +20,8 @@
  */
 package io.github.katrix_.permissionblock.nbt;
 
+import java.util.Arrays;
+
 public class NBTIntArray extends NBTTag {
 
 	private int[] values;
@@ -37,5 +39,34 @@ public class NBTIntArray extends NBTTag {
 		int[] ints = new int[values.length];
 		System.arraycopy(values, 0, ints, 0, values.length);
 		return new NBTIntArray(ints);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(o == null || getClass() != o.getClass()) return false;
+
+		NBTIntArray that = (NBTIntArray)o;
+
+		return Arrays.equals(values, that.values);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(values);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder("[");
+
+		for (int i : values) {
+			b.append(i);
+			b.append(',');
+		}
+		b.append(']');
+
+		return b.toString();
 	}
 }

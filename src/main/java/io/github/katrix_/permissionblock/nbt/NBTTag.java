@@ -28,7 +28,12 @@ public abstract class NBTTag {
 		return false;
 	}
 
-	public abstract class NBTPrimitive extends NBTTag {
+	//Ensure that all NBT set this.
+	public abstract String toString();
+
+	public abstract boolean equals(Object that);
+
+	public abstract static class NBTPrimitive extends NBTTag {
 
 		@Override
 		public boolean isPrimitive() {

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,63 +18,54 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.nbt;
+package io.github.katrix_.permissionblock.nbt.parser;
 
-import io.github.katrix_.permissionblock.helper.LogHelper;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
 
-public class NBTString extends NBTTag {
+public class NBTTokenizer {
 
-	private String value;
+	static List<Token> tokenize(String input) {
+		List<Token> list = new ArrayList<>();
 
-	public NBTString(String value) {
-		if(value == null) {
-			value = "";
-			LogHelper.error("NBT created with empty string. String cannot be empty");
+		while(!input.equals("")) {
+
+			boolean match = false;
+
+			while(!match) {
+				for(NBTTokenType tokenType : NBTTokenType.values()) {
+					Matcher matcher = tokenType.getPattern().matcher(input);
+					if(matcher.find()) {
+						match = true;
+
+						input = matcher.replaceFirst("");
+
+						Token token = new Token(tokenType, matcher.group());
+						list.add(token);
+					}
+				}
+			}
 		}
 
-		this.value = value;
+		return list;
 	}
 
-	public NBTString() {
-		this("");
-	}
+	static class Token {
+		private final NBTTokenType type;
+		private final String value;
 
-	public String get() {
-		return value;
-	}
-
-	public void set(String value) {
-		if(value == null) {
-			value = "";
-			LogHelper.error("NBT set to empty string. String cannot be empty");
+		public Token(NBTTokenType type, String value) {
+			this.type = type;
+			this.value = value;
 		}
 
-		this.value = value;
-	}
+		public NBTTokenType getType() {
+			return type;
+		}
 
-	@Override
-	public NBTTag copy() {
-		return new NBTString(value);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-
-		NBTString nbtString = (NBTString)o;
-
-		return value.equals(nbtString.value);
-
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return value;
+		public String getValue() {
+			return value;
+		}
 	}
 }

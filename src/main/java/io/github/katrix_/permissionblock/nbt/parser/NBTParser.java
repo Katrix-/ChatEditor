@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,63 +18,43 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.nbt;
+package io.github.katrix_.permissionblock.nbt.parser;
 
-import io.github.katrix_.permissionblock.helper.LogHelper;
+import java.util.Iterator;
 
-public class NBTString extends NBTTag {
+import io.github.katrix_.permissionblock.nbt.NBTCompound;
+import io.github.katrix_.permissionblock.nbt.NBTParseException;
+import io.github.katrix_.permissionblock.nbt.NBTTag;
 
-	private String value;
+public class NBTParser {
 
-	public NBTString(String value) {
-		if(value == null) {
-			value = "";
-			LogHelper.error("NBT created with empty string. String cannot be empty");
+	public NBTCompound parse(String string) throws NBTParseException {
+		string = string.trim();
+		NBTCompound tag = new NBTCompound();
+		Iterator<NBTTokenizer.Token> tokens = NBTTokenizer.tokenize(string).iterator();
+
+		NBTTokenizer.Token token = tokens.next();
+		if(!token.getType().equals(NBTTokenType.COMPOUND_START)) {
+			throw new NBTParseException("NBT did not start with {");
 		}
 
-		this.value = value;
-	}
+		while(tokens.hasNext()) {
+			token = tokens.next();
 
-	public NBTString() {
-		this("");
-	}
+			if(!token.getType().equals(NBTTokenType.TAG_NAME)) {
+				throw new NBTParseException("Expected name, got " + token.getType());
+			}
 
-	public String get() {
-		return value;
-	}
-
-	public void set(String value) {
-		if(value == null) {
-			value = "";
-			LogHelper.error("NBT set to empty string. String cannot be empty");
+			if(!token.getType().equals(NBTTokenType.COLON)) {
+				throw new NBTParseException("Expected colon after name");
+			}
 		}
 
-		this.value = value;
+
+		return null;
 	}
 
-	@Override
-	public NBTTag copy() {
-		return new NBTString(value);
-	}
+	private NBTTag getObject(NBTTokenizer.Token current, Iterable<NBTTokenizer.Token> next) {
 
-	@Override
-	public boolean equals(Object o) {
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-
-		NBTString nbtString = (NBTString)o;
-
-		return value.equals(nbtString.value);
-
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return value;
 	}
 }

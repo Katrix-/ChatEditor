@@ -20,7 +20,7 @@
  */
 package io.github.katrix_.permissionblock.nbt;
 
-public class NBTInt extends NBTTag {
+public class NBTInt extends NBTTag.NBTPrimitive {
 
 	private int value;
 
@@ -30,10 +30,6 @@ public class NBTInt extends NBTTag {
 
 	public NBTInt() {}
 
-	public int get() {
-		return value;
-	}
-
 	public void set(int value) {
 		this.value = value;
 	}
@@ -41,5 +37,57 @@ public class NBTInt extends NBTTag {
 	@Override
 	public NBTTag copy() {
 		return new NBTInt(value);
+	}
+
+	@Override
+	public long getLong() {
+		return value;
+	}
+
+	@Override
+	public int getInt() {
+		return value;
+	}
+
+	//Following what Minecraft does, so we get the same result.
+	@Override
+	public short getShort() {
+		return (short)(value & 65535);
+	}
+
+	//Following what Minecraft does, so we get the same result.
+	@Override
+	public byte getByte() {
+		return (byte)(value & 255);
+	}
+
+	@Override
+	public double getDouble() {
+		return value;
+	}
+
+	@Override
+	public float getFloat() {
+		return value;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(o == null || getClass() != o.getClass()) return false;
+
+		NBTInt nbtInt = (NBTInt)o;
+
+		return value == nbtInt.value;
+	}
+
+	@Override
+	public int hashCode() {
+		return value;
+	}
+
+	@Override
+	public String toString() {
+		return value + "";
 	}
 }

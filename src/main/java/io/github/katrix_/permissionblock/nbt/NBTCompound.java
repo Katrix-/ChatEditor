@@ -225,4 +225,35 @@ public class NBTCompound extends NBTTag {
 
 		return tag;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(o == null || getClass() != o.getClass()) return false;
+
+		NBTCompound that = (NBTCompound)o;
+
+		return values.equals(that.values);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return values.hashCode();
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder("{");
+
+		for (Map.Entry<String, NBTTag> entry : values.entrySet()) {
+			if (b.length() != 1)
+			{
+				b.append(',');
+			}
+			b.append(entry.getKey()).append(':').append(entry.getValue());
+		}
+
+		return b.append('}').toString();
+	}
 }

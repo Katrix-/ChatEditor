@@ -20,6 +20,8 @@
  */
 package io.github.katrix_.permissionblock.nbt;
 
+import java.util.Arrays;
+
 public class NBTByteArray extends NBTTag {
 
 	private byte[] values;
@@ -37,5 +39,27 @@ public class NBTByteArray extends NBTTag {
 		byte[] bytes = new byte[values.length];
 		System.arraycopy(values, 0, bytes, 0, values.length);
 		return new NBTByteArray(bytes);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(o == null || getClass() != o.getClass()) return false;
+
+		NBTByteArray that = (NBTByteArray)o;
+
+		return Arrays.equals(values, that.values);
+
+	}
+
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(values);
+	}
+
+	//Is this correct? It's what minecraft uses.
+	@Override
+	public String toString() {
+		return "[" + values.length + " bytes]";
 	}
 }

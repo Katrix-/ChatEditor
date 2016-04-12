@@ -67,4 +67,36 @@ public class NBTList<T extends NBTTag> extends NBTTag {
 		}
 		return list;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if(this == o) return true;
+		if(o == null || getClass() != o.getClass()) return false;
+
+		NBTList<?> nbtList = (NBTList<?>)o;
+
+		return values.equals(nbtList.values) && type.equals(nbtList.type);
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = values.hashCode();
+		result = 31 * result + type.hashCode();
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder("[");
+
+		for (int i = 0; i < values.size(); ++i) {
+			if (i != 0) {
+				b.append(',');
+			}
+			b.append(i).append(':').append(values.get(i));
+		}
+
+		return b.append(']').toString();
+	}
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,63 +18,34 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.nbt;
+package io.github.katrix_.permissionblock.nbt.parser;
 
-import io.github.katrix_.permissionblock.helper.LogHelper;
+import java.util.regex.Pattern;
 
-public class NBTString extends NBTTag {
+public enum NBTTokenType {
+	TAG_NAME("\\w+( +\\w+)*"),
+	COMPOUND_START("[\\}]"),
+	COMPOUND_END("[\\}]"),
+	LIST_START("[\\[]"),
+	LIST_END("[\\]]"),
+	COLON("[:]"),
+	COMMA("[,]"),
 
-	private String value;
+	BYTE("\\d+b"),
+	SHORT("\\d+s"),
+	LONG("\\d+L"),
+	FLOAT("\\d*\\.?\\d+f"),
+	DOUBLE("\\d*\\.?\\d+d"),
+	INT("\\d+"),
+	STRING("([\"])(?:(?=(\\\\?))\\2.)*?\\1");
 
-	public NBTString(String value) {
-		if(value == null) {
-			value = "";
-			LogHelper.error("NBT created with empty string. String cannot be empty");
-		}
+	private final Pattern pattern;
 
-		this.value = value;
+	NBTTokenType(String regex) {
+		this.pattern = Pattern.compile("^(" + regex + ")");
 	}
 
-	public NBTString() {
-		this("");
-	}
-
-	public String get() {
-		return value;
-	}
-
-	public void set(String value) {
-		if(value == null) {
-			value = "";
-			LogHelper.error("NBT set to empty string. String cannot be empty");
-		}
-
-		this.value = value;
-	}
-
-	@Override
-	public NBTTag copy() {
-		return new NBTString(value);
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if(this == o) return true;
-		if(o == null || getClass() != o.getClass()) return false;
-
-		NBTString nbtString = (NBTString)o;
-
-		return value.equals(nbtString.value);
-
-	}
-
-	@Override
-	public int hashCode() {
-		return value.hashCode();
-	}
-
-	@Override
-	public String toString() {
-		return value;
+	public Pattern getPattern() {
+		return pattern;
 	}
 }
