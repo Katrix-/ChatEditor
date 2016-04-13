@@ -291,31 +291,60 @@ public class NBTParser {
 		}
 
 		private boolean hasNext() {
-			return false; //TODO
+			return pos < input.length();
 		}
 
 		private Token2 next() throws NBTParseException {
+			int line = getLine();
+			int col = getCol(line);
 			if(matcher.find(pos)) {
 				for(NBTTokenType tokenType : NBTTokenType.values()) {
 					String result = matcher.group(tokenType.name());
 					if(result != null) {
 						int length = matcher.end() - matcher.start();
-						Token2 token = new Token2(tokenType, result, getCol(), getRow());
+						Token2 token = new Token2(tokenType, result, col, line);
 						pos += length;
 						return token;
 					}
 				}
-				throw new NBTParseException("No patters matched", getCol(), getRow());
+				throw new NBTParseException("No patters matched", col, line);
 			}
-			else throw new NBTParseException("Unrecognized character", getCol(), getRow());
+			else throw new NBTParseException("Unrecognized character", col, line);
 		}
 
-		private int getRow() {
-			return 0; //TODO
+		private int getLine() {
+			String current = input.substring(0, pos);
+			int lines = 1;
+			Matcher m = Pattern.compile("\r\n|\r|\n").matcher(current);
+
+			while (m.find()) {
+				lines ++;
+			}
+
+			return lines;
 		}
 
 		private int getCol() {
-			return 0; //TODO
+			String current = input.substring(0, pos);
+			int col = pos;
+			Matcher matcher = Pattern.compile("\r\n|\r|\n").matcher(current);
+			List<String> tmpList = new ArrayList<>();
+
+			while(matcher.find()) {
+				tmpList.add(matcher.group());
+			}
+
+			//Need to watch out for newline characters?
+			Iterator<String> stringIt = tmpList.iterator();
+			while(stringIt.hasNext()) {
+				String line = stringIt.next();
+
+				if(stringIt.hasNext()) {
+					col -= line.length();
+				}
+			}
+
+			return col;
 		}
 	}
 
@@ -324,13 +353,13 @@ public class NBTParser {
 		private final NBTTokenType type;
 		private final String value;
 		private final int col;
-		private final int row;
+		private final int line;
 
-		private Token2(NBTTokenType type, String value, int col, int row) {
+		private Token2(NBTTokenType type, String value, int col, int line) {
 			this.type = type;
 			this.value = value;
 			this.col = col;
-			this.row = row;
+			this.line = line;
 		}
 
 		public NBTTokenType getType() {
@@ -345,8 +374,8 @@ public class NBTParser {
 			return col;
 		}
 
-		public int getRow() {
-			return row;
+		public int getLine() {
+			return line;
 		}
 
 		@Override
@@ -355,7 +384,7 @@ public class NBTParser {
 					"type=" + type +
 					", value='" + value + '\'' +
 					", col=" + col +
-					", row=" + row +
+					", line=" + line +
 					'}';
 		}
 	}
