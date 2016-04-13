@@ -30,6 +30,24 @@ public abstract class NBTTag {
 	@Override
 	public abstract String toString();
 
+	public String toBeautyString() {
+		return toBeautyIndent(1);
+	}
+
+	protected String toBeautyIndent(int indention) {
+		return toString();
+	}
+
+	protected StringBuilder beautify(StringBuilder b, int indention) {
+		b.append('\n');
+
+		for(int i = 0; i < indention; i++) {
+			b.append('\t');
+		}
+
+		return b;
+	}
+
 	@Override
 	public abstract boolean equals(Object that);
 

@@ -263,4 +263,24 @@ public class NBTCompound extends NBTTag {
 
 		return b.append('}').toString();
 	}
+
+	@Override
+	public String toBeautyIndent(int indention) {
+		StringBuilder b = new StringBuilder("{");
+		boolean first = true;
+
+		for(Map.Entry<String, NBTTag> entry : values.entrySet()) {
+			if(!first) {
+				b.append(',');
+			}
+			first = false;
+			beautify(b, indention);
+			b.append(entry.getKey()).append(':').append(entry.getValue().toBeautyIndent(indention + 1));
+		}
+
+		if(!values.isEmpty()) {
+			beautify(b, indention - 1);
+		}
+		return b.append('}').toString();
+	}
 }

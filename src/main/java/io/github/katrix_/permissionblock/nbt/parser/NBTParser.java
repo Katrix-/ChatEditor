@@ -58,7 +58,7 @@ public class NBTParser {
 
 		try {
 			NBTCompound tag = parser.parse(nbt);
-			System.out.println(tag);
+			System.out.println(tag.toBeautyString());
 		}
 		catch(NBTParseException e) {
 			e.printStackTrace();

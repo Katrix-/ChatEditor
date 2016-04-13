@@ -45,7 +45,7 @@
 	Health:4s,
 	HealF:4.0f,
 	Bukkit.updateLevel:2,
-	""Fire:-1s,
+	Fire:-1s,
 	Invulnerable:0b,
 	DeathTime:0s,
 	ForcedAge:0,

@@ -190,4 +190,20 @@ public class NBTList extends NBTTag {
 
 		return b.append(']').toString();
 	}
+
+	@Override
+	public String toBeautyIndent(int indention) {
+		StringBuilder b = new StringBuilder("[");
+
+		for(int i = 0; i < values.size(); ++i) {
+			if(i != 0) {
+				b.append(',');
+			}
+			beautify(b, indention);
+			b.append(i).append(':').append(values.get(i).toBeautyIndent(indention + 1));
+		}
+
+		beautify(b, indention - 1);
+		return b.append(']').toString();
+	}
 }
