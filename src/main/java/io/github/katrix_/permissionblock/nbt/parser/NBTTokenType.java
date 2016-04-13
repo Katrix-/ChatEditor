@@ -23,21 +23,21 @@ package io.github.katrix_.permissionblock.nbt.parser;
 import java.util.regex.Pattern;
 
 public enum NBTTokenType {
-	COMPOUND_START("[\\{]"),
-	COMPOUND_END("[\\}]"),
-	LIST_START("[\\[]"),
-	LIST_END("[\\]]"),
 	COLON("[:]"),
 	COMMA("[,]"),
+	COMPOUNDSTART("[\\{]"),
+	COMPOUNDEND("[\\}]"),
+	LISTSTART("[\\[]"),
+	LISTEND("[\\]]"),
 
-	NBT_BYTE("-?\\d+b"),
-	NBT_SHORT("-?\\d+s"),
-	NBT_LONG("-?\\d+L"),
-	NBT_FLOAT("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?f"),
-	NBT_DOUBLE("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?d"),
-	NBT_INT("-?\\d+"),
-	NBT_STRING(Pattern.compile("^([\"])(?:(?=(\\\\?))\\2.)*?\\1")),
-	TAG_NAME("^([^:]+)");
+	NBTBYTE("-?\\d+b"),
+	NBTSHORT("-?\\d+s"),
+	NBTLONG("-?\\d+L"),
+	NBTFLOAT("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?f"),
+	NBTDOUBLE("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?d"),
+	NBTINT("-?\\d+"),
+	NBTSTRING(Pattern.compile("\\\".+?\\\"")), //Doesn't support nested quotes. Problem?
+	TAGNAME("^([^:]+)");
 
 	private final Pattern pattern;
 

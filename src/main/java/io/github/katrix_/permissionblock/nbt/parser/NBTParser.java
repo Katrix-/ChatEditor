@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.google.common.collect.Iterators;
+
 import io.github.katrix_.permissionblock.nbt.NBTByte;
 import io.github.katrix_.permissionblock.nbt.NBTCompound;
 import io.github.katrix_.permissionblock.nbt.NBTDouble;
@@ -60,16 +62,26 @@ public class NBTParser {
 		}
 		catch(NBTParseException e) {
 			e.printStackTrace();
+			Token token = e.getToken();
+			int line = e.getLine();
+			int col = e.getCol();
+			if(token != null) {
+				System.out.println(token);
+			}
+			else if(line != 0 && col != 0) {
+				System.out.println("Line = " + line + " Column = " + col);
+			}
 		}
 	}
 
 	public NBTCompound parse(String string) throws NBTParseException {
 		string = string.trim();
-		Iterator<Token> tokens = tokenize(string).iterator();
+		//Iterator<Token> tokens = tokenize(string).iterator();
+		Iterator<Token> tokens = new Lexer(string).lex().iterator();
 
 		testHasNest(tokens);
 		Token token = tokens.next();
-		if(token.getType() != NBTTokenType.COMPOUND_START) throw new NBTParseException("NBT did not start with {", token);
+		if(token.getType() != NBTTokenType.COMPOUNDSTART) throw new NBTParseException("NBT did not start with {", token);
 
 		return getCompound(tokens);
 	}
@@ -79,11 +91,11 @@ public class NBTParser {
 		testHasNest(tokens);
 		Token token = tokens.next();
 
-		if(token.getType() == NBTTokenType.COMPOUND_END) return compound;
+		if(token.getType() == NBTTokenType.COMPOUNDEND) return compound;
 
 		while(tokens.hasNext()) {
 
-			if(token.getType() != NBTTokenType.TAG_NAME) throw new NBTParseException("Expected name, got " + token.getType(), token);
+			if(token.getType() != NBTTokenType.TAGNAME) throw new NBTParseException("Expected name, got " + token.getType(), token);
 
 			String name = token.getValue();
 
@@ -98,31 +110,31 @@ public class NBTParser {
 			System.out.println(token);
 
 			switch(token.getType()) {
-				case NBT_BYTE:
+				case NBTBYTE:
 					compound.setByte(name, Byte.parseByte(primitive));
 					break;
-				case NBT_SHORT:
+				case NBTSHORT:
 					compound.setShort(name, Short.parseShort(primitive));
 					break;
-				case NBT_LONG:
+				case NBTLONG:
 					compound.setLong(name, Long.parseLong(primitive));
 					break;
-				case NBT_FLOAT:
+				case NBTFLOAT:
 					compound.setFloat(name, Float.parseFloat(primitive));
 					break;
-				case NBT_DOUBLE:
+				case NBTDOUBLE:
 					compound.setDouble(name, Double.parseDouble(primitive));
 					break;
-				case NBT_INT:
+				case NBTINT:
 					compound.setInt(name, Integer.parseInt(value));
 					break;
-				case NBT_STRING:
+				case NBTSTRING:
 					compound.setString(name, value.substring(1, value.length() - 1));
 					break;
-				case LIST_START:
+				case LISTSTART:
 					compound.setTag(name, getList(tokens));
 					break;
-				case COMPOUND_START:
+				case COMPOUNDSTART:
 					compound.setTag(name, getCompound(tokens));
 					break;
 				default:
@@ -134,11 +146,11 @@ public class NBTParser {
 			System.out.println(token);
 
 			if(token.getType() != NBTTokenType.COMMA) {
-				if(token.getType() == NBTTokenType.COMPOUND_END) {
+				if(token.getType() == NBTTokenType.COMPOUNDEND) {
 					break;
 				}
 				else {
-					throw new NBTParseException("Didn't encounter a '}' at the end of the compound", token);
+					throw new NBTParseException("Unbalanced {} brackets. Last token was ", token);
 				}
 			}
 
@@ -158,14 +170,14 @@ public class NBTParser {
 		while(tokens.hasNext()) {
 
 			String stringIndex = token.getValue();
-			if(token.getType() != NBTTokenType.NBT_INT) throw new NBTParseException("Expected index, got " + token.getType() + " " + stringIndex, token);
+			if(token.getType() != NBTTokenType.NBTINT) throw new NBTParseException("Expected index, got " + token.getType() + " " + stringIndex, token);
 
 			testHasNest(tokens);
 			token = tokens.next();
 			if(token.getType() != NBTTokenType.COLON) throw new NBTParseException("Expected colon after index", token);
 
 			int index = Integer.parseInt(stringIndex); //Safe because of test earlier
-			if(index != i) throw new NBTParseException("Index did not follow sequential order", token);
+			if(index != i) throw new NBTParseException("Index did not follow sequential order", token); //Do I need to check this?
 
 			testHasNest(tokens);
 			token = tokens.next();
@@ -174,31 +186,31 @@ public class NBTParser {
 
 			if(list.getListType() == NBTType.UNKNOWN) {
 				switch(token.getType()) {
-					case NBT_BYTE:
+					case NBTBYTE:
 						list.add(new NBTByte(Byte.parseByte(primitive)));
 						break;
-					case NBT_SHORT:
+					case NBTSHORT:
 						list.add(new NBTShort(Short.parseShort(primitive)));
 						break;
-					case NBT_LONG:
+					case NBTLONG:
 						list.add(new NBTLong(Long.parseLong(primitive)));
 						break;
-					case NBT_FLOAT:
+					case NBTFLOAT:
 						list.add(new NBTFloat(Float.parseFloat(primitive)));
 						break;
-					case NBT_DOUBLE:
+					case NBTDOUBLE:
 						list.add(new NBTDouble(Double.parseDouble(primitive)));
 						break;
-					case NBT_INT:
+					case NBTINT:
 						list.add(new NBTInt(Integer.parseInt(value)));
 						break;
-					case NBT_STRING:
+					case NBTSTRING:
 						list.add(new NBTString(value));
 						break;
-					case LIST_START:
+					case LISTSTART:
 						list.add(getList(tokens));
 						break;
-					case COMPOUND_START:
+					case COMPOUNDSTART:
 						list.add(getCompound(tokens));
 						break;
 					default:
@@ -244,11 +256,11 @@ public class NBTParser {
 			System.out.println(token);
 
 			if(token.getType() != NBTTokenType.COMMA) {
-				if(token.getType() == NBTTokenType.LIST_END) {
+				if(token.getType() == NBTTokenType.LISTEND) {
 					break;
 				}
 				else {
-					throw new NBTParseException("Didn't encounter a ']' at the end of the list", token);
+					throw new NBTParseException("Unbalanced [] brackets. Last token was ", token);
 				}
 			}
 
@@ -261,13 +273,13 @@ public class NBTParser {
 	}
 
 	private void testHasNest(Iterator<Token> tokens) throws NBTParseException {
-		if(!tokens.hasNext()) throw new NBTParseException("Unexpected end of tokens");
+		if(!tokens.hasNext()) throw new NBTParseException("Unexpected end of string");
 	}
 
 	private static class Lexer {
 
 		private int pos = 0;
-		private final Matcher matcher;
+		private final Pattern pattern;
 		private final String input;
 
 		private Lexer(String input) {
@@ -277,15 +289,17 @@ public class NBTParser {
 			for(NBTTokenType token : NBTTokenType.values()) {
 				patternBuilder.append(String.format("|(?<%s>%s)", token.name(), token.getPattern()));
 			}
-			matcher = Pattern.compile(patternBuilder.toString().substring(1)).matcher(input);
+			System.out.println(patternBuilder);
+			pattern = Pattern.compile(patternBuilder.toString().substring(1));
 		}
 
-		private List<Token2> lex() throws NBTParseException {
-			List<Token2> list = new ArrayList<>();
+		private List<Token> lex() throws NBTParseException {
+			List<Token> list = new ArrayList<>();
 
 			while(hasNext()) {
 				list.add(next());
 			}
+			pos = 0;
 
 			return list;
 		}
@@ -294,20 +308,21 @@ public class NBTParser {
 			return pos < input.length();
 		}
 
-		private Token2 next() throws NBTParseException {
+		private Token next() throws NBTParseException {
 			int line = getLine();
-			int col = getCol(line);
-			if(matcher.find(pos)) {
+			int col = getCol();
+			Matcher matcher = pattern.matcher(input.substring(pos));
+			if(matcher.find()) {
 				for(NBTTokenType tokenType : NBTTokenType.values()) {
 					String result = matcher.group(tokenType.name());
 					if(result != null) {
 						int length = matcher.end() - matcher.start();
-						Token2 token = new Token2(tokenType, result, col, line);
+						Token token = new Token(tokenType, result, col, line);
 						pos += length;
 						return token;
 					}
 				}
-				throw new NBTParseException("No patters matched", col, line);
+				throw new NBTParseException("No patterns matched", col, line);
 			}
 			else throw new NBTParseException("Unrecognized character", col, line);
 		}
@@ -315,7 +330,7 @@ public class NBTParser {
 		private int getLine() {
 			String current = input.substring(0, pos);
 			int lines = 1;
-			Matcher m = Pattern.compile("\r\n|\r|\n").matcher(current);
+			Matcher m = Pattern.compile("\n").matcher(current);
 
 			while (m.find()) {
 				lines ++;
@@ -326,21 +341,20 @@ public class NBTParser {
 
 		private int getCol() {
 			String current = input.substring(0, pos);
-			int col = pos;
-			Matcher matcher = Pattern.compile("\r\n|\r|\n").matcher(current);
-			List<String> tmpList = new ArrayList<>();
+			String[] lines = current.split("\n");
 
-			while(matcher.find()) {
-				tmpList.add(matcher.group());
-			}
+			int col = pos + 1; //Columns begin at 1
 
-			//Need to watch out for newline characters?
-			Iterator<String> stringIt = tmpList.iterator();
+			Iterator<String> stringIt = Iterators.forArray(lines);
 			while(stringIt.hasNext()) {
-				String line = stringIt.next();
 
+				String line = stringIt.next();
 				if(stringIt.hasNext()) {
 					col -= line.length();
+					col--;
+				}
+				else if(current.endsWith("\n")) {
+					col = 1; //\n doesn't produce it's own line so we need to it add manually.
 				}
 			}
 
@@ -348,14 +362,14 @@ public class NBTParser {
 		}
 	}
 
-	public static class Token2 {
+	public static class Token {
 
 		private final NBTTokenType type;
 		private final String value;
 		private final int col;
 		private final int line;
 
-		private Token2(NBTTokenType type, String value, int col, int line) {
+		private Token(NBTTokenType type, String value, int col, int line) {
 			this.type = type;
 			this.value = value;
 			this.col = col;
@@ -380,65 +394,12 @@ public class NBTParser {
 
 		@Override
 		public String toString() {
-			return "Token2{" +
+			return "Token{" +
 					"type=" + type +
 					", value='" + value + '\'' +
 					", col=" + col +
 					", line=" + line +
 					'}';
-		}
-	}
-
-	private static List<Token> tokenize(String input) {
-		List<Token> list = new ArrayList<>();
-
-		while(!input.equals("")) {
-
-			boolean match = false;
-
-			while(!match) {
-				for(NBTTokenType tokenType : NBTTokenType.values()) {
-					Matcher matcher = tokenType.getPattern().matcher(input);
-					if(matcher.find()) {
-						match = true;
-
-						input = matcher.replaceFirst("");
-
-						System.out.println(input);
-						Token token = new Token(tokenType, matcher.group());
-						System.out.println(token);
-
-						list.add(token);
-						break; //TODO: Do I need this break here?
-					}
-				}
-			}
-		}
-
-		return list;
-	}
-
-	public static class Token {
-
-		private final NBTTokenType type;
-		private final String value;
-
-		private Token(NBTTokenType type, String value) {
-			this.type = type;
-			this.value = value;
-		}
-
-		public NBTTokenType getType() {
-			return type;
-		}
-
-		public String getValue() {
-			return value;
-		}
-
-		@Override
-		public String toString() {
-			return "Token{" + "type=" + type + ", value='" + value + '\'' + '}';
 		}
 	}
 }
