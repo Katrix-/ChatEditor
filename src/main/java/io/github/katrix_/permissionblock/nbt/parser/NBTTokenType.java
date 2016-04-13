@@ -36,6 +36,7 @@ public enum NBTTokenType {
 	NBTFLOAT("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?f"),
 	NBTDOUBLE("[-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?d"),
 	NBTINT("-?\\d+"),
+	WHITESPACE("\\s+"),
 	NBTSTRING(Pattern.compile("\\\".+?\\\"")), //Doesn't support nested quotes. Problem?
 	TAGNAME("^([^:]+)");
 

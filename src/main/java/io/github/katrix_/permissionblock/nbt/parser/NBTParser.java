@@ -56,6 +56,25 @@ public class NBTParser {
 				+ "EggLayTime:5219,PortalCooldown:0,PersistenceRequired:1b,Leashed:0b,WorldUUIDMost:-6365660778832771081L,FallDistance:0.0f,"
 				+ "Rotation:[0:179.36337f,1:0.0f],Spigot.ticksLived:1087}";
 
+		String nbt2 = "{\n" + "\tDropChances:[\n" + "\t\t0:0.085f,\n" + "\t\t1:0.085f,\n" + "\t\t2:0.085f,\n" + "\t\t3:0.085f,\n"
+				+ "\t\t4:0.085f\n" + "\t],\n" + "\tAge:0,\n" + "\tUUIDLeast:-6587974176882625461L,\n" + "\tAttributes:[\n" + "\t\t0:{\n"
+				+ "\t\t\tName:\"generic.maxHealth\",\n" + "\t\t\tBase:4.0d\n" + "\t\t},\n" + "\t\t1:{\n"
+				+ "\t\t\tName:\"generic.knockbackResistance\",\n" + "\t\t\tBase:0.0d\n" + "\t\t},\n" + "\t\t2:{\n"
+				+ "\t\t\tName:\"generic.movementSpeed\",\n" + "\t\t\tBase:0.25d\n" + "\t\t},\n" + "\t\t3:{\n"
+				+ "\t\t\tName:\"generic.followRange\",\n" + "\t\t\tBase:16.0d,\n" + "\t\t\tModifiers:[\n" + "\t\t\t\t0:{\n"
+				+ "\t\t\t\t\tName:\"Random spawn bonus\",\n" + "\t\t\t\t\tUUIDLeast:-7151323691541476538L,\n" + "\t\t\t\t\tOperation:1,\n"
+				+ "\t\t\t\t\tAmount:-0.019585756731058196d,\n" + "\t\t\t\t\tUUIDMost:941504467614123631L\n" + "\t\t\t\t}\n" + "\t\t\t]\n"
+				+ "\t\t}\n" + "\t],\n" + "\tIsChickenJockey:0b,\n" + "\tMotion:[\n" + "\t\t0:-3.719184344028112E-4d,\n"
+				+ "\t\t1:-0.0784000015258789d,\n" + "\t\t2:-0.0733363376799967d\n" + "\t],\n" + "\ttest:2,\n" + "\tHealth:4s,\n"
+				+ "\tHealF:4.0f,\n" + "\tBukkit.updateLevel:2,\n" + "\tFire:-1s,\n" + "\tInvulnerable:0b,\n" + "\tDeathTime:0s,\n"
+				+ "\tForcedAge:0,\n" + "\tEquipment:[\n" + "\t\t0:{},\n" + "\t\t1:{},\n" + "\t\t2:{},\n" + "\t\t3:{},\n" + "\t\t4:{}\n" + "\t],\n"
+				+ "\tAbsorptionAmount:0.0f,\n" + "\tInLove:0,\n" + "\tOnGround:1b,\n" + "\tHurtTime:0s,\n" + "\tAgeLocked:0b,\n"
+				+ "\tUUIDMost:-8914269988870142553L,\n" + "\tHurtByTimestamp:0,\n" + "\tDimension:0,\n"
+				+ "\tWorldUUIDLeast:-8214179146566002376L,\n" + "\tAir:300s,\n" + "\tPos:[\n" + "\t\t0:328.5118353835865d,\n" + "\t\t1:43.0d,\n"
+				+ "\t\t2:-7152.507890682375d\n" + "\t],\n" + "\tCanPickUpLoot:0b,\n" + "\tEggLayTime:5219,\n" + "\tPortalCooldown:0,\n"
+				+ "\tPersistenceRequired:1b,\n" + "\tLeashed:0b,\n" + "\tWorldUUIDMost:-6365660778832771081L,\n" + "\tFallDistance:0.0f,\n"
+				+ "\tRotation:[\n" + "\t\t0:179.36337f,\n" + "\t\t1:0.0f\n" + "\t],\n" + "\tSpigot.ticksLived:1087\n" + "}";
+
 		try {
 			NBTCompound tag = parser.parse(nbt);
 			System.out.println(tag.toBeautyString());
@@ -297,7 +316,10 @@ public class NBTParser {
 			List<Token> list = new ArrayList<>();
 
 			while(hasNext()) {
-				list.add(next());
+				Token token = next();
+				if(token.getType() != NBTTokenType.WHITESPACE) {
+					list.add(token);
+				}
 			}
 			pos = 0;
 
