@@ -29,37 +29,20 @@ import org.spongepowered.api.text.format.TextColors;
 import com.google.common.collect.ImmutableList;
 
 import io.github.katrix_.permissionblock.editor.IEditor;
+import io.github.katrix_.permissionblock.editor.IEditorCursor;
 
-public class TCmdLocationAdd extends TextCommand {
+public class TCmdCursorPosition extends TextCommand {
 
 	@Override
 	public void execute(String raw, IEditor editor, Player player) {
-		String intString = raw;
-
-		if(raw.startsWith("c=")) {
-			intString = raw.substring(2);
-		}
-		else {
-			intString = raw.split(" ")[1];
-		}
-
-		int amount = 0;
-
-		try {
-			amount = Integer.parseInt(intString);
-		}
-		catch(NumberFormatException e) {
-			player.sendMessage(Text.of(TextColors.RED, "Not a number"));
-		}
-
-		int position = editor.addLocation(amount);
-		player.sendMessage(Text.of(TextColors.GREEN, "The location is now at position " + position));
-		sendFormatted(player, editor);
+		IEditorCursor cursor = (IEditorCursor)editor;
+		player.sendMessage(Text.of(TextColors.YELLOW, "Cursor position is " + cursor.getCursor()));
+		editor.sendFormatted(player);
 	}
 
 	@Override
 	public List<String> getAliases() {
-		return ImmutableList.of("c+", "cursorAdd", "addCursor");
+		return ImmutableList.of("c", "cursorPos", "posCursor");
 	}
 
 	@Override
@@ -70,5 +53,10 @@ public class TCmdLocationAdd extends TextCommand {
 	@Override
 	public String getPermission() {
 		return null;
+	}
+
+	@Override
+	public Class<? extends IEditor> getCompatibility() {
+		return IEditorCursor.class;
 	}
 }

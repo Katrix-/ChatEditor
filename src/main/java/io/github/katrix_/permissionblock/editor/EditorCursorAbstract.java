@@ -20,12 +20,9 @@
  */
 package io.github.katrix_.permissionblock.editor;
 
-import java.util.List;
-
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
-
-import com.google.common.collect.ImmutableList;
 
 public abstract class EditorCursorAbstract implements IEditorCursor {
 
@@ -50,26 +47,26 @@ public abstract class EditorCursorAbstract implements IEditorCursor {
 	}
 
 	@Override
-	public int getLocation() {
+	public int getCursor() {
 		return cursor;
 	}
 
 	@Override
-	public int setLocation(int cursor) {
+	public int setCursor(int cursor) {
 		this.cursor = cursor;
 		this.cursor = validateCursorPos();
 		return this.cursor;
 	}
 
 	@Override
-	public int addLocation(int add) {
+	public int addCursor(int add) {
 		cursor += add;
 		cursor = validateCursorPos();
 		return cursor;
 	}
 
 	@Override
-	public int subtractLocation(int subtract) {
+	public int subtractCursor(int subtract) {
 		cursor -= subtract;
 		cursor = validateCursorPos();
 		return cursor;
@@ -81,7 +78,7 @@ public abstract class EditorCursorAbstract implements IEditorCursor {
 	}
 
 	@Override
-	public List<Text> getFormattedText() {
+	public void sendFormatted(Player player) {
 		String firstPart = commandBuilder.substring(0, cursor);
 		String secondPart = "";
 		String selected = "";
@@ -91,7 +88,7 @@ public abstract class EditorCursorAbstract implements IEditorCursor {
 			secondPart = commandBuilder.substring(cursor + 1, commandBuilder.length());
 		}
 
-		return ImmutableList.of(Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart));
+		player.sendMessage(Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart));
 	}
 
 	private int validateCursorPos() {

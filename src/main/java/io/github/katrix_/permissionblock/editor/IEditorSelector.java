@@ -21,48 +21,22 @@
 package io.github.katrix_.permissionblock.editor;
 
 /**
- * An editor that has a concept of a cursor.
+ * An editor that can make text selections.
  */
-public interface IEditorCursor extends IEditor {
+public interface IEditorSelector extends IEditorCursor {
 
 	/**
-	 * Get the location of the cursor.
-	 *
-	 * @return The cursors position.
+	 * Selects text based on the location of the cursor.
+	 * @param amount The amount to select
 	 */
-	int getCursor();
+	void selectAmount(int amount);
 
 	/**
-	 * Sets the location of the cursor within the editor.
-	 *
-	 * @param location The new position of the cursor.
-	 * @return The new location after modification. This might be different from the value in the
-	 * input. Same as calling {@link IEditorCursor#getCursor()}.
+	 * Select text based on two positions.
+	 * @param start The start position
+	 * @param end The end position
 	 */
-	int setCursor(int location);
+	void selectPosition(int start, int end);
 
-	/**
-	 * Moves the cursor forward.
-	 *
-	 * @param add The amount to move forward.
-	 * @return The new location after modification. This might be different from the value in the
-	 * input. Same as calling {@link IEditorCursor#getCursor()}.
-	 */
-	int addCursor(int add);
 
-	/**
-	 * Moves the cursor backwards.
-	 *
-	 * @param subtract The amount to move backwards.
-	 * @return The new location after modification. This might be different from the value in the
-	 * input. Same as calling {@link IEditorCursor#getCursor()}.
-	 */
-	int subtractCursor(int subtract);
-
-	/**
-	 * Delete a specific amount of characters from the location cursor.
-	 *
-	 * @param amount The amount of characters to delete.
-	 */
-	void deleteCharacters(int amount);
 }

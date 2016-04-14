@@ -20,12 +20,11 @@
  */
 package io.github.katrix_.permissionblock.editor;
 
-import java.util.List;
-
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
 
-@SuppressWarnings("unused")
+/**
+ * Something that can hold a string while a player works on it and changes it.
+ */
 public interface IEditor {
 
 	/**
@@ -36,50 +35,16 @@ public interface IEditor {
 	void addString(String string);
 
 	/**
-	 * Get the location of the cursor.
-	 *
-	 * @return The cursors position.
-	 */
-	int getLocation();
-
-	/**
-	 * Sets the location within the editor. What the location refers to depends on the
-	 * implementation.
-	 *
-	 * @param location The new position of the cursor.
-	 * @return The new location after modification. This might be different from the value in the
-	 * input. Same as calling {@link IEditor#getLocation()}.
-	 */
-	int setLocation(int location);
-
-	/**
-	 * Moves the location forward. What the location refers to depends on the implementation.
-	 *
-	 * @param add The amount to move forward.
-	 * @return The new location after modification. This might be different from the value in the
-	 * input. Same as calling {@link IEditor#getLocation()}.
-	 */
-	int addLocation(int add);
-
-	/**
-	 * Moves the location backwards. What the location refers to depends on the implementation.
-	 *
-	 * @param subtract The amount to move backwards.
-	 * @return The new location after modification. This might be different from the value in the
-	 * input. Same as calling {@link IEditor#getLocation()}.
-	 */
-	int subtractLocation(int subtract);
-
-	/**
 	 * @return The complete string in the editor, just as the player typed it in.
 	 */
 	String getBuiltString();
 
 	/**
-	 * @return A modified list of {@link Text} used for displaying it to the player. Each new
-	 * element in the list represents a new line.
+	 * Send a the formatted content of the editor to a player.
+	 *
+	 * @param player The player to send to.
 	 */
-	List<Text> getFormattedText();
+	void sendFormatted(Player player);
 
 	/**
 	 * A action to do once the editor is "done".

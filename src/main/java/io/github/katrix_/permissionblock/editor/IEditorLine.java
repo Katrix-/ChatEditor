@@ -20,7 +20,44 @@
  */
 package io.github.katrix_.permissionblock.editor;
 
+/**
+ * An editor that that have a concept of lines.
+ */
 public interface IEditorLine extends IEditor {
+
+	/**
+	 * Get the location of the cursor.
+	 *
+	 * @return The cursors position.
+	 */
+	int getLine();
+
+	/**
+	 * Sets the line being worked on.
+	 *
+	 * @param location The new line position.
+	 * @return The new location after modification. This might be different from the value in the
+	 * input. Same as calling {@link IEditorLine#getLine()}.
+	 */
+	int setLine(int location);
+
+	/**
+	 * Moves the cursor line being worked on forward.
+	 *
+	 * @param add The amount to move forward.
+	 * @return The new location after modification. This might be different from the value in the
+	 * input. Same as calling {@link IEditorLine#getLine()}.
+	 */
+	int addLine(int add);
+
+	/**
+	 * Moves the line being worked on backwards.
+	 *
+	 * @param subtract The amount to move backwards.
+	 * @return The new location after modification. This might be different from the value in the
+	 * input. Same as calling {@link IEditorLine#getLine()}.
+	 */
+	int subtractLine(int subtract);
 
 	/**
 	 * Adds a new line to the editor at the currently selected line.
@@ -37,7 +74,7 @@ public interface IEditorLine extends IEditor {
 	boolean removeLine();
 
 	/**
-	 * @return The currently selected line.
+	 * @return The currently selected lines content.
 	 */
-	String getCurrentLine();
+	String getCurrentLineContent();
 }

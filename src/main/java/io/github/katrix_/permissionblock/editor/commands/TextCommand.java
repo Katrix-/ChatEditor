@@ -22,12 +22,8 @@ package io.github.katrix_.permissionblock.editor.commands;
 
 import java.util.List;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.service.pagination.PaginationList;
-import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
 
 import io.github.katrix_.permissionblock.editor.IEditor;
 
@@ -58,20 +54,6 @@ public abstract class TextCommand {
 	public abstract String getPermission();
 
 	/**
-	 * Send a the formatted content of the editor to a player.
-	 *
-	 * @param player The player to send to.
-	 * @param editor The editor used.
-	 */
-	protected void sendFormatted(Player player, IEditor editor) {
-		PaginationList.Builder pagination = Sponge.getServiceManager().getRegistration(PaginationService.class).get().getProvider().builder();
-
-		pagination.title(Text.of(TextColors.GRAY, "Editor"));
-		pagination.contents(editor.getFormattedText());
-		pagination.sendTo(player);
-	}
-
-	/**
 	 * Remove this player from the editor list.
 	 *
 	 * @param player The player to remove.
@@ -81,10 +63,9 @@ public abstract class TextCommand {
 	}
 
 	/**
-	 * Gets the compatibility level for this command. This is used for hiding help entries. This
-	 * does NOT do any automatic checking for you.
-	 *
-	 * @return
+	 * Gets the compatibility level for this command.
+	 * The editor in {@link TextCommand#execute(String, IEditor, Player)} can be safely casted tp this.
+	 * This is also used for hiding help entries.
 	 */
 	public Class<? extends IEditor> getCompatibility() {
 		return IEditor.class;

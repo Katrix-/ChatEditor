@@ -33,7 +33,7 @@ public class TCmdView extends TextCommand {
 
 	@Override
 	public void execute(String raw, IEditor editor, Player player) {
-		sendFormatted(player, editor);
+		editor.sendFormatted(player);
 	}
 
 	@Override

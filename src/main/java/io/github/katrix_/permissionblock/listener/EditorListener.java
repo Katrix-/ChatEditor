@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.WeakHashMap;
 
-import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
@@ -39,8 +38,6 @@ import org.spongepowered.api.event.command.SendCommandEvent;
 import org.spongepowered.api.event.command.TabCompleteEvent;
 import org.spongepowered.api.event.filter.cause.First;
 import org.spongepowered.api.event.message.MessageChannelEvent;
-import org.spongepowered.api.service.pagination.PaginationList;
-import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
@@ -111,6 +108,12 @@ public class EditorListener {
 		}
 
 		TextCommand command = optCommand.get();
+		IEditor editor = EDITOR_PLAYERS.get(player);
+
+		if(!command.getCompatibility().isInstance(editor)) {
+			player.sendMessage(Text.of(TextColors.RED, "You can't use that command with this type of editor"));
+			return;
+		}
 
 		/*
 		if(!player.hasPermission(command.getPermission())) {
@@ -122,7 +125,7 @@ public class EditorListener {
 			rawText = rawText.substring(1);
 		}
 
-		command.execute(rawText, EDITOR_PLAYERS.get(player), player);
+		command.execute(rawText, editor, player);
 
 		event.setCancelled(true);
 	}
@@ -133,7 +136,7 @@ public class EditorListener {
 
 		IEditor editor = EDITOR_PLAYERS.get(player);
 		editor.addString("/" + event.getCommand() + " " + event.getArguments());
-		sendFormatted(player, editor);
+		editor.sendFormatted(player);
 
 		event.setCancelled(true);
 	}
@@ -148,14 +151,6 @@ public class EditorListener {
 		List<String> suggestions = event.getTabCompletions();
 		if(!suggestions.isEmpty()) return;
 
-		suggestions.add(((IEditorLine)editor).getCurrentLine());
-	}
-
-	private void sendFormatted(Player player, IEditor editor) {
-		PaginationList.Builder pagination = Sponge.getServiceManager().getRegistration(PaginationService.class).get().getProvider().builder();
-
-		pagination.title(Text.of(TextColors.GRAY, "Editor"));
-		pagination.contents(editor.getFormattedText());
-		pagination.sendTo(player);
+		suggestions.add(((IEditorLine)editor).getCurrentLineContent());
 	}
 }

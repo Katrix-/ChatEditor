@@ -38,7 +38,7 @@ public class TCmdText extends TextCommand {
 	@Override
 	public void execute(String raw, IEditor editor, Player player) {
 		editor.addString(raw);
-		sendFormatted(player, editor);
+		editor.sendFormatted(player);
 	}
 
 	@Override

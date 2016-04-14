@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.service.pagination.PaginationList;
+import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
@@ -63,33 +67,33 @@ public abstract class EditorLineAbstract implements IEditorLine {
 	}
 
 	@Override
-	public int getLocation() {
+	public int getLine() {
 		return line;
 	}
 
 	@Override
-	public int setLocation(int location) {
+	public int setLine(int location) {
 		line = location;
 		line = validateLinePos();
 		return line;
 	}
 
 	@Override
-	public int addLocation(int add) {
+	public int addLine(int add) {
 		line += add;
 		line = validateLinePos();
 		return line;
 	}
 
 	@Override
-	public int subtractLocation(int subtract) {
+	public int subtractLine(int subtract) {
 		line -= subtract;
 		line = validateLinePos();
 		return line;
 	}
 
 	@Override
-	public String getCurrentLine() {
+	public String getCurrentLineContent() {
 		return stringList.get(line);
 	}
 
@@ -99,14 +103,18 @@ public abstract class EditorLineAbstract implements IEditorLine {
 	}
 
 	@Override
-	public List<Text> getFormattedText() {
+	public void sendFormatted(Player player) {
 		List<Text> list = stringList.stream().map(Text::of).collect(Collectors.toList());
 
 		Text selected = list.get(line);
 		selected = selected.toBuilder().color(TextColors.BLUE).build();
 		list.set(line, selected);
 
-		return list;
+		PaginationList.Builder pagination = Sponge.getServiceManager().getRegistration(PaginationService.class).get().getProvider().builder();
+
+		pagination.title(Text.of(TextColors.GRAY, "Editor"));
+		pagination.contents(list);
+		pagination.sendTo(player);
 	}
 
 	private int validateLinePos() {

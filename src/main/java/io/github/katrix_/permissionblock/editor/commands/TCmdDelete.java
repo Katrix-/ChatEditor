@@ -37,21 +37,15 @@ public class TCmdDelete extends TextCommand {
 
 	@Override
 	public void execute(String raw, IEditor editor, Player player) {
-
-		if(!(editor instanceof IEditorCursor)) {
-			player.sendMessage(Text.of("This command can only be used with a editor that has a cursor"));
-			return;
-		}
-
 		String[] parameters = getParameters(raw);
 		if(parameters == null) return;
 
 		try {
-			IEditorCursor cursorEditor = (IEditorCursor)editor;
+			IEditorCursor cursor = (IEditorCursor)editor;
 			int amount = Integer.parseInt(parameters[0]);
-			cursorEditor.deleteCharacters(amount);
+			cursor.deleteCharacters(amount);
 			player.sendMessage(Text.of(TextColors.GREEN, "Deleted " + amount + " characters"));
-			sendFormatted(player, editor);
+			editor.sendFormatted(player);
 		}
 		catch(NumberFormatException e) {
 			player.sendMessage(Text.of(TextColors.RED, "Not a number"));
