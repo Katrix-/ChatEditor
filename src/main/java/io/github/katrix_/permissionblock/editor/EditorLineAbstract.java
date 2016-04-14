@@ -72,22 +72,8 @@ public abstract class EditorLineAbstract implements IEditorLine {
 	}
 
 	@Override
-	public int setLine(int location) {
+	public int setLinePos(int location) {
 		line = location;
-		line = validateLinePos();
-		return line;
-	}
-
-	@Override
-	public int addLine(int add) {
-		line += add;
-		line = validateLinePos();
-		return line;
-	}
-
-	@Override
-	public int subtractLine(int subtract) {
-		line -= subtract;
 		line = validateLinePos();
 		return line;
 	}

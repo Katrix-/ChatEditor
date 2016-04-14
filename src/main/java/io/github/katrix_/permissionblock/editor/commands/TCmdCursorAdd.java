@@ -61,7 +61,7 @@ public class TCmdCursorAdd extends TextCommand {
 
 	@Override
 	public List<String> getAliases() {
-		return ImmutableList.of("c+", "cursorAdd", "addLine");
+		return ImmutableList.of("c+", "cursorAdd", "addLinePos");
 	}
 
 	@Override

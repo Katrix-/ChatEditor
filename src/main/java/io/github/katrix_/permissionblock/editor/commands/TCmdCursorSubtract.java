@@ -61,7 +61,7 @@ public class TCmdCursorSubtract extends TextCommand {
 
 	@Override
 	public List<String> getAliases() {
-		return ImmutableList.of("c-", "cursorSubtract", "subtractLine");
+		return ImmutableList.of("c-", "cursorSubtract", "subtractLinePos");
 	}
 
 	@Override

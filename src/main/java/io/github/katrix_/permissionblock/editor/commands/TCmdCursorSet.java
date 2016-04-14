@@ -61,7 +61,7 @@ public class TCmdCursorSet extends TextCommand {
 
 	@Override
 	public List<String> getAliases() {
-		return ImmutableList.of("c=", "setLine", "cursorSet");
+		return ImmutableList.of("c=", "setLinePos", "cursorSet");
 	}
 
 	@Override

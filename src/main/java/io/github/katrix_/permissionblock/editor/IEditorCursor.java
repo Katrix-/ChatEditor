@@ -48,7 +48,10 @@ public interface IEditorCursor extends IEditor {
 	 * @return The new location after modification. This might be different from the value in the
 	 * input. Same as calling {@link IEditorCursor#getCursor()}.
 	 */
-	int addCursor(int add);
+	default int addCursor(int add) {
+		setCursor(getCursor() + add);
+		return getCursor();
+	}
 
 	/**
 	 * Moves the cursor backwards.
@@ -57,7 +60,10 @@ public interface IEditorCursor extends IEditor {
 	 * @return The new location after modification. This might be different from the value in the
 	 * input. Same as calling {@link IEditorCursor#getCursor()}.
 	 */
-	int subtractCursor(int subtract);
+	default int subtractCursor(int subtract) {
+		setCursor(getCursor() - subtract);
+		return getCursor();
+	}
 
 	/**
 	 * Delete a specific amount of characters from the location cursor.

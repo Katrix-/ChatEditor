@@ -39,7 +39,7 @@ public interface IEditorLine extends IEditor {
 	 * @return The new location after modification. This might be different from the value in the
 	 * input. Same as calling {@link IEditorLine#getLine()}.
 	 */
-	int setLine(int location);
+	int setLinePos(int location);
 
 	/**
 	 * Moves the cursor line being worked on forward.
@@ -48,7 +48,10 @@ public interface IEditorLine extends IEditor {
 	 * @return The new location after modification. This might be different from the value in the
 	 * input. Same as calling {@link IEditorLine#getLine()}.
 	 */
-	int addLine(int add);
+	default int addLinePos(int add) {
+		setLinePos(getLine() + add);
+		return getLine();
+	}
 
 	/**
 	 * Moves the line being worked on backwards.
@@ -57,7 +60,10 @@ public interface IEditorLine extends IEditor {
 	 * @return The new location after modification. This might be different from the value in the
 	 * input. Same as calling {@link IEditorLine#getLine()}.
 	 */
-	int subtractLine(int subtract);
+	default int subtractLinePos(int subtract) {
+		setLinePos(getLine() - subtract);
+		return getLine();
+	}
 
 	/**
 	 * Adds a new line to the editor at the currently selected line.

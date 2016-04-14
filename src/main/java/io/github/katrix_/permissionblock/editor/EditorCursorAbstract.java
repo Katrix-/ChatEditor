@@ -59,20 +59,6 @@ public abstract class EditorCursorAbstract implements IEditorCursor {
 	}
 
 	@Override
-	public int addCursor(int add) {
-		cursor += add;
-		cursor = validateCursorPos();
-		return cursor;
-	}
-
-	@Override
-	public int subtractCursor(int subtract) {
-		cursor -= subtract;
-		cursor = validateCursorPos();
-		return cursor;
-	}
-
-	@Override
 	public String getBuiltString() {
 		return commandBuilder.toString();
 	}

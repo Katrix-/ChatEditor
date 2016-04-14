@@ -21,6 +21,7 @@
 package io.github.katrix_.permissionblock.editor;
 
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
 public class EditorChat extends EditorCursorAbstract {
 
@@ -30,6 +31,7 @@ public class EditorChat extends EditorCursorAbstract {
 
 	@Override
 	public boolean end(Player player) {
+		player.getMessageChannel().send(player, Text.of(getBuiltString())); //Horrible, but don't think the is any better way at the moment
 		return true;
 	}
 }
