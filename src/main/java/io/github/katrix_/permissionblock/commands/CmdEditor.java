@@ -30,7 +30,9 @@ import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-import io.github.katrix_.permissionblock.editor.EditorChat;
+import io.github.katrix_.permissionblock.editor.Editor;
+import io.github.katrix_.permissionblock.editor.components.CompEndChat;
+import io.github.katrix_.permissionblock.editor.components.CompTextCursor;
 import io.github.katrix_.permissionblock.lib.LibPerm;
 import io.github.katrix_.permissionblock.listener.EditorListener;
 
@@ -43,7 +45,7 @@ public class CmdEditor implements CommandExecutor {
 			return CommandResult.empty();
 		}
 
-		EditorListener.EDITOR_PLAYERS.put((Player)src, new EditorChat(""));
+		EditorListener.EDITOR_PLAYERS.put((Player)src, new Editor(new CompTextCursor(""), new CompEndChat((Player)src)));
 		src.sendMessage(Text.of("You are now in a editor. Just start typing. Use !end, to end the editor, and !help to get more help"));
 
 		return CommandResult.success();

@@ -27,13 +27,13 @@ import org.spongepowered.api.text.Text;
 
 import com.google.common.collect.ImmutableList;
 
-import io.github.katrix_.permissionblock.editor.IEditor;
+import io.github.katrix_.permissionblock.editor.Editor;
 
 public class TCmdEnd extends TextCommand {
 
 	@Override
-	public void execute(String raw, IEditor editor, Player player) {
-		if(editor.end(player)) {
+	public void execute(String raw, Editor editor, Player player) {
+		if(editor.end()) {
 			removePlayerList(player);
 		}
 	}

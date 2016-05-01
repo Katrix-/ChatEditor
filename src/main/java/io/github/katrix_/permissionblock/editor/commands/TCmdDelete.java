@@ -30,13 +30,14 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.common.collect.ImmutableList;
 
+import io.github.katrix_.permissionblock.editor.Editor;
 import io.github.katrix_.permissionblock.editor.IEditor;
 import io.github.katrix_.permissionblock.editor.IEditorCursor;
 
 public class TCmdDelete extends TextCommand {
 
 	@Override
-	public void execute(String raw, IEditor editor, Player player) {
+	public void execute(String raw, Editor editor, Player player) {
 		String[] parameters = getParameters(raw);
 		if(parameters == null) return;
 

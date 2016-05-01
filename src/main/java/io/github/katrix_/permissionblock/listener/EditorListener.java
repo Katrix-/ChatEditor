@@ -43,15 +43,21 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
+import io.github.katrix_.permissionblock.editor.Editor;
 import io.github.katrix_.permissionblock.editor.EditorCommandBlock;
 import io.github.katrix_.permissionblock.editor.IEditor;
 import io.github.katrix_.permissionblock.editor.IEditorLine;
 import io.github.katrix_.permissionblock.editor.commands.TextCommand;
 import io.github.katrix_.permissionblock.editor.commands.TextCommandRegistry;
+import io.github.katrix_.permissionblock.editor.components.CompEndCommandBlock;
+import io.github.katrix_.permissionblock.editor.components.CompTextCursor;
+import io.github.katrix_.permissionblock.editor.components.CompTextLine;
+import io.github.katrix_.permissionblock.editor.components.IComponentEnd;
+import io.github.katrix_.permissionblock.editor.components.IComponentText;
 
 public class EditorListener {
 
-	public static final Map<Player, IEditor> EDITOR_PLAYERS = new WeakHashMap<>();
+	public static final Map<Player, Editor> EDITOR_PLAYERS = new WeakHashMap<>();
 
 	@Listener
 	public void interactCommandBlock(InteractBlockEvent.Secondary event, @First Player player) {
@@ -72,10 +78,10 @@ public class EditorListener {
 		Location<World> location = optLocation.get();
 		if(EDITOR_PLAYERS.containsKey(player)) {
 
-			IEditor editor = EDITOR_PLAYERS.get(player);
-			if(editor instanceof EditorCommandBlock) {
+			IComponentEnd componentEnd = EDITOR_PLAYERS.get(player).getEndComponent();
+			if(componentEnd instanceof CompEndCommandBlock) {
+				((CompEndCommandBlock)componentEnd).setLocation(location);
 				player.sendMessage(Text.of(TextColors.YELLOW, "Edit location set to " + location.getBlockPosition()));
-				((EditorCommandBlock)editor).setLocation(location);
 			}
 		}
 		else {
@@ -89,7 +95,7 @@ public class EditorListener {
 			Optional<String> command = tile.get(Keys.COMMAND);
 			player.sendMessage(Text.of(TextColors.YELLOW, "Now editing command block at " + location.getBlockPosition()
 					+ " . Just start typing to fill in what should go into the commandblock. \nOnce you are done, write !end to submit the command. Write !help to get more help"));
-			EDITOR_PLAYERS.put(player, new EditorCommandBlock(location, command.orElse("")));
+			EDITOR_PLAYERS.put(player, new Editor(new CompTextCursor(command.orElse("")), new CompEndCommandBlock(location, player)));
 		}
 
 		event.setCancelled(true);
@@ -134,9 +140,9 @@ public class EditorListener {
 	public void onCommand(SendCommandEvent event, @First Player player) {
 		if(!EDITOR_PLAYERS.containsKey(player)) return;
 
-		IEditor editor = EDITOR_PLAYERS.get(player);
-		editor.addString("/" + event.getCommand() + " " + event.getArguments());
-		editor.sendFormatted(player);
+		IComponentText componentText = EDITOR_PLAYERS.get(player).getTextComponent();
+		componentText.addString("/" + event.getCommand() + " " + event.getArguments());
+		componentText.sendFormatted(player);
 
 		event.setCancelled(true);
 	}
@@ -145,12 +151,12 @@ public class EditorListener {
 	public void onTabComplete(TabCompleteEvent event, @First Player player) {
 		if(!EDITOR_PLAYERS.containsKey(player)) return;
 
-		IEditor editor = EDITOR_PLAYERS.get(player);
-		if(!(editor instanceof IEditorLine)) return;
+		IComponentText componentText = EDITOR_PLAYERS.get(player).getTextComponent();
+		if(!(componentText instanceof CompTextLine)) return;
 
 		List<String> suggestions = event.getTabCompletions();
 		if(!suggestions.isEmpty()) return;
 
-		suggestions.add(((IEditorLine)editor).getCurrentLineContent());
+		suggestions.add(((CompTextLine)componentText).getCurrentLineContent());
 	}
 }

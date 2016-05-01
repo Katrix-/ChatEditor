@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,39 +18,22 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor;
+package io.github.katrix_.permissionblock.editor.components;
 
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
 
-/**
- * Something that can hold a string while a player works on it and changes it.
- */
-public interface IEditor {
+public class CompEndChat implements IComponentEnd {
 
-	/**
-	 * Add more text to this editor.
-	 *
-	 * @param string The text to be added.
-	 */
-	void addString(String string);
+	private final Player player;
 
-	/**
-	 * @return The complete string in the editor, just as the player typed it in.
-	 */
-	String getBuiltString();
+	public CompEndChat(Player player) {
+		this.player = player;
+	}
 
-	/**
-	 * Send a the formatted content of the editor to a player.
-	 *
-	 * @param player The player to send to.
-	 */
-	void sendFormatted(Player player);
-
-	/**
-	 * A action to do once the editor is "done".
-	 *
-	 * @param player The {@link Player} using this editor,
-	 * @return If the ending was successful or not.
-	 */
-	boolean end(Player player);
+	@Override
+	public boolean end(String builtString) {
+		player.getMessageChannel().send(player, Text.of(builtString)); //Horrible, but don't think the is any better way at the moment
+		return true;
+	}
 }

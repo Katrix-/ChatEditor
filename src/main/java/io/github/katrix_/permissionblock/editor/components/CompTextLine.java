@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor;
+package io.github.katrix_.permissionblock.editor.components;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,34 +31,31 @@ import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public abstract class EditorLineAbstract implements IEditorLine {
+public class CompTextLine implements IComponentText {
 
-	protected List<String> stringList;
-	protected int line;
+	private List<String> stringList;
+	private int line;
 
-	public EditorLineAbstract(List<String> stringList) {
+	public CompTextLine(List<String> stringList) {
 		this.stringList = stringList;
 		line = stringList.size() - 1;
 	}
 
-	public EditorLineAbstract(String string) {
+	public CompTextLine(String string) {
 		stringList = new ArrayList<>();
 		stringList.add(string);
 		line = 0;
 	}
 
-	@Override
 	public void addString(String string) {
 		stringList.set(line, string);
 	}
 
-	@Override
 	public boolean addLine() {
 		stringList.add(line, "");
 		return true;
 	}
 
-	@Override
 	public boolean removeLine() {
 		if(stringList.size() <= 1) return false;
 
@@ -66,41 +63,43 @@ public abstract class EditorLineAbstract implements IEditorLine {
 		return true;
 	}
 
-	@Override
 	public int getLine() {
 		return line;
 	}
 
-	@Override
 	public int setLinePos(int location) {
 		line = location;
 		line = validateLinePos();
 		return line;
 	}
 
-	@Override
 	public String getCurrentLineContent() {
 		return stringList.get(line);
 	}
 
-	@Override
 	public String getBuiltString() {
 		return String.join("", stringList);
 	}
 
 	@Override
-	public void sendFormatted(Player player) {
+	public List<Text> getFormatted() {
 		List<Text> list = stringList.stream().map(Text::of).collect(Collectors.toList());
 
 		Text selected = list.get(line);
 		selected = selected.toBuilder().color(TextColors.BLUE).build();
 		list.set(line, selected);
 
-		PaginationList.Builder pagination = Sponge.getServiceManager().getRegistration(PaginationService.class).get().getProvider().builder();
+		return list;
+	}
 
-		pagination.title(Text.of(TextColors.GRAY, "Editor"));
-		pagination.contents(list);
-		pagination.sendTo(player);
+	@Override
+	public void sendFormatted(Player player) {
+		List<Text> text = getFormatted();
+
+		PaginationList.Builder builder = Sponge.getServiceManager().provideUnchecked(PaginationService.class).builder();
+		builder.title(Text.of(TextColors.GRAY, "Line Editor"));
+		builder.contents(text);
+		builder.sendTo(player);
 	}
 
 	private int validateLinePos() {

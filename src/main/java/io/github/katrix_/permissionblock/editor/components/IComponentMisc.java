@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,20 +18,6 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor;
+package io.github.katrix_.permissionblock.editor.components;
 
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-
-public class EditorChat extends EditorCursorAbstract {
-
-	public EditorChat(String string) {
-		super(string);
-	}
-
-	@Override
-	public boolean end(Player player) {
-		player.getMessageChannel().send(player, Text.of(getBuiltString())); //Horrible, but don't think the is any better way at the moment
-		return true;
-	}
-}
+public interface IComponentMisc extends IComponent{}

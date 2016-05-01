@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,25 +18,6 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor;
+package io.github.katrix_.permissionblock.editor.components;
 
-/**
- * An editor that can make text selections.
- */
-public interface IEditorSelector extends IEditorCursor {
-
-	/**
-	 * Selects text based on the location of the cursor.
-	 * @param amount The amount to select
-	 */
-	void selectAmount(int amount);
-
-	/**
-	 * Select text based on two positions.
-	 * @param start The start position
-	 * @param end The end position
-	 */
-	void selectPosition(int start, int end);
-
-
-}
+public interface IComponent {}

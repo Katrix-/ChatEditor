@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,53 +18,52 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor;
+package io.github.katrix_.permissionblock.editor.components;
+
+import java.util.List;
 
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 
-public abstract class EditorCursorAbstract implements IEditorCursor {
+import com.google.common.collect.ImmutableList;
 
-	protected StringBuilder commandBuilder = new StringBuilder();
-	protected int cursor;
+public class CompTextCursor implements IComponentText {
 
-	public EditorCursorAbstract(String string) {
+	private StringBuilder commandBuilder = new StringBuilder();
+	private int cursor = 0;
+
+	public CompTextCursor(String string) {
 		commandBuilder.append(string);
 		cursor = commandBuilder.length();
 	}
 
-	@Override
 	public void addString(String string) {
 		commandBuilder.insert(cursor, string);
 		cursor += string.length();
 	}
 
-	@Override
 	public void deleteCharacters(int amount) {
 		commandBuilder.delete(cursor, cursor + amount);
 		cursor = validateCursorPos();
 	}
 
-	@Override
 	public int getCursor() {
 		return cursor;
 	}
 
-	@Override
 	public int setCursor(int cursor) {
 		this.cursor = cursor;
 		this.cursor = validateCursorPos();
 		return this.cursor;
 	}
 
-	@Override
 	public String getBuiltString() {
 		return commandBuilder.toString();
 	}
 
 	@Override
-	public void sendFormatted(Player player) {
+	public List<Text> getFormatted() {
 		String firstPart = commandBuilder.substring(0, cursor);
 		String secondPart = "";
 		String selected = "";
@@ -74,7 +73,12 @@ public abstract class EditorCursorAbstract implements IEditorCursor {
 			secondPart = commandBuilder.substring(cursor + 1, commandBuilder.length());
 		}
 
-		player.sendMessage(Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart));
+		return ImmutableList.of((Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart)));
+	}
+
+	@Override
+	public void sendFormatted(Player player) {
+		player.sendMessage(getFormatted().get(0));
 	}
 
 	private int validateCursorPos() {

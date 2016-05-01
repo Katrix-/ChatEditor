@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor;
+package io.github.katrix_.permissionblock.editor.components;
 
 import java.util.Optional;
 
@@ -35,17 +35,18 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class EditorCommandBlock extends EditorCursorAbstract {
+public class CompEndCommandBlock implements IComponentEnd {
 
 	private Location<World> location;
+	private final Player player;
 
-	public EditorCommandBlock(Location<World> location, String string) {
-		super(string);
+	public CompEndCommandBlock(Location<World> location, Player player) {
 		this.location = location;
+		this.player = player;
 	}
 
 	@Override
-	public boolean end(Player player) {
+	public boolean end(String builtString) {
 		Optional<TileEntity> optTileEntity = location.getTileEntity();
 
 		if(!optTileEntity.isPresent()) {
@@ -63,8 +64,7 @@ public class EditorCommandBlock extends EditorCursorAbstract {
 		}
 
 		CommandManager manager = Sponge.getCommandManager();
-		String command = getBuiltString();
-		Optional<? extends CommandMapping> optMapping = manager.get(command, player);
+		Optional<? extends CommandMapping> optMapping = manager.get(builtString, player);
 
 		if(!optMapping.isPresent()) {
 			player.sendMessage(Text.of("No command by that name found"));
@@ -78,7 +78,7 @@ public class EditorCommandBlock extends EditorCursorAbstract {
 			return false;
 		}
 
-		DataTransactionResult result = tileEntity.offer(Keys.COMMAND, command);
+		DataTransactionResult result = tileEntity.offer(Keys.COMMAND, builtString);
 
 		if(result.isSuccessful()) {
 			player.sendMessage(Text.of(TextColors.GREEN, "Command set successfully"));

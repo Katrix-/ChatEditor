@@ -25,7 +25,7 @@ import java.util.List;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.text.Text;
 
-import io.github.katrix_.permissionblock.editor.IEditor;
+import io.github.katrix_.permissionblock.editor.Editor;
 
 public abstract class TextCommand {
 
@@ -36,7 +36,7 @@ public abstract class TextCommand {
 	 * @param editor The editor the player is using.
 	 * @param player The Player.
 	 */
-	public abstract void execute(String raw, IEditor editor, Player player);
+	public abstract void execute(String raw, Editor editor, Player player);
 
 	/**
 	 * @return A list of aliases for this command.

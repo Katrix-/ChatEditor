@@ -1,4 +1,4 @@
-/**
+/*
  * This file is part of PermissionBlock, licensed under the MIT License (MIT).
  *
  * Copyright (c) 2016 Katrix
@@ -18,46 +18,37 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix_.permissionblock.editor.commands;
+package io.github.katrix_.permissionblock.editor;
 
 import java.util.List;
 
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.format.TextColors;
-
 import com.google.common.collect.ImmutableList;
 
-import io.github.katrix_.permissionblock.editor.Editor;
-import io.github.katrix_.permissionblock.editor.IEditor;
-import io.github.katrix_.permissionblock.editor.IEditorCursor;
+import io.github.katrix_.permissionblock.editor.components.IComponentEnd;
+import io.github.katrix_.permissionblock.editor.components.IComponentMisc;
+import io.github.katrix_.permissionblock.editor.components.IComponentText;
 
-public class TCmdCursorPosition extends TextCommand {
+public class Editor {
 
-	@Override
-	public void execute(String raw, Editor editor, Player player) {
-		IEditorCursor cursor = (IEditorCursor)editor;
-		player.sendMessage(Text.of(TextColors.YELLOW, "Cursor position is " + cursor.getCursor()));
-		editor.sendFormatted(player);
+	private final IComponentText text;
+	private final IComponentEnd end;
+	private final List<IComponentMisc> misc;
+
+	public Editor(IComponentText text, IComponentEnd end, IComponentMisc... misc) {
+		this.text = text;
+		this.end = end;
+		this.misc = ImmutableList.copyOf(misc);
 	}
 
-	@Override
-	public List<String> getAliases() {
-		return ImmutableList.of("c", "cursorPos", "posCursor");
+	public IComponentText getTextComponent() {
+		return text;
 	}
 
-	@Override
-	public Text getHelp() {
-		return null;
+	public IComponentEnd getEndComponent() {
+		return end;
 	}
 
-	@Override
-	public String getPermission() {
-		return null;
-	}
-
-	@Override
-	public Class<? extends IEditor> getCompatibility() {
-		return IEditorCursor.class;
+	public boolean end() {
+		return end.end(text.getBuiltString());
 	}
 }
