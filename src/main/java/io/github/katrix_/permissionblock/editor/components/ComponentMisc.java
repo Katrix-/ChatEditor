@@ -20,18 +20,11 @@
  */
 package io.github.katrix_.permissionblock.editor.components;
 
-import java.util.List;
+import io.github.katrix_.permissionblock.editor.Editor;
 
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
+public class ComponentMisc extends Component{
 
-public interface IComponentText extends IComponent {
-
-	String getBuiltString();
-
-	List<Text> getFormatted();
-
-	void sendFormatted(Player player);
-
-	void addString(String string);
+	public ComponentMisc(Editor editor) {
+		super(editor);
+	}
 }

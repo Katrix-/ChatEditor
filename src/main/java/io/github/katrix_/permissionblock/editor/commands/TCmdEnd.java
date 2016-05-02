@@ -33,7 +33,7 @@ public class TCmdEnd extends TextCommand {
 
 	@Override
 	public void execute(String raw, Editor editor, Player player) {
-		if(editor.end()) {
+		if(editor.getEndComponent().end()) {
 			removePlayerList(player);
 		}
 	}

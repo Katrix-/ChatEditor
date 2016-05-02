@@ -20,7 +20,24 @@
  */
 package io.github.katrix_.permissionblock.editor.components;
 
-public interface IComponentEnd extends IComponent {
+import java.util.List;
 
-	boolean end(String builtString);
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.Text;
+
+import io.github.katrix_.permissionblock.editor.Editor;
+
+public abstract class ComponentText extends Component {
+
+	public ComponentText(Editor editor) {
+		super(editor);
+	}
+
+	public abstract String getBuiltString();
+
+	public abstract List<Text> getFormatted();
+
+	public abstract void sendFormatted(Player player);
+
+	public abstract void addString(String string);
 }

@@ -20,23 +20,11 @@
  */
 package io.github.katrix_.permissionblock.editor.components;
 
-import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.text.Text;
-
 import io.github.katrix_.permissionblock.editor.Editor;
 
-public class CompEndChat extends ComponentEnd {
+@FunctionalInterface
+public interface ComponentFactory<T extends Component> {
 
-	private final Player player;
+	T createComponent(Editor editor);
 
-	public CompEndChat(Editor editor, Player player) {
-		super(editor);
-		this.player = player;
-	}
-
-	@Override
-	public boolean end() {
-		player.getMessageChannel().send(player, Text.of(editor.getTextComponent().getBuiltString())); //Horrible, but don't think the is any better way at the moment
-		return true;
-	}
 }

@@ -45,7 +45,7 @@ public class CmdEditor implements CommandExecutor {
 			return CommandResult.empty();
 		}
 
-		EditorListener.EDITOR_PLAYERS.put((Player)src, new Editor(new CompTextCursor(""), new CompEndChat((Player)src)));
+		EditorListener.EDITOR_PLAYERS.put((Player)src, new Editor(CompTextCursor::new, editor1 -> new CompEndChat(editor1, (Player)src)));
 		src.sendMessage(Text.of("You are now in a editor. Just start typing. Use !end, to end the editor, and !help to get more help"));
 
 		return CommandResult.success();

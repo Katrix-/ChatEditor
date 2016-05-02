@@ -20,4 +20,13 @@
  */
 package io.github.katrix_.permissionblock.editor.components;
 
-public interface IComponentMisc extends IComponent{}
+import io.github.katrix_.permissionblock.editor.Editor;
+
+public abstract class ComponentEnd extends Component {
+
+	public ComponentEnd(Editor editor) {
+		super(editor);
+	}
+
+	public abstract boolean end();
+}

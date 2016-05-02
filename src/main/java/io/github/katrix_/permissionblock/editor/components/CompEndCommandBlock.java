@@ -35,19 +35,23 @@ import org.spongepowered.api.text.format.TextColors;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 
-public class CompEndCommandBlock implements IComponentEnd {
+import io.github.katrix_.permissionblock.editor.Editor;
+
+public class CompEndCommandBlock extends ComponentEnd {
 
 	private Location<World> location;
 	private final Player player;
 
-	public CompEndCommandBlock(Location<World> location, Player player) {
+	public CompEndCommandBlock(Editor editor, Location<World> location, Player player) {
+		super(editor);
 		this.location = location;
 		this.player = player;
 	}
 
 	@Override
-	public boolean end(String builtString) {
+	public boolean end() {
 		Optional<TileEntity> optTileEntity = location.getTileEntity();
+		String builtString = editor.getTextComponent().getBuiltString();
 
 		if(!optTileEntity.isPresent()) {
 			player.sendMessage(Text.of(TextColors.RED,

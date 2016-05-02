@@ -22,31 +22,40 @@ package io.github.katrix_.permissionblock.editor.components;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.service.pagination.PaginationList;
 import org.spongepowered.api.service.pagination.PaginationService;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.action.TextActions;
 import org.spongepowered.api.text.format.TextColors;
 
-public class CompTextLine implements IComponentText {
+import io.github.katrix_.permissionblock.editor.Editor;
+
+public class CompTextLine extends ComponentText {
 
 	private List<String> stringList;
 	private int line;
 
-	public CompTextLine(List<String> stringList) {
+	public CompTextLine(Editor editor, List<String> stringList) {
+		super(editor);
 		this.stringList = stringList;
 		line = stringList.size() - 1;
 	}
 
-	public CompTextLine(String string) {
+	public CompTextLine(Editor editor, String string) {
+		super(editor);
 		stringList = new ArrayList<>();
 		stringList.add(string);
 		line = 0;
 	}
 
+	@Override
 	public void addString(String string) {
 		stringList.set(line, string);
 	}
@@ -77,6 +86,7 @@ public class CompTextLine implements IComponentText {
 		return stringList.get(line);
 	}
 
+	@Override
 	public String getBuiltString() {
 		return String.join("", stringList);
 	}
@@ -88,6 +98,19 @@ public class CompTextLine implements IComponentText {
 		Text selected = list.get(line);
 		selected = selected.toBuilder().color(TextColors.BLUE).build();
 		list.set(line, selected);
+
+		BiFunction<CommandSource, Integer, Consumer<CommandSource>> callback = (commandSource, integer) -> commandSource1 -> {
+			this.setLinePos(integer);
+			if(commandSource1 instanceof Player) {
+				sendFormatted((Player)commandSource1);
+			}
+		};
+
+		for(int i = 0; i < list.size(); i++) {
+			Text text = list.get(i);
+			int pos = i;
+			text.toBuilder().onClick(TextActions.executeCallback(commandSource -> callback.apply(commandSource, pos)));
+		}
 
 		return list;
 	}

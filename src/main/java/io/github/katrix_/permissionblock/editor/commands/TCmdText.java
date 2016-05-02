@@ -28,7 +28,7 @@ import org.spongepowered.api.text.Text;
 import com.google.common.collect.ImmutableList;
 
 import io.github.katrix_.permissionblock.editor.Editor;
-import io.github.katrix_.permissionblock.editor.components.IComponentText;
+import io.github.katrix_.permissionblock.editor.components.ComponentText;
 
 public class TCmdText extends TextCommand {
 
@@ -38,7 +38,7 @@ public class TCmdText extends TextCommand {
 
 	@Override
 	public void execute(String raw, Editor editor, Player player) {
-		IComponentText componentText = editor.getTextComponent();
+		ComponentText componentText = editor.getTextComponent();
 		componentText.addString(raw);
 		componentText.sendFormatted(player);
 	}

@@ -20,35 +20,38 @@
  */
 package io.github.katrix_.permissionblock.editor;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.google.common.collect.ImmutableList;
-
-import io.github.katrix_.permissionblock.editor.components.IComponentEnd;
-import io.github.katrix_.permissionblock.editor.components.IComponentMisc;
-import io.github.katrix_.permissionblock.editor.components.IComponentText;
+import io.github.katrix_.permissionblock.editor.components.ComponentEnd;
+import io.github.katrix_.permissionblock.editor.components.ComponentFactory;
+import io.github.katrix_.permissionblock.editor.components.ComponentMisc;
+import io.github.katrix_.permissionblock.editor.components.ComponentText;
 
 public class Editor {
 
-	private final IComponentText text;
-	private final IComponentEnd end;
-	private final List<IComponentMisc> misc;
+	private final ComponentText text;
+	private final ComponentEnd end;
+	private final List<ComponentMisc> misc;
 
-	public Editor(IComponentText text, IComponentEnd end, IComponentMisc... misc) {
-		this.text = text;
-		this.end = end;
-		this.misc = ImmutableList.copyOf(misc);
+	public Editor(ComponentFactory<? extends ComponentText> text, ComponentFactory<? extends ComponentEnd> end, List<ComponentFactory<? extends ComponentMisc>> misc) {
+		this.text = text.createComponent(this);
+		this.end = end.createComponent(this);
+		this.misc = misc.stream().map(c -> c.createComponent(this)).collect(Collectors.toList());
 	}
 
-	public IComponentText getTextComponent() {
+	public Editor(ComponentFactory<? extends ComponentText> text, ComponentFactory<? extends ComponentEnd> end) {
+		this.text = text.createComponent(this);
+		this.end = end.createComponent(this);
+		this.misc = new ArrayList<>();
+	}
+
+	public ComponentText getTextComponent() {
 		return text;
 	}
 
-	public IComponentEnd getEndComponent() {
+	public ComponentEnd getEndComponent() {
 		return end;
-	}
-
-	public boolean end() {
-		return end.end(text.getBuiltString());
 	}
 }

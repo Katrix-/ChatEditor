@@ -28,16 +28,24 @@ import org.spongepowered.api.text.format.TextColors;
 
 import com.google.common.collect.ImmutableList;
 
-public class CompTextCursor implements IComponentText {
+import io.github.katrix_.permissionblock.editor.Editor;
+
+public class CompTextCursor extends ComponentText {
 
 	private StringBuilder commandBuilder = new StringBuilder();
 	private int cursor = 0;
 
-	public CompTextCursor(String string) {
+	public CompTextCursor(Editor editor, String string) {
+		super(editor);
 		commandBuilder.append(string);
 		cursor = commandBuilder.length();
 	}
 
+	public CompTextCursor(Editor editor) {
+		this(editor, "");
+	}
+
+	@Override
 	public void addString(String string) {
 		commandBuilder.insert(cursor, string);
 		cursor += string.length();
@@ -58,6 +66,7 @@ public class CompTextCursor implements IComponentText {
 		return this.cursor;
 	}
 
+	@Override
 	public String getBuiltString() {
 		return commandBuilder.toString();
 	}
