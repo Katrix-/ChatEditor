@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    }
+}
+
 apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
     jcenter()
@@ -9,6 +19,18 @@ repositories {
 }
 
 dependencies {
+    compile 'org.scala-lang:scala-library:2.11.1'
     compile 'org.spongepowered:spongeapi:4.0.3'
+	    compile files('libs/SpongyNBT.jar')
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
+
+shadowJar {
+    dependencies {
+        include(dependency('io.katrix.github:spongynbt'))
+    }
+    relocate 'io.github.katrix.spongynbt', 'io.github.katrix_.chitchat.spongynbt'
+    archiveName = "ChitChat-shaded.${extension}"
+}
+
+defaultTasks 'build', 'shadowJar'
