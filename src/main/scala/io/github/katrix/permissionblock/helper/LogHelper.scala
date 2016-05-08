@@ -32,7 +32,7 @@ object LogHelper {
 	def info(any: Any): Unit = logger.info(String.valueOf(any))
 
 	def debug(any: Any): Unit = {
-		if(ConfigSettings.getDebug) {
+		if(ConfigSettings.debug) {
 			logger.debug(String.valueOf(any))
 		}
 	}

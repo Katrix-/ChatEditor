@@ -30,7 +30,7 @@ import io.github.katrix.permissionblock.helper.Implicits._
 
 object TCmdCommand extends TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit = {
+	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		val splitString: Array[String] = raw.split(" ")
 		if(splitString(0).startsWith("/")) {
 			splitString(0) = splitString(0).substring(1)
@@ -57,9 +57,9 @@ object TCmdCommand extends TextCommand {
 		}
 	}
 
-	def getAliases: Seq[String] = Seq("command")
+	override def getAliases: Seq[String] = Seq("command")
 
-	def getHelp: Text = ???
+	override def getHelp: Text = ???
 
-	def getPermission: String = ???
+	override def getPermission: String = ???
 }

@@ -32,17 +32,17 @@ import io.github.katrix.permissionblock.editor.components.{CompTextCursor, Compo
 
 object TCmdCursorPosition extends TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit = {
+	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		val cursor = editor.getComponentUnchecked(universe.typeTag[CompTextCursor])
 		player.sendMessage(s"Cursor position is ${cursor.cursor}".richText.info())
 		editor.text.sendFormatted(player)
 	}
 
-	def getAliases: Seq[String] = Seq("c", "cursorPos", "posCursor")
+	override def getAliases: Seq[String] = Seq("c", "cursorPos", "posCursor")
 
-	def getHelp: Text = ???
+	override def getHelp: Text = ???
 
-	def getPermission: String = ???
+	override def getPermission: String = ???
 
 	override def getCompatibility: universe.TypeTag[_ <: Component] = universe.typeTag[CompTextCursor]
 }

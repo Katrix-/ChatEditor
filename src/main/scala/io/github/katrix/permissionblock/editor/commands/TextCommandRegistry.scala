@@ -33,7 +33,7 @@ object TextCommandRegistry {
 		if(raw.startsWith("!")) {
 			val commandString = raw.substring(1)
 
-			for(i <- commandString.length) {
+			for(i <- 0 until commandString.length) {
 				val subString = commandString.substring(0, i)
 
 				if(commandMap.contains(subString)) {

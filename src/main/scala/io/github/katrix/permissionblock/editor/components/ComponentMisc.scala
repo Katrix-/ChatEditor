@@ -22,4 +22,4 @@ package io.github.katrix.permissionblock.editor.components
 
 import io.github.katrix.permissionblock.editor.Editor
 
-class ComponentMisc(editor: Editor) extends Component(editor)
+class ComponentMisc(editor: Editor, textComp: ComponentText) extends Component(editor)

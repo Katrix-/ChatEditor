@@ -38,7 +38,7 @@ object ConfigSettings extends ConfigurateBase(PermissionBlock.configDir, "config
 	loadData()
 	saveFile()
 
-	private var debug = false
+	private var _debug = false
 
 	def updateOldData(): Unit = {
 		@throws[ObjectMappingException]
@@ -61,7 +61,7 @@ object ConfigSettings extends ConfigurateBase(PermissionBlock.configDir, "config
 		var node: CommentedConfigurationNode = null
 
 		node = cfgRoot.getNode("misc", "debug")
-		debug = if(!node.isVirtual) node.getBoolean else debug
+		_debug = if(!node.isVirtual) node.getBoolean else _debug
 
 		super.loadData()
 	}
@@ -73,6 +73,8 @@ object ConfigSettings extends ConfigurateBase(PermissionBlock.configDir, "config
 			node.setValue(typeToken, value)
 		}
 
-		cfgRoot.getNode("misc", "debug").setComment("Type = Boolean\nOutput debug stuff in console").setValue(debug)
+		cfgRoot.getNode("misc", "debug").setComment("Type = Boolean\nOutput debug stuff in console").setValue(_debug)
 	}
+
+	def debug: Boolean = _debug
 }

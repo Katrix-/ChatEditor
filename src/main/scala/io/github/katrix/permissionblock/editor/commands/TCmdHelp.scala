@@ -27,11 +27,11 @@ import io.github.katrix.permissionblock.editor.Editor
 
 object TCmdHelp extends TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit = ???
+	override def execute(raw: String, editor: Editor, player: Player): Unit = ???
 
-	def getAliases: Seq[String] = Seq("help")
+	override def getAliases: Seq[String] = Seq("help")
 
-	def getHelp: Text = ???
+	override def getHelp: Text = ???
 
-	def getPermission: String = ???
+	override def getPermission: String = ???
 }

@@ -27,14 +27,14 @@ import io.github.katrix.permissionblock.editor.Editor
 import io.github.katrix.permissionblock.helper.Implicits._
 
 object TCmdCancel extends TextCommand {
-	def execute(raw: String, editor: Editor, player: Player): Unit = {
+	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		player.sendMessage("You are no longer typing into a commandblock".richText.info())
 		removePlayerList(player)
 	}
 
-	def getAliases: Seq[String] = Seq("cancel")
+	override def getAliases: Seq[String] = Seq("cancel")
 
-	def getHelp: Text = ???
+	override def getHelp: Text = ???
 
-	def getPermission: String = ???
+	override def getPermission: String = ???
 }

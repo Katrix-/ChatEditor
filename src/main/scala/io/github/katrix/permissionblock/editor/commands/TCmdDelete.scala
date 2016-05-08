@@ -31,7 +31,7 @@ import io.github.katrix.permissionblock.helper.Implicits._
 
 object TCmdDelete extends TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit = {
+	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		val cursor = editor.getComponentUnchecked(universe.typeTag[CompTextCursor])
 		val intString = if(raw.startsWith("-")) {
 			raw.substring(1)
@@ -51,11 +51,11 @@ object TCmdDelete extends TextCommand {
 		}
 	}
 
-	def getAliases: Seq[String] =Seq("-", "delete", "subtract")
+	override def getAliases: Seq[String] =Seq("-", "delete", "subtract")
 
-	def getHelp: Text = ???
+	override def getHelp: Text = ???
 
-	def getPermission: String = ???
+	override def getPermission: String = ???
 
 	override def getCompatibility: universe.TypeTag[_ <: Component] = universe.typeTag[CompTextCursor]
 }

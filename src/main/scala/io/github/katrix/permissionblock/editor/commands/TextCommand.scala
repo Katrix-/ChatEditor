@@ -32,7 +32,7 @@ abstract class TextCommand {
 
 	def execute(raw: String, editor: Editor, player: Player)
 
-	def getAliases: List[String]
+	def getAliases: Seq[String]
 
 	def getHelp: Text
 

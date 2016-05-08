@@ -36,9 +36,9 @@ import org.spongepowered.api.text.format.TextColors
 
 import io.github.katrix.permissionblock.editor.Editor
 
-class CompTextLine private (editor: Editor) extends ComponentText(editor) {
+class CompTextLine private(editor: Editor, miscFactories: Seq[(Editor, ComponentText) => ComponentMisc] = Seq()) extends ComponentText(editor, miscFactories) {
 	private var stringList: mutable.Buffer[String] = new ArrayBuffer[String]()
-	private var _line                       = 0
+	private var _line                              = 0
 
 	def this(editor: Editor, stringList: List[String]) {
 		this(editor)
@@ -52,8 +52,16 @@ class CompTextLine private (editor: Editor) extends ComponentText(editor) {
 		_line = 0
 	}
 
-	def addString(string: String) {
-		stringList(_line) = string
+	def addString(string: String): Unit = {
+		val stringLines = string.split('\n')
+		for(singleLine <- stringLines) {
+			addSingleLine(singleLine)
+			line += 1
+		}
+	}
+
+	private def addSingleLine(string: String): Unit = {
+		stringList.update(_line, string)
 	}
 
 	def addLine(): Boolean = {
@@ -74,6 +82,16 @@ class CompTextLine private (editor: Editor) extends ComponentText(editor) {
 		_line = validateLinePos
 	}
 
+	def +=(amount: Int): Unit = {
+		_line += amount
+		_line = validateLinePos
+	}
+
+	def -=(amount: Int): Unit = {
+		_line += amount
+		_line = validateLinePos
+	}
+
 	def currentLineContent: String = stringList(_line)
 
 	def builtString: String = stringList.mkString
@@ -85,10 +103,11 @@ class CompTextLine private (editor: Editor) extends ComponentText(editor) {
 		list(_line) = selected
 
 		def callBack(source: CommandSource, textLine: Int): Consumer[CommandSource] = {
-			(t: CommandSource) => {
+			(src: CommandSource) => {
 				line = textLine
-				t match {
+				src match {
 					case player: Player => sendFormatted(player)
+					case _ =>
 				}
 			}
 		}

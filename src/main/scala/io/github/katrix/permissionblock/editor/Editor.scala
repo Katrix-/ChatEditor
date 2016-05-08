@@ -20,28 +20,20 @@
  */
 package io.github.katrix.permissionblock.editor
 
-import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 import scala.reflect.runtime.universe
 
 import io.github.katrix.permissionblock.editor.components.{Component, ComponentEnd, ComponentMisc, ComponentText}
 
-class Editor private(val text: ComponentText, val end: ComponentEnd, misc: mutable.Buffer[ComponentMisc]) {
-
-	def this(text: Editor => ComponentText, end: Editor => ComponentEnd) {
-		this(text.apply(this), end.apply(this), new ListBuffer[ComponentMisc])
-	}
-
-	def this(text: Editor => ComponentText, end: Editor => ComponentEnd, misc: Seq[Editor => ComponentMisc]) {
-		this(text.apply(this), end.apply(this), misc.map(_.apply(this)).toBuffer)
-	}
+class Editor(textFactory: Editor => ComponentText, endFactory: Editor => ComponentEnd) {
+	val text = textFactory.apply(this)
+	val end = endFactory.apply(this)
 
 	def hasComponent(tag: universe.TypeTag[_ <: Component]): Boolean = {
 		val tagType = tag.tpe
-		tagType <:< getType(text) || tagType <:< getType(end) || misc.exists(c => tagType <:< getType(c))
+		tagType <:< getType(text) || tagType <:< getType(end) || text.misc.exists(c => tagType <:< getType(c))
 	}
 
-	def getComponent[A <: Component] (tag: universe.TypeTag[A]): Option[A] = {
+	def getComponent[A <: Component](tag: universe.TypeTag[A]): Option[A] = {
 		val tagType = tag.tpe
 
 		if(tagType <:< getType(text)) {
@@ -51,13 +43,13 @@ class Editor private(val text: ComponentText, val end: ComponentEnd, misc: mutab
 			Some(end.asInstanceOf[A])
 		}
 		else {
-			Option((misc find (c => tagType <:< getType(c)) orNull).asInstanceOf[A])
+			Option((text.misc find (c => tagType <:< getType(c)) orNull).asInstanceOf[A])
 		}
 	}
 
-	def getComponentUnchecked[A <: Component] (tag: universe.TypeTag[A]): A = {
+	def getComponentUnchecked[A <: Component](tag: universe.TypeTag[A]): A = {
 		getComponent(tag).get
 	}
 
-	private def getType[T: universe.TypeTag] (obj: T) = universe.typeOf[T]
+	private def getType[T: universe.TypeTag](obj: T) = universe.typeOf[T]
 }

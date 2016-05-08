@@ -27,15 +27,15 @@ import io.github.katrix.permissionblock.editor.Editor
 
 object TCmdEnd extends TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit = {
+	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		if(editor.end.end()) {
 			removePlayerList(player)
 		}
 	}
 
-	def getAliases: Seq[String] = Seq("end")
+	override def getAliases: Seq[String] = Seq("end")
 
-	def getHelp: Text = ???
+	override def getHelp: Text = ???
 
-	def getPermission: String = ???
+	override def getPermission: String = ???
 }
