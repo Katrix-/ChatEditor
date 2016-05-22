@@ -24,21 +24,37 @@ import scala.reflect.runtime._
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors
 
-import io.github.katrix.permissionblock.helper.Implicits._
 import io.github.katrix.permissionblock.editor.Editor
 import io.github.katrix.permissionblock.editor.components.{CompTextCursor, Component}
+import io.github.katrix.permissionblock.helper.Implicits._
 
-object TCmdCursorPosition extends TextCommand {
+object TCmdPositionSet extends TextCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Unit = {
-		val cursor = editor.getComponentUnchecked(universe.typeTag[CompTextCursor])
-		player.sendMessage(s"Cursor position is ${cursor.cursor}".richText.info())
-		editor.text.sendFormatted(player)
+		val text = editor.text
+
+		val intString = if(raw.startsWith("c=")) {
+			raw.substring(2)
+		}
+		else {
+			raw.split(" ", 1).apply(1)
+		}
+
+		try {
+			val amount = intString.toInt
+			val test = text.pos = amount
+			val position = text.pos
+			player.sendMessage(s"The position is now at $position".richText.success())
+			editor.text.sendFormatted(player)
+		}
+		catch {
+			case e: NumberFormatException =>
+				player.sendMessage("Not a number".richText.error())
+		}
 	}
 
-	override def getAliases: Seq[String] = Seq("c", "cursorPos", "posCursor")
+	override def getAliases: Seq[String] = Seq("p=", "posSet", "setPos")
 
 	override def getHelp: Text = ???
 

@@ -20,33 +20,33 @@
  */
 package io.github.katrix.permissionblock.editor.commands
 
-import scala.reflect.runtime.universe
+import scala.reflect.runtime._
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors
 
+import io.github.katrix.permissionblock.helper.Implicits._
 import io.github.katrix.permissionblock.editor.Editor
 import io.github.katrix.permissionblock.editor.components.{CompTextCursor, Component}
-import io.github.katrix.permissionblock.helper.Implicits._
 
-object TCmdCursorAdd extends TextCommand {
+object TCmdPositionSubtract extends TextCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Unit = {
-		val cursor = editor.getComponentUnchecked(universe.typeTag[CompTextCursor])
+		val text = editor.text
 
-		var intString = raw
-		if(raw.startsWith("c=")) {
-			intString = raw.substring(2)
+		val intString = if(raw.startsWith("c=")) {
+			raw.substring(2)
 		}
 		else {
-			intString = raw.split(" ")(1)
+			raw.split(" ", 1).apply(1)
 		}
 
 		try {
 			val amount = intString.toInt
-			cursor += amount
-			val position = cursor.cursor
-			player.sendMessage(s"The cursor is now at position $position".richText.success())
+			text.pos -= amount
+			val position = text.pos
+			player.sendMessage(s"The position is now at $position".richText.success())
 			editor.text.sendFormatted(player)
 		}
 		catch {
@@ -55,7 +55,7 @@ object TCmdCursorAdd extends TextCommand {
 		}
 	}
 
-	override def getAliases: Seq[String] = Seq("c+", "cursorAdd", "addLinePos")
+	override def getAliases: Seq[String] = Seq("p-", "posSubtract", "subtractPos")
 
 	override def getHelp: Text = ???
 

@@ -46,19 +46,19 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 		_cursor = validateCursorPos
 	}
 
-	def cursor: Int = _cursor
+	override def pos: Int = _cursor
 
-	def cursor_=(cursor: Int): Unit = {
+	override def pos_=(cursor: Int): Unit = {
 		this._cursor = cursor
 		this._cursor = validateCursorPos
 	}
 
-	def +=(amount: Int): Unit = {
+	override def pos_+=(amount: Int): Unit = {
 		this._cursor += amount
 		this._cursor = validateCursorPos
 	}
 
-	def -=(amount: Int): Unit = {
+	override def pos_-=(amount: Int): Unit = {
 		this._cursor -= amount
 		this._cursor = validateCursorPos
 	}

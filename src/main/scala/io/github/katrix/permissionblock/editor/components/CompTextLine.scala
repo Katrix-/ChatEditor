@@ -38,18 +38,18 @@ import io.github.katrix.permissionblock.editor.Editor
 
 class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 	private var stringList: mutable.Buffer[String] = new ArrayBuffer[String]()
-	private var _line                              = 0
+	private var line                              = 0
 
 	def this(editor: Editor, stringList: List[String]) {
 		this(editor)
 		this.stringList = stringList.toBuffer
-		_line = stringList.size - 1
+		line = stringList.size - 1
 	}
 
 	def this(editor: Editor, string: String) {
 		this(editor)
 		stringList += string
-		_line = 0
+		line = 0
 	}
 
 	def addString(string: String): Unit = {
@@ -61,46 +61,46 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 	}
 
 	private def addSingleLine(string: String): Unit = {
-		stringList.update(_line, string)
+		stringList.update(line, string)
 	}
 
 	def addLine(): Boolean = {
-		stringList.insert(_line, "")
+		stringList.insert(line, "")
 		true
 	}
 
 	def removeLine(): Boolean = {
 		if(stringList.size <= 1) return false
-		stringList.remove(_line)
+		stringList.remove(line)
 		true
 	}
 
-	def line: Int = _line
+	override def pos: Int = line
 
-	def line_=(location: Int): Unit = {
-		_line = location
-		_line = validateLinePos
+	override def pos_=(location: Int): Unit = {
+		line = location
+		line = validateLinePos
 	}
 
-	def +=(amount: Int): Unit = {
-		_line += amount
-		_line = validateLinePos
+	override def pos_+=(amount: Int): Unit = {
+		line += amount
+		line = validateLinePos
 	}
 
-	def -=(amount: Int): Unit = {
-		_line += amount
-		_line = validateLinePos
+	override def pos_-=(amount: Int): Unit = {
+		line += amount
+		line = validateLinePos
 	}
 
-	def currentLineContent: String = stringList(_line)
+	def currentLineContent: String = stringList(line)
 
 	def builtString: String = stringList.mkString
 
 	def formatted: Seq[Text] = {
 		val list = stringList.map(s => Text.of(s))
-		var selected = list(_line)
+		var selected = list(line)
 		selected = selected.toBuilder.color(TextColors.BLUE).build
-		list(_line) = selected
+		list(line) = selected
 
 		def callBack(source: CommandSource, textLine: Int): Consumer[CommandSource] = {
 			(src: CommandSource) => {
@@ -133,13 +133,13 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 	private def validateLinePos: Int = {
 		val size = stringList.size
 
-		if(_line > size) {
-			_line = size
+		if(line > size) {
+			line = size
 		}
-		else if(_line < 0) {
-			_line = 0
+		else if(line < 0) {
+			line = 0
 		}
 
-		_line
+		line
 	}
 }

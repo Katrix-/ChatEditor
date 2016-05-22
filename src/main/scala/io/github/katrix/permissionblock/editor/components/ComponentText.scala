@@ -31,7 +31,15 @@ abstract class ComponentText(editor: Editor) extends Component(editor) {
 
 	def formatted: Seq[Text]
 
-	def sendFormatted(player: Player)
+	def sendFormatted(player: Player): Unit
 
-	def addString(string: String)
+	def addString(string: String): Unit
+
+	def pos: Int
+
+	def pos_=(newPos: Int): Unit
+
+	def pos_+=(amount: Int): Unit
+
+	def pos_-=(amount: Int): Unit
 }
