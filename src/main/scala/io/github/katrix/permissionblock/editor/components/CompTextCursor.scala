@@ -26,7 +26,7 @@ import org.spongepowered.api.text.format.TextColors
 import com.google.common.collect.ImmutableList
 import io.github.katrix.permissionblock.editor.Editor
 
-class CompTextCursor(editor: Editor, string: String, miscFactories: Seq[(Editor, ComponentText) => ComponentMisc] = Seq()) extends ComponentText(editor, miscFactories) {
+class CompTextCursor(editor: Editor, string: String) extends ComponentText(editor) {
 
 	private val commandBuilder = new StringBuilder
 	commandBuilder.append(string)

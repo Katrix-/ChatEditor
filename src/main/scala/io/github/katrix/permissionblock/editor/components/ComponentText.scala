@@ -25,8 +25,7 @@ import org.spongepowered.api.text.Text
 
 import io.github.katrix.permissionblock.editor.Editor
 
-abstract class ComponentText(editor: Editor, miscFactories: Seq[(Editor, ComponentText) => ComponentMisc]) extends Component(editor) {
-	val misc = miscFactories.map(_.apply(editor, this)).toBuffer
+abstract class ComponentText(editor: Editor) extends Component(editor) {
 
 	def builtString: String
 

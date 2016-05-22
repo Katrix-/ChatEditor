@@ -22,7 +22,7 @@ package io.github.katrix.permissionblock.editor
 
 import scala.reflect.runtime.universe
 
-import io.github.katrix.permissionblock.editor.components.{Component, ComponentEnd, ComponentMisc, ComponentText}
+import io.github.katrix.permissionblock.editor.components.{Component, ComponentEnd, ComponentText}
 
 class Editor(textFactory: Editor => ComponentText, endFactory: Editor => ComponentEnd) {
 	val text = textFactory.apply(this)
@@ -30,7 +30,7 @@ class Editor(textFactory: Editor => ComponentText, endFactory: Editor => Compone
 
 	def hasComponent(tag: universe.TypeTag[_ <: Component]): Boolean = {
 		val tagType = tag.tpe
-		tagType <:< getType(text) || tagType <:< getType(end) || text.misc.exists(c => tagType <:< getType(c))
+		tagType <:< getType(text) || tagType <:< getType(end)
 	}
 
 	def getComponent[A <: Component](tag: universe.TypeTag[A]): Option[A] = {
@@ -42,9 +42,8 @@ class Editor(textFactory: Editor => ComponentText, endFactory: Editor => Compone
 		else if(tagType <:< getType(end)) {
 			Some(end.asInstanceOf[A])
 		}
-		else {
-			Option((text.misc find (c => tagType <:< getType(c)) orNull).asInstanceOf[A])
-		}
+
+		None
 	}
 
 	def getComponentUnchecked[A <: Component](tag: universe.TypeTag[A]): A = {

@@ -36,7 +36,7 @@ import org.spongepowered.api.text.format.TextColors
 
 import io.github.katrix.permissionblock.editor.Editor
 
-class CompTextLine private(editor: Editor, miscFactories: Seq[(Editor, ComponentText) => ComponentMisc] = Seq()) extends ComponentText(editor, miscFactories) {
+class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 	private var stringList: mutable.Buffer[String] = new ArrayBuffer[String]()
 	private var _line                              = 0
 
