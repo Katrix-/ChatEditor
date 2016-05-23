@@ -42,4 +42,12 @@ abstract class ComponentText(editor: Editor) extends Component(editor) {
 	def pos_+=(amount: Int): Unit
 
 	def pos_-=(amount: Int): Unit
+
+	def select: Int
+
+	def select_=(selectPos: Int): Unit
+
+	def select_+=(amount: Int): Unit
+
+	def select_-=(amount: Int): Unit
 }

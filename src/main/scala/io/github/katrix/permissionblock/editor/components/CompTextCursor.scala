@@ -21,9 +21,11 @@
 package io.github.katrix.permissionblock.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.{Text, format}
 import org.spongepowered.api.text.format.TextColors
+
 import com.google.common.collect.ImmutableList
+
 import io.github.katrix.permissionblock.editor.Editor
 
 class CompTextCursor(editor: Editor, string: String) extends ComponentText(editor) {
@@ -31,6 +33,7 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 	private val commandBuilder = new StringBuilder
 	commandBuilder.append(string)
 	private var _cursor = commandBuilder.length
+	private var _select = _cursor
 
 	def this(editor: Editor) {
 		this(editor, "")
@@ -43,40 +46,42 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 
 	def deleteCharacters(amount: Int): Unit = {
 		commandBuilder.delete(_cursor, _cursor + amount)
-		_cursor = validateCursorPos
+		_cursor = validateCursorPos(_cursor)
 	}
 
 	override def pos: Int = _cursor
 
-	override def pos_=(cursor: Int): Unit = {
-		this._cursor = cursor
-		this._cursor = validateCursorPos
-	}
+	override def pos_=(cursor: Int): Unit = _cursor = validateCursorPos(cursor)
 
-	override def pos_+=(amount: Int): Unit = {
-		this._cursor += amount
-		this._cursor = validateCursorPos
-	}
+	override def pos_+=(amount: Int): Unit = _cursor = validateCursorPos(_cursor + amount)
 
-	override def pos_-=(amount: Int): Unit = {
-		this._cursor -= amount
-		this._cursor = validateCursorPos
-	}
+	override def pos_-=(amount: Int): Unit = _cursor = validateCursorPos(_cursor - amount)
 
-	private def validateCursorPos: Int = {
-		val length = commandBuilder.length
+	override def select: Int = _select
 
-		if(_cursor > length) {
-			_cursor = length
+	override def select_=(selectPos: Int): Unit = _select = selectPos
+
+	override def select_+=(amount: Int): Unit = _select = validateSelectPos(_select + amount)
+
+	override def select_-=(amount: Int): Unit = _select = validateSelectPos(_select - amount)
+
+	private def validateCursorPos(orig: Int): Int = validatePos(0, commandBuilder.length, orig)
+
+	private def validateSelectPos(orig: Int): Int = validatePos(_cursor, commandBuilder.length, orig)
+
+	private def validatePos(min: Int, max: Int, orig: Int): Int = {
+		if(orig > max) {
+			max
 		}
-		else if(_cursor < 0) {
-			_cursor = 0
+		else if(orig < min) {
+			min
 		}
-
-		_cursor
+		else {
+			orig
+		}
 	}
 
-	def builtString: String = commandBuilder.toString
+	override def builtString: String = commandBuilder.toString
 
 	def sendFormatted(player: Player): Unit = {
 		player.sendMessage(formatted.head)
@@ -84,14 +89,8 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 
 	def formatted: Seq[Text] = {
 		val firstPart = commandBuilder.substring(0, _cursor)
-		if(_cursor < commandBuilder.length) {
-			val selected = String.valueOf(commandBuilder.charAt(_cursor))
-			val secondPart = commandBuilder.substring(_cursor + 1, commandBuilder.length)
-
-			Seq(Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart))
-		}
-		else {
-			Seq(Text.of(firstPart))
-		}
+		val selected = commandBuilder.substring(_cursor, if(_select == _cursor) _select else _select + 1)
+		val secondPart = commandBuilder.substring(if(_select == _cursor) _select else _select + 1, commandBuilder.length)
+		Seq(Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart))
 	}
 }

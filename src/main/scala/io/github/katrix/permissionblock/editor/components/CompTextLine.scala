@@ -38,77 +38,86 @@ import io.github.katrix.permissionblock.editor.Editor
 
 class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 	private var stringList: mutable.Buffer[String] = new ArrayBuffer[String]()
-	private var line                              = 0
+	private var _line                              = 0
+	private var _select = _line
 
 	def this(editor: Editor, stringList: List[String]) {
 		this(editor)
 		this.stringList = stringList.toBuffer
-		line = stringList.size - 1
+		_line = stringList.size - 1
+		_select = _line
 	}
 
 	def this(editor: Editor, string: String) {
 		this(editor)
 		stringList += string
-		line = 0
+		_line = 0
 	}
 
 	def addString(string: String): Unit = {
 		val stringLines = string.split('\n')
 		for(singleLine <- stringLines) {
 			addSingleLine(singleLine)
-			line += 1
+			_line += 1
 		}
 	}
 
 	private def addSingleLine(string: String): Unit = {
-		stringList.update(line, string)
+		stringList.update(_line, string)
 	}
 
 	def addLine(): Boolean = {
-		stringList.insert(line, "")
+		stringList.insert(_line, "")
 		true
 	}
 
 	def removeLine(): Boolean = {
 		if(stringList.size <= 1) return false
-		stringList.remove(line)
+		stringList.remove(_line)
 		true
 	}
 
-	override def pos: Int = line
+	override def pos: Int = _line
 
-	override def pos_=(location: Int): Unit = {
-		line = location
-		line = validateLinePos
-	}
+	override def pos_=(location: Int): Unit = _line = validateLinePos(location)
 
-	override def pos_+=(amount: Int): Unit = {
-		line += amount
-		line = validateLinePos
-	}
+	override def pos_+=(amount: Int): Unit = _line = validateLinePos(_line + amount)
 
-	override def pos_-=(amount: Int): Unit = {
-		line += amount
-		line = validateLinePos
-	}
+	override def pos_-=(amount: Int): Unit = _line = validateLinePos(_line + amount)
 
-	def currentLineContent: String = stringList(line)
+	override def select: Int = _select
+
+	override def select_=(selectPos: Int): Unit = _select = validateSelectPos(selectPos)
+
+	override def select_+=(amount: Int): Unit = _select = validateSelectPos(_select + amount)
+
+	override def select_-=(amount: Int): Unit = _select = validateSelectPos(_select - amount)
+
+	def currentLineContent: String = stringList(_line)
 
 	def builtString: String = stringList.mkString
 
 	def formatted: Seq[Text] = {
 		val list = stringList.map(s => Text.of(s))
-		var selected = list(line)
-		selected = selected.toBuilder.color(TextColors.BLUE).build
-		list(line) = selected
 
-		def callBack(source: CommandSource, textLine: Int): Consumer[CommandSource] = {
-			(src: CommandSource) => {
-				line = textLine
-				src match {
-					case player: Player => sendFormatted(player)
-					case _ =>
-				}
+		val selectedRange = _line to _select
+		val selected = selectedRange map(list(_))
+		selected foreach(_.toBuilder color TextColors.BLUE build)
+		var i = 0
+		selectedRange foreach {elem =>
+			list(elem) = selected(i)
+			i += 1
+		}
+
+		val onLine = list(_line)
+		list(_line) = onLine.toBuilder color TextColors.BLUE build
+
+		def callBack(source: CommandSource, textLine: Int): Consumer[CommandSource] = (src: CommandSource) => {
+			pos = textLine
+			select = _line
+			src match {
+				case player: Player => sendFormatted(player)
+				case _ =>
 			}
 		}
 
@@ -130,16 +139,19 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 		builder.sendTo(player)
 	}
 
-	private def validateLinePos: Int = {
-		val size = stringList.size
+	private def validateLinePos(orig: Int): Int = validatePos(0, stringList.length, orig)
 
-		if(line > size) {
-			line = size
-		}
-		else if(line < 0) {
-			line = 0
-		}
+	private def validateSelectPos(orig: Int): Int = validatePos(_line, stringList.length, orig)
 
-		line
+	private def validatePos(min: Int, max: Int, orig: Int): Int = {
+		if(orig > max) {
+			max
+		}
+		else if(orig < min) {
+			min
+		}
+		else {
+			orig
+		}
 	}
 }
