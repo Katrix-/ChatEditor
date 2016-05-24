@@ -50,4 +50,8 @@ abstract class ComponentText(editor: Editor) extends Component(editor) {
 	def select_+=(amount: Int): Unit
 
 	def select_-=(amount: Int): Unit
+
+	def selectedText: String
+
+	def replaceSelected(string: String): Unit
 }

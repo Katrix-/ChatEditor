@@ -65,6 +65,12 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 
 	override def select_-=(amount: Int): Unit = _select = validateSelectPos(_select - amount)
 
+	override def selectedText: String = commandBuilder.substring(_cursor, _select)
+
+	override def replaceSelected(string: String): Unit = {
+		commandBuilder.replace(_cursor, _select, string)
+	}
+
 	private def validateCursorPos(orig: Int): Int = validatePos(0, commandBuilder.length, orig)
 
 	private def validateSelectPos(orig: Int): Int = validatePos(_cursor, commandBuilder.length, orig)
@@ -93,4 +99,5 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 		val secondPart = commandBuilder.substring(if(_select == _cursor) _select else _select + 1, commandBuilder.length)
 		Seq(Text.of(firstPart, TextColors.BLUE, "[", selected, "]", TextColors.RESET, secondPart))
 	}
+
 }

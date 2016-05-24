@@ -31,7 +31,7 @@ import org.spongepowered.api.plugin.Plugin
 
 import com.google.inject.Inject
 
-import io.github.katrix.permissionblock.editor.commands.{TCmdCancel, TCmdChat, TCmdCommand, TCmdPositionAdd, TCmdPositionGet, TCmdPositionSet, TCmdPositionSubtract, TCmdDelete, TCmdEnd, TCmdHelp, TCmdText, TCmdView, TextCommandRegistry => TCmdReg}
+import io.github.katrix.permissionblock.editor.commands.{TCmdCancel, TCmdChat, TCmdCommand, TCmdDelete, TCmdEnd, TCmdHelp, TCmdNBT, TCmdPositionAdd, TCmdPositionGet, TCmdPositionSet, TCmdPositionSubtract, TCmdText, TCmdView, TextCommandRegistry => TCmdReg}
 import io.github.katrix.permissionblock.lib.LibPlugin
 import io.github.katrix.permissionblock.listener.EditorListener
 import io.github.katrix.permissionblock.persistant.ConfigSettings
@@ -62,6 +62,7 @@ object PermissionBlock {
 		TCmdReg.register(TCmdView)
 		TCmdReg.register(TCmdChat)
 		TCmdReg.register(TCmdCommand)
+		TCmdReg.register(TCmdNBT)
 	}
 }
 

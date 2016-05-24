@@ -95,9 +95,9 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 
 	def currentLineContent: String = stringList(_line)
 
-	def builtString: String = stringList.mkString
+	override def builtString: String = stringList.mkString
 
-	def formatted: Seq[Text] = {
+	override def formatted: Seq[Text] = {
 		val list = stringList.map(s => Text.of(s))
 
 		val selectedRange = _line to _select
@@ -131,12 +131,21 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 		list
 	}
 
-	def sendFormatted(player: Player) {
+	override def sendFormatted(player: Player) {
 		val text = formatted
 		val builder = Sponge.getServiceManager.provideUnchecked(classOf[PaginationService]).builder
 		builder.title(Text.of(TextColors.GRAY, "Line Editor"))
 		builder.contents(text.asJava)
 		builder.sendTo(player)
+	}
+
+	override def selectedText: String = {
+		stringList.slice(_line, _select).mkString
+	}
+
+	override def replaceSelected(string: String): Unit = {
+		stringList.remove(_line, _select)
+		stringList.insertAll(_line, string.split('\n'))
 	}
 
 	private def validateLinePos(orig: Int): Int = validatePos(0, stringList.length, orig)
@@ -154,4 +163,5 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 			orig
 		}
 	}
+
 }
