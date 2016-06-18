@@ -10,8 +10,8 @@ resolvers += "SpongePowered" at "https://repo.spongepowered.org/maven"
 resolvers += Resolver.mavenLocal
 
 libraryDependencies += "org.scala-lang" % "scala-reflect" % "2.11.8"
-libraryDependencies += "org.spongepowered" % "spongeapi" % "4.0.0"
-libraryDependencies += "io.github.katrix" % "spongebt" % "1.1.0"
+libraryDependencies += "org.spongepowered" % "spongeapi" % "4.0.0" % "provided"
+libraryDependencies += "io.github.katrix" % "spongebt" % "1.1.0" exclude ("org.spongepowered", "spongeapi")
 
 autoAPIMappings := true
 
