@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock
+package io.github.katrix.chateditor
 
 import java.nio.file.Path
 
@@ -31,16 +31,16 @@ import org.spongepowered.api.plugin.Plugin
 
 import com.google.inject.Inject
 
-import io.github.katrix.permissionblock.editor.commands.{TCmdCancel, TCmdChat, TCmdCommand, TCmdDelete, TCmdEnd, TCmdHelp, TCmdNBT, TCmdPositionAdd, TCmdPositionGet, TCmdPositionSet, TCmdPositionSubtract, TCmdText, TCmdView, TextCommandRegistry => TCmdReg}
-import io.github.katrix.permissionblock.lib.LibPlugin
-import io.github.katrix.permissionblock.listener.EditorListener
-import io.github.katrix.permissionblock.persistant.ConfigSettings
+import io.github.katrix.chateditor.editor.commands.{TCmdCancel, TCmdChat, TCmdCommand, TCmdDelete, TCmdEnd, TCmdHelp, TCmdNBT, TCmdPositionAdd, TCmdPositionGet, TCmdPositionSet, TCmdPositionSubtract, TCmdText, TCmdView, TextCommandRegistry => TCmdReg}
+import io.github.katrix.chateditor.lib.LibPlugin
+import io.github.katrix.chateditor.listener.EditorListener
+import io.github.katrix.chateditor.persistant.ConfigSettings
 
-object PermissionBlock {
+object ChatEditor {
 
-	private var _plugin: PermissionBlock = null
+	private var _plugin: ChatEditor = null
 
-	def plugin: PermissionBlock = _plugin
+	def plugin: ChatEditor = _plugin
 
 	def logger: Logger = plugin._log
 
@@ -67,7 +67,7 @@ object PermissionBlock {
 }
 
 @Plugin(id = LibPlugin.ID, name = LibPlugin.NAME, version = LibPlugin.VERSION, description = LibPlugin.DESCRIPTION)
-class PermissionBlock {
+class ChatEditor {
 	@Inject
 	private val _log      : Logger = null
 	@Inject
@@ -76,11 +76,11 @@ class PermissionBlock {
 
 	@Listener
 	def gameConstruct(event: GameConstructionEvent) {
-		PermissionBlock._plugin = this
+		ChatEditor._plugin = this
 	}
 
 	@Listener
 	def init(event: GameInitializationEvent): Unit = {
-		PermissionBlock.init(event)
+		ChatEditor.init(event)
 	}
 }

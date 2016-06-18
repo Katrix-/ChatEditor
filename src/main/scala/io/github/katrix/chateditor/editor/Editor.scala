@@ -18,11 +18,11 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.editor
+package io.github.katrix.chateditor.editor
 
 import scala.reflect.runtime.universe
 
-import io.github.katrix.permissionblock.editor.components.{Component, ComponentEnd, ComponentText}
+import io.github.katrix.chateditor.editor.components.{Component, ComponentEnd, ComponentText}
 
 class Editor(textFactory: Editor => ComponentText, endFactory: Editor => ComponentEnd) {
 	val text = textFactory.apply(this)

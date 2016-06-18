@@ -18,14 +18,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.helper
+package io.github.katrix.chateditor.helper
 
-import io.github.katrix.permissionblock.PermissionBlock
-import io.github.katrix.permissionblock.persistant.ConfigSettings
+import io.github.katrix.chateditor.ChatEditor$
+import io.github.katrix.chateditor.persistant.ConfigSettings
 
 object LogHelper {
 
-	def logger = PermissionBlock.logger
+	def logger = ChatEditor.logger
 
 	def trace(any: Any): Unit = logger.trace(String.valueOf(any))
 

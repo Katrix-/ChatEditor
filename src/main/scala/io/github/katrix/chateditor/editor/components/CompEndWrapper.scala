@@ -1,9 +1,9 @@
-package io.github.katrix.permissionblock.editor.components
+package io.github.katrix.chateditor.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
 
-import io.github.katrix.permissionblock.editor.Editor
-import io.github.katrix.permissionblock.listener.EditorListener
+import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.listener.EditorListener
 
 class CompEndWrapper(editor: Editor, orig: Editor, player: Player) extends ComponentEnd(editor) {
 

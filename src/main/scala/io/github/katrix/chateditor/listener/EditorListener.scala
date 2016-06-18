@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.listener
+package io.github.katrix.chateditor.listener
 
 import scala.collection.mutable
 
@@ -35,10 +35,10 @@ import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors
 import org.spongepowered.api.world.{Location, World}
 
-import io.github.katrix.permissionblock.editor.Editor
-import io.github.katrix.permissionblock.editor.commands.{TextCommand, TextCommandRegistry}
-import io.github.katrix.permissionblock.editor.components.{CompEndCommandBlock, CompTextCursor, CompTextLine}
-import io.github.katrix.permissionblock.helper.Implicits._
+import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.commands.{TextCommand, TextCommandRegistry}
+import io.github.katrix.chateditor.editor.components.{CompEndCommandBlock, CompTextCursor, CompTextLine}
+import io.github.katrix.chateditor.helper.Implicits._
 
 object EditorListener {
 

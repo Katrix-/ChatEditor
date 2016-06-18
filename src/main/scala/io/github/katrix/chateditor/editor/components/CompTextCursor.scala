@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.editor.components
+package io.github.katrix.chateditor.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.{Text, format}
@@ -26,7 +26,7 @@ import org.spongepowered.api.text.format.TextColors
 
 import com.google.common.collect.ImmutableList
 
-import io.github.katrix.permissionblock.editor.Editor
+import io.github.katrix.chateditor.editor.Editor
 
 class CompTextCursor(editor: Editor, string: String) extends ComponentText(editor) {
 

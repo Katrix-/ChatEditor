@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.editor.components
+package io.github.katrix.chateditor.editor.components
 
 import java.util.function.Consumer
 
@@ -34,7 +34,7 @@ import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.action.TextActions
 import org.spongepowered.api.text.format.TextColors
 
-import io.github.katrix.permissionblock.editor.Editor
+import io.github.katrix.chateditor.editor.Editor
 
 class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 	private var stringList: mutable.Buffer[String] = new ArrayBuffer[String]()

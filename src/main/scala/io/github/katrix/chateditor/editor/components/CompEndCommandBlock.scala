@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.editor.components
+package io.github.katrix.chateditor.editor.components
 
 import java.util.Optional
 
@@ -31,7 +31,7 @@ import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors
 import org.spongepowered.api.world.{Location, World}
 
-import io.github.katrix.permissionblock.editor.Editor
+import io.github.katrix.chateditor.editor.Editor
 
 class CompEndCommandBlock(editor: Editor, var location: Location[World], player: Player) extends ComponentEnd(editor) {
 

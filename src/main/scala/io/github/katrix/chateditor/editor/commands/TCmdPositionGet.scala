@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.editor.commands
+package io.github.katrix.chateditor.editor.commands
 
 import scala.reflect.runtime._
 
@@ -26,9 +26,9 @@ import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors
 
-import io.github.katrix.permissionblock.helper.Implicits._
-import io.github.katrix.permissionblock.editor.Editor
-import io.github.katrix.permissionblock.editor.components.{CompTextCursor, Component}
+import io.github.katrix.chateditor.helper.Implicits._
+import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.components.{CompTextCursor, Component}
 
 object TCmdPositionGet extends TextCommand {
 

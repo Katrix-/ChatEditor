@@ -1,10 +1,10 @@
-package io.github.katrix.permissionblock.editor.components
+package io.github.katrix.chateditor.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
 
-import io.github.katrix.permissionblock.editor.Editor
+import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.spongynbt.nbt.NBTCompound
-import io.github.katrix.permissionblock.helper.Implicits._
+import io.github.katrix.chateditor.helper.Implicits._
 import io.github.katrix.spongynbt.nbt.parser.{NBTParseException, NBTParser}
 
 class CompTextNBT(editor: Editor, string: String, player: Player) extends CompTextLine(editor, string) {

@@ -18,11 +18,11 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.editor.components
+package io.github.katrix.chateditor.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
-import io.github.katrix.permissionblock.editor.Editor
+import io.github.katrix.chateditor.editor.Editor
 
 class CompEndChat(editor: Editor, player: Player) extends ComponentEnd(editor) {
 

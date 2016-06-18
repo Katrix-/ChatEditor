@@ -18,14 +18,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.persistant
+package io.github.katrix.chateditor.persistant
 
 import java.io.IOException
 import java.nio.file.{Path, Paths}
 
 import com.typesafe.config.ConfigRenderOptions
 
-import io.github.katrix.permissionblock.helper.LogHelper
+import io.github.katrix.chateditor.helper.LogHelper
 import ninja.leaping.configurate.ConfigurationOptions
 import ninja.leaping.configurate.commented.CommentedConfigurationNode
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader

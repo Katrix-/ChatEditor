@@ -18,11 +18,11 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.lib
+package io.github.katrix.chateditor.lib
 
 object LibPerm {
 
-	final val PREFIX         = "permissionblock"
+	final val PREFIX         = "chateditor"
 	final val COMMAND        = PREFIX + ".command"
 	final val EDITOR         = PREFIX + ".editor"
 	final val HELP           = EDITOR + ".help"

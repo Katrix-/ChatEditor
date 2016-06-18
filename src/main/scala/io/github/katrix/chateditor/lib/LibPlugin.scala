@@ -18,12 +18,12 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.permissionblock.lib
+package io.github.katrix.chateditor.lib
 
 object LibPlugin {
 
-	final val ID          = "io.github.katrix.permissionblock"
-	final val NAME        = "PermissionBlock"
+	final val ID          = "chateditor"
+	final val NAME        = "ChatEditor"
 	final val VERSION     = "1.0"
-	final val DESCRIPTION = "A plugin that allows non ops to use command blocks"
+	final val DESCRIPTION = "A plugin that allows you to open a text editor in chat"
 }
