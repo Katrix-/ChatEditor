@@ -22,6 +22,7 @@ package io.github.katrix.chateditor.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+
 import io.github.katrix.chateditor.editor.Editor
 
 class CompEndChat(editor: Editor, player: Player) extends ComponentEnd(editor) {

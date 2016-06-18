@@ -20,15 +20,14 @@
  */
 package io.github.katrix.chateditor.commands
 
-import org.spongepowered.api.command.{CommandException, CommandResult, CommandSource}
 import org.spongepowered.api.command.args.CommandContext
 import org.spongepowered.api.command.spec.{CommandExecutor, CommandSpec}
+import org.spongepowered.api.command.{CommandException, CommandResult, CommandSource}
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.text.Text
 
-import io.github.katrix.chateditor.helper.Implicits._
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.components.{CompEndChat, CompTextCursor}
+import io.github.katrix.chateditor.helper.Implicits._
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.chateditor.listener.EditorListener
 

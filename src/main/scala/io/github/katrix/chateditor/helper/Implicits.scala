@@ -35,12 +35,15 @@ object Implicits {
 
 	}
 
-	implicit def optionalToOption[A](optional: Optional[A]): Option[A] = {
-		if(optional.isPresent) {
-			Some(optional.get())
-		}
-		else {
-			None
+	implicit class RichOptional[A](val optional: Optional[A]) extends AnyVal {
+
+		def toOption: Option[A] = {
+			if(optional.isPresent) {
+				Some(optional.get())
+			}
+			else {
+				None
+			}
 		}
 	}
 

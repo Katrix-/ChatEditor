@@ -36,7 +36,7 @@ object TCmdCommand extends TextCommand {
 			splitString(0) = splitString(0).substring(1)
 		}
 
-		val optMapping: Option[_ <: CommandMapping] = Sponge.getCommandManager.get(splitString(0), player)
+		val optMapping: Option[_ <: CommandMapping] = Sponge.getCommandManager.get(splitString(0), player).toOption
 		optMapping match {
 			case Some(mapping) =>
 				val callable = mapping.getCallable

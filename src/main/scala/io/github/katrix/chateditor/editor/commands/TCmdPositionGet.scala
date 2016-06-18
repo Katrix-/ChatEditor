@@ -24,11 +24,10 @@ import scala.reflect.runtime._
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors
 
-import io.github.katrix.chateditor.helper.Implicits._
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.components.{CompTextCursor, Component}
+import io.github.katrix.chateditor.helper.Implicits._
 
 object TCmdPositionGet extends TextCommand {
 

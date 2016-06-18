@@ -32,7 +32,6 @@ import org.spongepowered.api.event.filter.cause.First
 import org.spongepowered.api.event.message.MessageChannelEvent
 import org.spongepowered.api.event.{Listener, Order}
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors
 import org.spongepowered.api.world.{Location, World}
 
 import io.github.katrix.chateditor.editor.Editor
@@ -49,14 +48,14 @@ object EditorListener {
 		val blockSnapshot = event.getTargetBlock
 		val blockType = blockSnapshot.getState.getType
 		if(blockType == BlockTypes.COMMAND_BLOCK) {
-			val optName: Option[Text] = blockSnapshot.get(Keys.DISPLAY_NAME)
+			val optName: Option[Text] = blockSnapshot.get(Keys.DISPLAY_NAME).toOption
 			val permCmdblock = optName match {
 				case Some(name) => s"minecraft.commandblock.edit.block.${name.toPlain}"
 				case None => "minecraft.commandblock.edit.block"
 			}
 
 			if(!player.hasPermission(permCmdblock)) {
-				val optLocation: Option[Location[World]] = blockSnapshot.getLocation
+				val optLocation: Option[Location[World]] = blockSnapshot.getLocation.toOption
 				optLocation match {
 					case Some(location) =>
 						event.setCancelled(true)
@@ -68,10 +67,10 @@ object EditorListener {
 								case _ =>
 							}
 							case None =>
-								val optTileEntity: Option[TileEntity] = location.getTileEntity
+								val optTileEntity: Option[TileEntity] = location.getTileEntity.toOption
 								optTileEntity match {
 									case Some(tileEntity) =>
-										val command: Option[String] = tileEntity.get(Keys.COMMAND)
+										val command: Option[String] = tileEntity.get(Keys.COMMAND).toOption
 										val commandString = command match {
 											case Some(string) => string
 											case None => ""

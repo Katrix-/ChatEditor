@@ -20,18 +20,11 @@
  */
 package io.github.katrix.chateditor.persistant
 
-import java.io.{File, IOException}
-import java.nio.file.Paths
-import java.util.function.Predicate
-
 import com.google.common.reflect.TypeToken
 
-import io.github.katrix.chateditor.ChatEditor$
-import io.github.katrix.chateditor.helper.LogHelper
-import io.github.katrix.chateditor.lib.LibPlugin
-import ninja.leaping.configurate.{ConfigurationNode, ConfigurationOptions}
+import io.github.katrix.chateditor.ChatEditor
+import ninja.leaping.configurate.ConfigurationNode
 import ninja.leaping.configurate.commented.CommentedConfigurationNode
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 import ninja.leaping.configurate.objectmapping.ObjectMappingException
 
 object ConfigSettings extends ConfigurateBase(ChatEditor.configDir, "config", false) {

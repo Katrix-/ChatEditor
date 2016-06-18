@@ -21,10 +21,8 @@
 package io.github.katrix.chateditor.editor.components
 
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.text.{Text, format}
+import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors
-
-import com.google.common.collect.ImmutableList
 
 import io.github.katrix.chateditor.editor.Editor
 

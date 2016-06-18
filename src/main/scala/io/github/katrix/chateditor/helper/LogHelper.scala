@@ -20,7 +20,7 @@
  */
 package io.github.katrix.chateditor.helper
 
-import io.github.katrix.chateditor.ChatEditor$
+import io.github.katrix.chateditor.ChatEditor
 import io.github.katrix.chateditor.persistant.ConfigSettings
 
 object LogHelper {
