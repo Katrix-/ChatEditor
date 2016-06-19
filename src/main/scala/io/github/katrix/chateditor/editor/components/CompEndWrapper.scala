@@ -29,7 +29,7 @@ class CompEndWrapper(editor: Editor, orig: Editor, player: Player) extends Compo
 
 	override def end(): Boolean = {
 		EditorListener.EDITOR_PLAYERS.put(player, orig)
-		orig.text replaceSelected editor.text.builtString
+		orig.text addString editor.text.builtString
 		false
 	}
 }

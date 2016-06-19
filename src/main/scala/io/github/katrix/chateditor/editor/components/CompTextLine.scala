@@ -56,9 +56,15 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 
 	def addString(string: String): Unit = {
 		val stringLines = string.split('\n')
-		for(singleLine <- stringLines) {
-			addSingleLine(singleLine)
-			_line += 1
+		if(_line == _select) {
+			for(singleLine <- stringLines) {
+				addSingleLine(singleLine)
+				_line += 1
+			}
+		}
+		else {
+			stringList.remove(_line, _select)
+			stringList.insertAll(_line, stringLines)
 		}
 	}
 
@@ -139,13 +145,8 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 		builder.sendTo(player)
 	}
 
-	override def selectedText: String = {
+	override def selectedString: String = {
 		stringList.slice(_line, _select).mkString
-	}
-
-	override def replaceSelected(string: String): Unit = {
-		stringList.remove(_line, _select)
-		stringList.insertAll(_line, string.split('\n'))
 	}
 
 	private def validateLinePos(orig: Int): Int = validatePos(0, stringList.length, orig)

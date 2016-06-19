@@ -20,8 +20,6 @@
  */
 package io.github.katrix.chateditor.editor.components
 
-import java.util.Optional
-
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.block.tileentity.{TileEntity, TileEntityTypes}
 import org.spongepowered.api.command.CommandMapping
@@ -32,16 +30,17 @@ import org.spongepowered.api.text.format.TextColors
 import org.spongepowered.api.world.{Location, World}
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.helper.Implicits._
 
 class CompEndCommandBlock(editor: Editor, var location: Location[World], player: Player) extends ComponentEnd(editor) {
 
 	def end(): Boolean = {
-		val optTileEntity: Option[TileEntity] = location.getTileEntity
+		val optTileEntity: Option[TileEntity] = location.getTileEntity.toOption
 		val builtString = editor.text.builtString
 
 		optTileEntity match {
 			case Some(tileEntity) if tileEntity == TileEntityTypes.COMMAND_BLOCK =>
-				val optMapping: Option[_ <: CommandMapping] = Sponge.getCommandManager.get(builtString, player)
+				val optMapping: Option[_ <: CommandMapping] = Sponge.getCommandManager.get(builtString, player).toOption
 				optMapping match {
 					case Some(mapping) =>
 						if(!mapping.getCallable.testPermission(player)) {
@@ -66,14 +65,5 @@ class CompEndCommandBlock(editor: Editor, var location: Location[World], player:
 		}
 
 		false
-	}
-
-	private implicit def optionalToOption[A](optional: Optional[A]): Option[A] = {
-		if(optional.isPresent) {
-			Some(optional.get())
-		}
-		else {
-			None
-		}
 	}
 }

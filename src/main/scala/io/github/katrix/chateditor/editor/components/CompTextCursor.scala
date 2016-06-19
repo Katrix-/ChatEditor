@@ -38,8 +38,13 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 	}
 
 	def addString(string: String): Unit = {
-		commandBuilder.insert(_cursor, string)
-		_cursor += string.length
+		if(_cursor == _select) {
+			commandBuilder.insert(_cursor, string)
+			_cursor += string.length
+		}
+		else {
+			commandBuilder.replace(_cursor, _select, string)
+		}
 	}
 
 	def deleteCharacters(amount: Int): Unit = {
@@ -63,11 +68,7 @@ class CompTextCursor(editor: Editor, string: String) extends ComponentText(edito
 
 	override def select_-=(amount: Int): Unit = _select = validateSelectPos(_select - amount)
 
-	override def selectedText: String = commandBuilder.substring(_cursor, _select)
-
-	override def replaceSelected(string: String): Unit = {
-		commandBuilder.replace(_cursor, _select, string)
-	}
+	override def selectedString: String = commandBuilder.substring(_cursor, _select)
 
 	private def validateCursorPos(orig: Int): Int = validatePos(0, commandBuilder.length, orig)
 

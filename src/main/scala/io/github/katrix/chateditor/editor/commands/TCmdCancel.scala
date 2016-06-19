@@ -25,11 +25,12 @@ import org.spongepowered.api.text.Text
 
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.helper.Implicits._
+import io.github.katrix.chateditor.listener.EditorListener
 
 object TCmdCancel extends TextCommand {
 	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		player.sendMessage("You are no longer typing into a commandblock".richText.info())
-		removePlayerList(player)
+		EditorListener.EDITOR_PLAYERS.remove(player)
 	}
 
 	override def getAliases: Seq[String] = Seq("cancel")

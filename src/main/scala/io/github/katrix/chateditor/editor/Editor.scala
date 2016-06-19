@@ -24,15 +24,26 @@ import scala.reflect.runtime.universe
 
 import io.github.katrix.chateditor.editor.components.{Component, ComponentEnd, ComponentText}
 
+/**
+	* The [[Editor]] holds both the text component and the end component.
+	* @param textFactory A function that decides what [[ComponentText]] should be used. This decides how text is treated.
+	* @param endFactory A function that decides what [[ComponentEnd]] should be used. This decides what should happen when `!end` is used
+	*/
 class Editor(textFactory: Editor => ComponentText, endFactory: Editor => ComponentEnd) {
 	val text = textFactory.apply(this)
 	val end = endFactory.apply(this)
 
+	/**
+		* Test if this editor has a specific component. Used if a command can only operate on one component type.
+		*/
 	def hasComponent(tag: universe.TypeTag[_ <: Component]): Boolean = {
 		val tagType = tag.tpe
 		tagType <:< getType(text) || tagType <:< getType(end)
 	}
 
+	/**
+		* Gets a specific component from the editor.
+		*/
 	def getComponent[A <: Component](tag: universe.TypeTag[A]): Option[A] = {
 		val tagType = tag.tpe
 
@@ -46,6 +57,9 @@ class Editor(textFactory: Editor => ComponentText, endFactory: Editor => Compone
 		None
 	}
 
+	/**
+		* Gets a specific component from the editor, and throws an exception if it doesn't exist.
+		*/
 	def getComponentUnchecked[A <: Component](tag: universe.TypeTag[A]): A = {
 		getComponent(tag).get
 	}

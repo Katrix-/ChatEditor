@@ -28,17 +28,37 @@ import org.spongepowered.api.text.Text
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.components.Component
 
+/**
+	* A command for the text editor that does stuff.
+	*/
 abstract class TextCommand {
 
+	/**
+		* Action to do when the command is executed.
+		* @param raw The raw string (without the !) used for the command.
+		* @param editor The [[Editor]] for the player.
+		* @param player The [[Player]] that executed the command.
+		*/
 	def execute(raw: String, editor: Editor, player: Player)
 
+	/**
+		* The different aliases for this command.
+		*/
 	def getAliases: Seq[String]
 
+	/**
+		* Returns some text describing how to use the command.
+		*/
 	def getHelp: Text
 
+	/**
+		* A [[Player]] can only use a command if they have this permission node.
+		*/
 	def getPermission: String
 
-	protected def removePlayerList(player: Player) {}
-
+	/**
+		* Gets what [[Component]] type this command will work with.
+		* The command will only be executed if the specific component is found.
+		*/
 	def getCompatibility: universe.TypeTag[_ <: Component] = universe.typeTag[Component]
 }

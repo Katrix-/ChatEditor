@@ -22,12 +22,25 @@ package io.github.katrix.chateditor.editor.commands
 
 import scala.collection.mutable
 
+/**
+	* The place where a string is mapped to a [[TextCommand]]
+	*/
 object TextCommandRegistry {
 
 	private val commandMap: mutable.Map[String, TextCommand] = new mutable.HashMap[String, TextCommand]
 
+	/**
+		* Register a [[TextCommand]] to the command registry so that it can be used.
+		*/
 	def register(command: TextCommand): Unit = command.getAliases.foreach(commandMap.put(_, command))
 
+	/**
+		* Get a [[TextCommand]] from a string, if any registered command has an alias like that.
+		*
+		* <p>Shorter commands are returned before longer ones.
+		* This meanns that if you have two commands that have the aliases
+		* `foo` and `foobar`, then the command that has the alias `foo` will always be returned.</p>
+		*/
 	def getCommand(raw: String): Option[TextCommand] = {
 
 		if(raw.startsWith("!")) {

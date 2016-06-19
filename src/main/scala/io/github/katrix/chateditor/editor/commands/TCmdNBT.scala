@@ -35,7 +35,7 @@ object TCmdNBT extends TextCommand{
 			case nbtEditor: CompTextNBT => nbtEditor.parseCurrent()
 			case _ =>
 				val newEditor = new Editor(
-					ed => new CompTextNBT(ed, editor.text.selectedText, player),
+					ed => new CompTextNBT(ed, editor.text.selectedString, player),
 					ed => new CompEndWrapper(ed, editor, player))
 				EditorListener.EDITOR_PLAYERS.put(player, newEditor)
 

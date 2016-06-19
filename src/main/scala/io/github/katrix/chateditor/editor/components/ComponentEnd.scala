@@ -22,7 +22,15 @@ package io.github.katrix.chateditor.editor.components
 
 import io.github.katrix.chateditor.editor.Editor
 
+/**
+	* A component that specifies what happens when the `!end` command is passed to the editor.
+	*/
 abstract class ComponentEnd(editor: Editor) extends Component(editor) {
 
+	/**
+		* The action to do when the `!end` command is executed.
+		* @return If the [[org.spongepowered.api.entity.living.player.Player]]
+		*         for this [[Editor]] should taken out if the editor.
+		*/
 	def end(): Boolean
 }

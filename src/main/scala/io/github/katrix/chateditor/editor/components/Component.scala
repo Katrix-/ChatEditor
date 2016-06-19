@@ -22,4 +22,7 @@ package io.github.katrix.chateditor.editor.components
 
 import io.github.katrix.chateditor.editor.Editor
 
+/**
+	* Some specific part of an [[Editor]]
+	*/
 abstract class Component(val editor: Editor)

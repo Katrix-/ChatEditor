@@ -24,12 +24,13 @@ import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.listener.EditorListener
 
 object TCmdEnd extends TextCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Unit = {
 		if(editor.end.end()) {
-			removePlayerList(player)
+			EditorListener.EDITOR_PLAYERS.remove(player)
 		}
 	}
 

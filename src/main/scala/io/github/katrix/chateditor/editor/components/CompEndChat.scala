@@ -20,15 +20,29 @@
  */
 package io.github.katrix.chateditor.editor.components
 
+import java.util.Optional
+
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.event.SpongeEventFactory
+import org.spongepowered.api.event.cause.Cause
+import org.spongepowered.api.event.message.MessageEvent.MessageFormatter
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.transform.SimpleTextTemplateApplier
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.lib.LibPlugin
 
 class CompEndChat(editor: Editor, player: Player) extends ComponentEnd(editor) {
 
 	def end(): Boolean = {
-		player.getMessageChannel.send(player, Text.of(editor.text.builtString))
+		val rawText = Text.of(editor.text.builtString)
+		val formatter = new MessageFormatter
+		formatter.setBody(rawText)
+		formatter.getHeader.add(new SimpleTextTemplateApplier(???))
+
+		val cause = Cause.builder().owner(player).suggestNamed(s"${LibPlugin.ID}.editor", editor)
+		val messageChannel = player.getMessageChannel
+		SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText, false)
 		true
 	}
 }

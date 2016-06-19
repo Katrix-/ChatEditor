@@ -25,33 +25,79 @@ import org.spongepowered.api.text.Text
 
 import io.github.katrix.chateditor.editor.Editor
 
+/**
+	* A component that holds what's written into the editor.
+	*/
 abstract class ComponentText(editor: Editor) extends Component(editor) {
 
+	/**
+		* Gives the built string without any extra formatting. Often used from the [[ComponentEnd]].
+		*/
 	def builtString: String
 
+	/**
+		* Gives a formatted [[Text]] back that will provide stuff as
+		* highlighting and visualization for what's selected.
+		* If the formatted message consists of multiple lines, each line is stored separate on the [[Seq]]
+		*/
 	def formatted: Seq[Text]
 
+	/**
+		* Sends the [[formatted]] [[Text]] to the specific player.
+		* @param player The player to send to.
+		*/
 	def sendFormatted(player: Player): Unit
 
+	/**
+		* Adds string to this [[ComponentText]].
+		* If a selection is made, it instead replaces the selected string.
+		* @param string The string to add or replace
+		*/
 	def addString(string: String): Unit
 
+	/**
+		* Gets the position of the cursor.
+		*/
 	def pos: Int
 
+	/**
+		* Sets the position of the cursor
+		*/
 	def pos_=(newPos: Int): Unit
 
+	/**
+		* Moved the position forward.
+		*/
 	def pos_+=(amount: Int): Unit
 
+	/**
+		* Moves the position backwards.
+		*/
 	def pos_-=(amount: Int): Unit
 
+	/**
+		* Gets the selection end. If a selection is made this will be after the
+		* [[pos]] else it will be at the [[pos]]
+		*/
 	def select: Int
 
+	/**
+		* Sets the selection position
+		*/
 	def select_=(selectPos: Int): Unit
 
+	/**
+		* Moved the selection forward.
+		*/
 	def select_+=(amount: Int): Unit
 
+	/**
+		* Moves the selection backwards.
+		*/
 	def select_-=(amount: Int): Unit
 
-	def selectedText: String
-
-	def replaceSelected(string: String): Unit
+	/**
+		* Gets the selected string
+		*/
+	def selectedString: String
 }
