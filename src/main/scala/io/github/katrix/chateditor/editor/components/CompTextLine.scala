@@ -87,17 +87,9 @@ class CompTextLine private(editor: Editor) extends ComponentText(editor) {
 
 	override def pos_=(location: Int): Unit = _line = validateLinePos(location)
 
-	override def pos_+=(amount: Int): Unit = _line = validateLinePos(_line + amount)
-
-	override def pos_-=(amount: Int): Unit = _line = validateLinePos(_line + amount)
-
 	override def select: Int = _select
 
 	override def select_=(selectPos: Int): Unit = _select = validateSelectPos(selectPos)
-
-	override def select_+=(amount: Int): Unit = _select = validateSelectPos(_select + amount)
-
-	override def select_-=(amount: Int): Unit = _select = validateSelectPos(_select - amount)
 
 	def currentLineContent: String = stringList(_line)
 
