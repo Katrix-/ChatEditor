@@ -41,7 +41,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 
 	override type Preview = Seq[Text]
 
-	def selectedLine: String = content(pos)
+	def currentLine: String = content(pos)
 
 	override def builtString: String = content.mkString("\n")
 	override def selectedString: String = content.slice(pos, select).mkString("\n")
@@ -77,11 +77,12 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 	}
 
 	override def addString(string: String): Unit = if(hasSelection) {
+		val newStrings = string.split('\n')
 		val top = content.take(pos)
 		val bottom = content.drop(pos + select)
-		copy(content = (top :+ string) ++ bottom)
+		copy(content = top ++ newStrings ++ bottom)
 	}
-	else copy(content = content :+ string)
+	else copy(content = content ++ string.split('\n'))
 
 	override def pos_=(pos: Int): Unit = copy(pos = pos)
 	override def select_=(pos: Int): Unit = copy(select = select)

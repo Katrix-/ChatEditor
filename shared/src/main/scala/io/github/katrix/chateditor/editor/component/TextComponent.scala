@@ -26,6 +26,7 @@ import io.github.katrix.chateditor.editor.Editor
 
 abstract class TextComponent {
 	type Preview
+	type Self <: TextComponent
 
 	def builtString: String
 	def selectedString: String
@@ -34,13 +35,13 @@ abstract class TextComponent {
 	def selectedPreview(editor: Editor): Preview
 	def sendPreview(editor: Editor, player: Player): Unit
 
-	def addString(string: String): Unit
+	def addString(string: String): Self
 
 	def hasSelection: Boolean = pos != select
 
 	def pos: Int
-	def pos_=(pos: Int): Unit
+	def pos_=(pos: Int): Self
 
 	def select: Int
-	def select_=(pos: Int): Unit
+	def select_=(pos: Int): Self
 }

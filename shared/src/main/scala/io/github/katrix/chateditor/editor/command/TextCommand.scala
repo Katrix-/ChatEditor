@@ -27,7 +27,7 @@ import io.github.katrix.chateditor.editor.Editor
 
 abstract class TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit
+	def execute(raw: String, editor: Editor, player: Player): Editor
 	def aliases: Seq[String]
 	def help: Text
 	def permission: String
