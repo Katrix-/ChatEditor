@@ -22,4 +22,8 @@ package io.github.katrix.chateditor.editor
 
 import io.github.katrix.chateditor.editor.component.{EndComponent, TextComponent}
 
-case class Editor(text: TextComponent, end: EndComponent)
+case class Editor(text: TextComponent, end: EndComponent) {
+
+	def useNewTextComponent(comp: TextComponent): Editor = ???
+	def useNewEndComponent(comp: EndComponent): Editor = ???
+}

@@ -28,7 +28,6 @@ import org.spongepowered.api.entity.living.player.Player
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.components.{CompEndChat, CompTextCursor}
 import io.github.katrix.chateditor.helper.Implicits._
-import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.chateditor.listener.EditorListener
 
 object CmdEditor extends CommandExecutor {

@@ -18,11 +18,10 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.components
+package io.github.katrix.chateditor.lib
 
-import io.github.katrix.chateditor.editor.Editor
+object LibPlugin {
 
-/**
-	* Some specific part of an [[Editor]]
-	*/
-abstract class Component(val editor: Editor)
+	final val Id = "chateditor"
+	final val Name = "ChatEditor"
+}

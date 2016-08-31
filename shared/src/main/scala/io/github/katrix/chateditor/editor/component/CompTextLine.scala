@@ -20,8 +20,6 @@
  */
 package io.github.katrix.chateditor.editor.component
 
-import java.util.function.Consumer
-
 import scala.collection.JavaConverters._
 
 import org.spongepowered.api.Sponge
@@ -32,6 +30,7 @@ import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.action.TextActions
 import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends TextComponent {
@@ -42,36 +41,35 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 
 	override type Preview = Seq[Text]
 
+	def selectedLine: String = content(pos)
+
 	override def builtString: String = content.mkString("\n")
 	override def selectedString: String = content.slice(pos, select).mkString("\n")
 
-	override def preview: Seq[Text] = {
-		val list = content.map(_.text)
+	override def preview(editor: Editor): Seq[Text] = {
+		val raw = content.map(_.text)
 
-		val selectedRange = pos to select
-		val selected = selectedRange map list
-		selected foreach(_.toBuilder.color(BLUE).build)
-		list(pos).toBuilder.color(AQUA).build()
+		val currentLine = raw(pos).toBuilder.color(AQUA).build()
+		val selectedLines = currentLine +: (pos to select map raw).drop(1).map(_.toBuilder.color(BLUE).build())
 
-		def callBack(source: CommandSource, textLine: Int): Consumer[CommandSource] = (src: CommandSource) => {
-			//Need to find a way to set the pos and select
-			pos = textLine
-			select = textLine
+		val callback: (CommandSource, Int) => Unit = (src, textLine) => {
+			val newCompText = copy(pos = textLine, select = textLine)
+			editor.useNewTextComponent(newCompText)
+
 			src match {
-				case player: Player => sendPreview(player)
+				case player: Player => newCompText.sendPreview(editor, player)
 				case _ =>
 			}
 		}
 
-		for(i <- list.indices) {
-			list(i).toBuilder.onClick(TextActions.executeCallback((t: CommandSource) => callBack(t, i)))
-		}
+		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + pos)
+		val interactive = display.indices.map(i => display(i).toBuilder.onClick(TextActions.executeCallback(t => callback(t, i))).build())
 
-		list
+		interactive
 	}
-	override def selectedPreview: Seq[Text] = content.slice(pos, select).map(s => t"$s")
-	override def sendPreview(player: Player): Unit = {
-		val text = preview
+	override def selectedPreview(editor: Editor): Seq[Text] = content.slice(pos, select).map(s => t"$s")
+	override def sendPreview(editor: Editor, player: Player): Unit = {
+		val text = preview(editor)
 		val builder = Sponge.getServiceManager.provideUnchecked(classOf[PaginationService]).builder
 		builder.title(t"${GRAY}Line Editor")
 		builder.contents(text.asJava)

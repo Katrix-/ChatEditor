@@ -24,6 +24,7 @@ import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextCursor(pos: Int, select: Int, content: String) extends TextComponent {
@@ -37,14 +38,15 @@ case class CompTextCursor(pos: Int, select: Int, content: String) extends TextCo
 	override def builtString: String = content
 	override def selectedString: String = content.substring(pos, select)
 
-	override def preview: Text = {
+	override def preview(editor: Editor): Text = {
 		val top = content.substring(0, pos)
 		val selected = content.substring(pos, if(hasSelection) select + 1 else select)
 		val bottom = content.substring(if(hasSelection) select + 1 else select, content.length)
+		//TODO: Callback
 		t"$top$BLUE[$selected]$RESET$bottom"
 	}
-	override def selectedPreview: Text = t"$selectedString"
-	override def sendPreview(player: Player): Unit = player.sendMessage(preview)
+	override def selectedPreview(editor: Editor): Text = t"$selectedString"
+	override def sendPreview(editor: Editor, player: Player): Unit = player.sendMessage(preview(editor))
 
 	override def addString(string: String): CompTextCursor = if(hasSelection) {
 		val builder = new StringBuilder(content)

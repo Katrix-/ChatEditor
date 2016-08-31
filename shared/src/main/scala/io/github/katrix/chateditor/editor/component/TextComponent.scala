@@ -22,15 +22,17 @@ package io.github.katrix.chateditor.editor.component
 
 import org.spongepowered.api.entity.living.player.Player
 
+import io.github.katrix.chateditor.editor.Editor
+
 abstract class TextComponent {
 	type Preview
 
 	def builtString: String
 	def selectedString: String
 
-	def preview: Preview
-	def selectedPreview: Preview
-	def sendPreview(player: Player): Unit
+	def preview(editor: Editor): Preview
+	def selectedPreview(editor: Editor): Preview
+	def sendPreview(editor: Editor, player: Player): Unit
 
 	def addString(string: String): Unit
 
