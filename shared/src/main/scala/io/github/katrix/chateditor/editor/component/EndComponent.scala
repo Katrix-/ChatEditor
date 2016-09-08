@@ -24,5 +24,5 @@ import io.github.katrix.chateditor.editor.Editor
 
 abstract class EndComponent {
 
-	def end(editor: Editor): Boolean
+	def end(editor: Editor): Option[Editor]
 }

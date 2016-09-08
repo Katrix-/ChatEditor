@@ -18,47 +18,25 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.commands
-
-import scala.reflect.runtime.universe
+package io.github.katrix.chateditor.editor.command
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.chateditor.editor.components.Component
+import io.github.katrix.katlib.helper.Implicits._
 
-/**
-	* A command for the text editor that does stuff.
-	*/
-abstract class TextCommand {
+object TCmdPositionGet extends TextCommand {
 
-	/**
-		* Action to do when the command is executed.
-		* @param raw The raw string (without the !) used for the command.
-		* @param editor The [[Editor]] for the player.
-		* @param player The [[Player]] that executed the command.
-		*/
-	def execute(raw: String, editor: Editor, player: Player)
+	override def execute(raw: String, editor: Editor, player: Player): Editor = {
+		val text = editor.text
+		player.sendMessage(t"${YELLOW}Position is at ${text.pos}")
+		text.sendPreview(editor, player)
+		editor
+	}
 
-	/**
-		* The different aliases for this command.
-		*/
-	def getAliases: Seq[String]
-
-	/**
-		* Returns some text describing how to use the command.
-		*/
-	def getHelp: Text
-
-	/**
-		* A [[Player]] can only use a command if they have this permission node.
-		*/
-	def getPermission: String
-
-	/**
-		* Gets what [[Component]] type this command will work with.
-		* The command will only be executed if the specific component is found.
-		*/
-	def getCompatibility: universe.TypeTag[_ <: Component] = universe.typeTag[Component]
+	override def aliases: Seq[String] = Seq("p", "cursorPos", "posCursor")
+	override def help: Text = ???
+	override def permission: String = ???
 }

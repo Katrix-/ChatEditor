@@ -52,7 +52,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 		val currentLine = raw(pos).toBuilder.color(AQUA).build()
 		val selectedLines = currentLine +: (pos to select map raw).drop(1).map(_.toBuilder.color(BLUE).build())
 
-		val callback: (CommandSource, Int) => Unit = (src, textLine) => {
+		val clickCallback: (CommandSource, Int) => Unit = (src, textLine) => {
 			val newCompText = copy(pos = textLine, select = textLine)
 			editor.useNewTextComponent(newCompText)
 
@@ -62,8 +62,23 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 			}
 		}
 
+		val siftCallback: (CommandSource, Int) => Unit = (src, textLine) => {
+			val (newPos, newSelect) = if(textLine < pos) (textLine, pos)
+			else (pos, textLine)
+			val newCompText = copy(pos = newPos, select = newSelect)
+			editor.useNewTextComponent(newCompText)
+
+			src match {
+				case player: Player => newCompText.sendPreview(editor, player)
+				case _ =>
+			}
+		}
+
 		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + pos)
-		val interactive = display.indices.map(i => display(i).toBuilder.onClick(TextActions.executeCallback(t => callback(t, i))).build())
+		val interactive = display.indices.map(i => display(i).toBuilder
+			.onClick(TextActions.executeCallback(t => clickCallback(t, i)))
+			.onShiftClick(???)
+			.build())
 
 		interactive
 	}

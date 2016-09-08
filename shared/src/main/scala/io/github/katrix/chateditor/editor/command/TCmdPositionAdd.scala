@@ -18,24 +18,44 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.commands
+package io.github.katrix.chateditor.editor.command
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.katlib.helper.Implicits._
 
-object TCmdText extends TextCommand {
+object TCmdPositionAdd extends TextCommand {
 
-	def execute(raw: String, editor: Editor, player: Player): Unit = {
-		val componentText = editor.text
-		componentText.addString(raw)
-		componentText.sendFormatted(player)
+	override def execute(raw: String, editor: Editor, player: Player): Editor = {
+		val text = editor.text
+
+		val intString = if(raw.startsWith("p+")) {
+			raw.substring(2)
+		}
+		else {
+			raw.split(" ", 1)(1)
+		}
+
+		try {
+			val amount = intString.toInt
+			val newText = text.pos -= amount
+			val newEditor = editor.copy(text = newText)
+			val position = text.pos
+			player.sendMessage(t"${GREEN}The position is now at $position")
+			newEditor.text.sendPreview(newEditor, player)
+			newEditor
+		}
+		catch {
+			case e: NumberFormatException =>
+				player.sendMessage(t"${RED}Not a number")
+				editor
+		}
 	}
 
-	def getAliases: Seq[String] = Seq("", "+", "add")
-
-	def getHelp: Text = ???
-
-	def getPermission: String = ???
+	override def aliases: Seq[String] = Seq("p+", "posAdd", "addPos")
+	override def help: Text = ???
+	override def permission: String = ???
 }
