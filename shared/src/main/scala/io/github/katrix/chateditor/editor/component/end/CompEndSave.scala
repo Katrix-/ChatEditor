@@ -9,7 +9,7 @@ import io.github.katrix.chateditor.editor.component.EndComponent
 import io.github.katrix.chateditor.editor.component.text.CompTextFile
 import io.github.katrix.katlib.helper.Implicits._
 
-class CompEndSave extends EndComponent {
+object CompEndSave extends EndComponent {
 
 	override def end(editor: Editor): Option[Editor] = editor.text match {
 		case fileText: CompTextFile => fileText.save match {

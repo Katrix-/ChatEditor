@@ -18,26 +18,37 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.command.core
+package io.github.katrix.chateditor.editor.command
 
-import org.spongepowered.api.entity.living.player.Player
+import java.io.{BufferedReader, BufferedWriter, StringReader, StringWriter}
+
+import scala.util.{Failure, Success, Try}
+
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
-import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.chateditor.editor.command.TextCommand
+import com.google.gson.{GsonBuilder, JsonParser}
+
+import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
-object TCmdPositionGet extends TextCommand {
+object ECmdLintHocon extends ECmdLint {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		val text = editor.text
-		player.sendMessage(t"${YELLOW}Position is at ${text.pos}")
-		text.sendPreview(editor, player)
-		editor
+	private def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
+		val builder = HoconConfigurationLoader.builder()
+			.setSource(() => new BufferedReader(new StringReader(string)))
+		writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
+		builder.build()
 	}
 
-	override def aliases: Seq[String] = Seq("p", "cursorPos", "posCursor")
+	override def lint(string: String): Text = {
+		Try(loader(string, None).load()) match {
+			case Failure(e) => t"$RED${e.getMessage}"
+			case Success(_) => t"${GREEN}All is well"
+		}
+	}
+
+	override def aliases: Seq[String] = Seq("hoconLint")
 	override def help: Text = ???
-	override def permission: String = ???
 }

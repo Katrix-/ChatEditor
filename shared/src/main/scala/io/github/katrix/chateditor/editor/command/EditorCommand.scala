@@ -18,48 +18,43 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.commands
+package io.github.katrix.chateditor.editor.command
 
-import org.spongepowered.api.Sponge
-import org.spongepowered.api.command.{CommandException, CommandMapping}
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors
 
 import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.chateditor.helper.Implicits._
+import io.github.katrix.katlib.helper.Implicits._
 
-object TCmdCommand extends TextCommand {
+/**
+	* Represents a command that the player can use while in an editor.
+	*/
+abstract class EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Unit = {
-		val splitString: Array[String] = raw.split(" ")
-		if(splitString(0).startsWith("/")) {
-			splitString(0) = splitString(0).substring(1)
-		}
+	/**
+		* Executes this command, and optionally modifies the editor
+		* @param raw The raw string input without the ! character
+		* @param editor The current editor
+		* @param player The player that executes the command
+		* @return The new editor to use
+		*/
+	def execute(raw: String, editor: Editor, player: Player): Editor
 
-		val optMapping: Option[_ <: CommandMapping] = Sponge.getCommandManager.get(splitString(0), player).toOption
-		optMapping match {
-			case Some(mapping) =>
-				val callable = mapping.getCallable
-				if(callable.testPermission(player)) {
-					try {
-						callable.process(player, splitString.mkString(" "))
-					}
-					catch {
-						case e: CommandException =>
-							val text = e.getText
-							player.sendMessage(if(text != null) text else "Something went wrong when trying to use that command".text)
-					}
-				}
-				else {
-					player.sendMessage("You don't have the permissions to use that command".richText.error())
-				}
-			case None => player.sendMessage("No such command found".richText.error())
-		}
-	}
+	/**
+		* The aliases of this command
+		*/
+	def aliases: Seq[String]
 
-	override def getAliases: Seq[String] = Seq("command")
+	/**
+		* The help for this command
+		*/
+	def help: Text
 
-	override def getHelp: Text = ???
+	/**
+		* The permission required to use this command
+		*/
+	def permission: String
 
-	override def getPermission: String = ???
+	def incompatibleCommand(player: Player): Unit = player.sendMessage(t"${TextColors.RED}Incompatible command for this editor")
 }

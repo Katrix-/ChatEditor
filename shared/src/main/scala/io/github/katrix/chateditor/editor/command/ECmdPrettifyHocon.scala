@@ -20,41 +20,35 @@
  */
 package io.github.katrix.chateditor.editor.command
 
-import org.spongepowered.api.entity.living.player.Player
+import java.io.{BufferedReader, BufferedWriter, StringReader, StringWriter}
+
+import scala.util.{Failure, Success, Try}
+
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors
 
-import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.katlib.helper.Implicits._
+import com.google.gson.{GsonBuilder, JsonParser}
 
-/**
-	* Represents a command that the player can use while in an editor.
-	*/
-abstract class TextCommand {
+import io.github.katrix.chateditor.lib.LibPerm
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
-	/**
-		* Executes this command, and optionally modifies the editor
-		* @param raw The raw string input without the ! character
-		* @param editor The current editor
-		* @param player The player that executes the command
-		* @return The new editor to use
-		*/
-	def execute(raw: String, editor: Editor, player: Player): Editor
+object ECmdPrettifyHocon extends ECmdPrettify {
 
-	/**
-		* The aliases of this command
-		*/
-	def aliases: Seq[String]
+	private def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
+		val builder = HoconConfigurationLoader.builder()
+			.setSource(() => new BufferedReader(new StringReader(string)))
+		writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
+		builder.build()
+	}
 
-	/**
-		* The help for this command
-		*/
-	def help: Text
+	override def prettify(string: String): Seq[String] = {
+		val writer = new StringWriter()
+		val configLoader = loader(string, Some(writer))
+		Try(configLoader.load()).map(n => configLoader.save(n)) match {
+			case Success(root) => writer.toString.split('\n')
+			case Failure(e) => string.split('\n')
+		}
+	}
 
-	/**
-		* The permission required to use this command
-		*/
-	def permission: String
-
-	def incompatibleCommand(player: Player): Unit = player.sendMessage(t"${TextColors.RED}Incompatible command for this editor")
+	override def aliases: Seq[String] = Seq("prettifyHocon")
+	override def help: Text = ???
 }

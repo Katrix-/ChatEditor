@@ -12,7 +12,7 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class CompEndCommandBlock(location: Location[World]) extends EndComponent {
 
-	override def end(editor: Editor): Boolean = {
+	override def end(editor: Editor): Option[Editor] = {
 		editor.player.get match {
 			case Some(player) =>
 				val optTileEntity = location.getTileEntity.toOption
@@ -25,26 +25,26 @@ class CompEndCommandBlock(location: Location[World]) extends EndComponent {
 								val result = tileEntity.offer(Keys.COMMAND, builtString)
 								if(result.isSuccessful) {
 									player.sendMessage(t"${GREEN}Command set successfully")
-									true
+									None
 								}
 								else {
 									tileEntity.undo(result)
 									player.sendMessage(t"${RED}Something went wrong when setting the command in the commandblock")
-									false
+									Some(editor)
 								}
 							case Some(_) =>
 								player.sendMessage(t"${RED}You don't have the permissions for that command")
-								false
+								Some(editor)
 							case None =>
 								player.sendMessage(t"${RED}No command by that name found")
-								false
+								Some(editor)
 						}
 					case None | Some(_) =>
 						player.sendMessage(
 							t"${RED}Did not find a commandblock at the specified location. If the commandblock moved, right click the new commandblock")
-						false
+						Some(editor)
 				}
-			case None => true //If no player is found, just remove the editor and call it done
+			case None => None //If no player is found, just remove the editor and call it done
 		}
 	}
 }

@@ -32,7 +32,6 @@ import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.TextComponent
-import io.github.katrix.chateditor.misc.ShiftClickCallback
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends TextComponent {
@@ -65,21 +64,24 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 			}
 		}
 
-		val shiftCallback: (CommandSource, Int) => Unit = (src, textLine) => {
+		val shiftCallback: (Int) => String = (textLine) => {
 			val (newPos, newSelect) = if(textLine < pos) (textLine, pos) else (pos, textLine)
 			val newCompText = copy(pos = newPos, select = newSelect)
 			editor.useNewTextComponent(newCompText)
 
+			/*
 			src match {
 				case player: Player => newCompText.sendPreview(editor, player)
 				case _ =>
 			}
+			*/
+			""
 		}
 
 		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + pos)
 		val interactive = display.indices.map(i => display(i).toBuilder
 			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
-			.onShiftClick(ShiftClickCallback(src => shiftCallback(src, i)))
+			.onShiftClick(TextActions.insertText(shiftCallback(i)))
 			.build())
 
 		interactive

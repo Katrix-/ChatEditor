@@ -33,9 +33,9 @@ import io.github.katrix.chateditor.editor.component.EndComponent
 import io.github.katrix.chateditor.lib.LibPlugin
 import io.github.katrix.katlib.helper.Implicits._
 
-class CompEndChat extends EndComponent {
+object CompEndChat extends EndComponent {
 
-	override def end(editor: Editor): Boolean = {
+	override def end(editor: Editor): Option[Editor] = {
 		editor.player.get match {
 			case Some(player) =>
 				val rawText = t"${editor.text.builtString}"
@@ -53,8 +53,8 @@ class CompEndChat extends EndComponent {
 					event.getChannel.ifPresent(m => m.send(player, event.getMessage))
 				}
 
-				true
-			case None => true
+				None
+			case None => None
 		}
 	}
 }

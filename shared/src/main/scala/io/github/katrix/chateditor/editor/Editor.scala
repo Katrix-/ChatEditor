@@ -27,7 +27,7 @@ import org.spongepowered.api.entity.living.player.Player
 import io.github.katrix.chateditor.editor.component.{EndComponent, TextComponent}
 import io.github.katrix.chateditor.listener.EditorListener
 
-case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[Player])(implicit listener: EditorListener) {
+case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[Player])(implicit val listener: EditorListener) {
 
 	/**
 		* Replace the text component of this editor with a new one
@@ -38,7 +38,7 @@ case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[
 		val newEditor = copy(text = comp)
 		player.get match {
 			case Some(online) =>
-				listener.editorPlayers.put(online, newEditor)
+				listener.addEditorPlayer(online, newEditor)
 				newEditor
 			case None => newEditor
 		}
@@ -53,7 +53,7 @@ case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[
 		val newEditor = copy(end = comp)
 		player.get match {
 			case Some(online) =>
-				listener.editorPlayers.put(online, newEditor)
+				listener.addEditorPlayer(online, newEditor)
 				newEditor
 			case None => newEditor
 		}

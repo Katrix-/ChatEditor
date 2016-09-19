@@ -14,16 +14,27 @@ import org.spongepowered.api.event.{Listener, Order}
 import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.chateditor.editor.command.TextCommandRegistry
+import io.github.katrix.chateditor.editor.command.EditorCommandRegistry
 import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTextLine}
-import io.github.katrix.chateditor.editor.component.CompTextLine
 import io.github.katrix.chateditor.editor.component.end.CompEndCommandBlock
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-class EditorListener(textCommandRegistry: TextCommandRegistry) {
+class EditorListener(textCommandRegistry: EditorCommandRegistry) {
 
-	val editorPlayers = new mutable.WeakHashMap[Player, Editor]
+	private val editorPlayers = new mutable.WeakHashMap[Player, Editor]
+
+	/**
+		* Adds a new editor player binding
+		* @return The old editor if there was one
+		*/
+	def addEditorPlayer(player: Player, editor: Editor): Option[Editor] = editorPlayers.put(player, editor)
+
+	/**
+		* Removes a editor player binding
+		* @return The editor used by the player, if any
+		*/
+	def removeEditorPlayer(player: Player): Option[Editor] = editorPlayers.remove(player)
 
 	@Listener
 	def interactCommandBlock(event: InteractBlockEvent.Secondary, @First player: Player): Unit = {
@@ -43,7 +54,7 @@ class EditorListener(textCommandRegistry: TextCommandRegistry) {
 								case componentEnd: CompEndCommandBlock =>
 									event.setCancelled(true)
 
-									val newEditor = editor.copy(end = new CompEndCommandBlock(location))
+									val newEditor = editor.copy(end = new CompEndCommandBlock(location))(editor.listener)
 									editorPlayers.put(player, newEditor)
 									player.sendMessage(t"${YELLOW}Edit location set to ${location.getBlockPosition}")
 								case _ =>
@@ -94,7 +105,7 @@ class EditorListener(textCommandRegistry: TextCommandRegistry) {
 		editorPlayers.get(player) match {
 			case Some(editor) =>
 				val newText = editor.text.addString(s"/${event.getCommand} ${event.getArguments}")
-				val newEditor = editor.copy(text = newText)
+				val newEditor = editor.copy(text = newText)(editor.listener)
 				newText.sendPreview(newEditor, player)
 				editorPlayers.put(player, newEditor)
 				event.setCancelled(true)

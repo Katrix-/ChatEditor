@@ -18,44 +18,27 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.commands
+package io.github.katrix.chateditor.editor.command
 
-import scala.reflect.runtime._
+import scala.util.{Failure, Success, Try}
 
-import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 
-import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.chateditor.editor.components.{CompTextCursor, Component}
-import io.github.katrix.chateditor.helper.Implicits._
+import com.google.gson.{GsonBuilder, JsonParser}
 
-object TCmdDelete extends TextCommand {
+import io.github.katrix.chateditor.lib.LibPerm
 
-	override def execute(raw: String, editor: Editor, player: Player): Unit = {
-		val cursor = editor.getComponentUnchecked(universe.typeTag[CompTextCursor])
-		val intString = if(raw.startsWith("-")) {
-			raw.substring(1)
-		}
-		else {
-			raw.split(" ")(1)
-		}
-		try {
-			val amount = intString.toInt
-			cursor.deleteCharacters(amount)
-			player.sendMessage(s"Deleted $amount characters".richText.success())
-			editor.text.sendFormatted(player)
-		}
-		catch {
-			case e: NumberFormatException =>
-				player.sendMessage("Not a number".richText.error())
+object ECmdPrettifyJson extends ECmdPrettify {
+
+	private val parser = new JsonParser
+	private val gson = (new GsonBuilder).setPrettyPrinting().create()
+
+	override def prettify(string: String): Seq[String] = {
+		Try(parser.parse(string)) match {
+			case Success(tree) => gson.toJson(tree).split('\n')
+			case Failure(e) => string.split('\n')
 		}
 	}
-
-	override def getAliases: Seq[String] =Seq("-", "delete", "subtract")
-
-	override def getHelp: Text = ???
-
-	override def getPermission: String = ???
-
-	override def getCompatibility: universe.TypeTag[_ <: Component] = universe.typeTag[CompTextCursor]
+	override def aliases: Seq[String] = Seq("prettifyJson")
+	override def help: Text = ???
 }
