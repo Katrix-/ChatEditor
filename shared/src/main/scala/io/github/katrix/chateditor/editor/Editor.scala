@@ -20,10 +20,42 @@
  */
 package io.github.katrix.chateditor.editor
 
+import scala.ref.WeakReference
+
+import org.spongepowered.api.entity.living.player.Player
+
 import io.github.katrix.chateditor.editor.component.{EndComponent, TextComponent}
+import io.github.katrix.chateditor.listener.EditorListener
 
-case class Editor(text: TextComponent, end: EndComponent) {
+case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[Player])(implicit listener: EditorListener) {
 
-	def useNewTextComponent(comp: TextComponent): Editor = ???
-	def useNewEndComponent(comp: EndComponent): Editor = ???
+	/**
+		* Replace the text component of this editor with a new one
+		* and updates the listener. Only use this outside of
+		* command executions.
+		*/
+	def useNewTextComponent(comp: TextComponent): Editor = {
+		val newEditor = copy(text = comp)
+		player.get match {
+			case Some(online) =>
+				listener.editorPlayers.put(online, newEditor)
+				newEditor
+			case None => newEditor
+		}
+	}
+
+	/**
+		* Replace the end component of this editor with a new one
+		* and updates the listener. Only use this outside of
+		* command executions.
+		*/
+	def useNewEndComponent(comp: EndComponent): Editor = {
+		val newEditor = copy(end = comp)
+		player.get match {
+			case Some(online) =>
+				listener.editorPlayers.put(online, newEditor)
+				newEditor
+			case None => newEditor
+		}
+	}
 }

@@ -1,4 +1,4 @@
-package io.github.katrix.chateditor.editor.component
+package io.github.katrix.chateditor.editor.component.text
 
 import org.spongepowered.api.text.Text
 

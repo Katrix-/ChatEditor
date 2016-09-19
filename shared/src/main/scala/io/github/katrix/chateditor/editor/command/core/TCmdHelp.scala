@@ -1,9 +1,10 @@
-package io.github.katrix.chateditor.editor.command
+package io.github.katrix.chateditor.editor.command.core
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.command.TextCommand
 
 object TCmdHelp extends TextCommand {
 

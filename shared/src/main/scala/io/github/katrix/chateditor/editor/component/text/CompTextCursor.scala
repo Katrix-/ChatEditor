@@ -18,22 +18,23 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.component
+package io.github.katrix.chateditor.editor.component.text
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextCursor(pos: Int, select: Int, content: String) extends TextComponent {
 	require(pos >= 0)
 	require(select >= pos)
-	require(pos <= content.length)
 	require(select <= content.length)
 
 	override type Preview = Text
+	override type Self = CompTextCursor
 
 	override def builtString: String = content
 	override def selectedString: String = content.substring(pos, select)
@@ -45,20 +46,22 @@ case class CompTextCursor(pos: Int, select: Int, content: String) extends TextCo
 		//TODO: Callback
 		t"$top$BLUE[$selected]$RESET$bottom"
 	}
-	override def selectedPreview(editor: Editor): Text = t"$selectedString"
+	override def selectedPreview(editor: Editor): Text = t"$BLUE$selectedString"
 	override def sendPreview(editor: Editor, player: Player): Unit = player.sendMessage(preview(editor))
 
-	override def addString(string: String): CompTextCursor = if(hasSelection) {
-		val builder = new StringBuilder(content)
-		builder.replace(pos, select, string)
-		copy(content = builder.mkString)
+	override def addString(string: String): Self = {
+		if(hasSelection) {
+			val builder = new StringBuilder(content)
+			builder.replace(pos, select, string)
+			copy(content = builder.mkString)
+		}
+		else copy(content = content + string)
 	}
-	else copy(content = content + string)
 
-	override def pos_=(pos: Int): Unit = copy(pos = validatePos(0, content.length, pos))
-	override def select_=(select: Int): Unit = copy(select = validatePos(pos, content.length, select))
+	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.length, pos))
+	override def select_=(select: Int): Self = copy(select = clamp(pos, content.length, select))
 
-	private def validatePos(min: Int, max: Int, orig: Int): Int = {
+	private def clamp(min: Int, max: Int, orig: Int): Int = {
 		if(orig > max) max
 		else if(orig < min) min
 		else orig

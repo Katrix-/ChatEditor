@@ -18,13 +18,14 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.command
+package io.github.katrix.chateditor.editor.command.core
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.command.TextCommand
 import io.github.katrix.katlib.helper.Implicits._
 
 object TCmdPositionGet extends TextCommand {

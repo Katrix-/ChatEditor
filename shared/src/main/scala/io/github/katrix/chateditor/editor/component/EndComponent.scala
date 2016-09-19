@@ -24,5 +24,12 @@ import io.github.katrix.chateditor.editor.Editor
 
 abstract class EndComponent {
 
+	/**
+		* A callback that will be executed when the `!end`
+		* command is executed
+		* @param editor The current editor
+		* @return The editor to use after this.
+		*         None if the player should exit editor mode
+		*/
 	def end(editor: Editor): Option[Editor]
 }

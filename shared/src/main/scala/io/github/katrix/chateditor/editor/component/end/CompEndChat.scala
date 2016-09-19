@@ -18,38 +18,43 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.component
+package io.github.katrix.chateditor.editor.component.end
 
 import java.util.Optional
 
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.event.SpongeEventFactory
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.event.message.MessageEvent.MessageFormatter
 import org.spongepowered.api.text.transform.SimpleTextTemplateApplier
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.component.EndComponent
 import io.github.katrix.chateditor.lib.LibPlugin
 import io.github.katrix.katlib.helper.Implicits._
 
-class CompEndChat(val player: Player) extends EndComponent {
+class CompEndChat extends EndComponent {
 
 	override def end(editor: Editor): Boolean = {
-		val rawText = t"${editor.text.builtString}"
-		val formatter = new MessageFormatter
-		formatter.setBody(rawText)
-		formatter.getHeader.add(new SimpleTextTemplateApplier(???))
+		editor.player.get match {
+			case Some(player) =>
+				val rawText = t"${editor.text.builtString}"
+				val formatter = new MessageFormatter
+				formatter.setBody(rawText)
+				val headerTemplate = tt"<${"header"}>"
+				formatter.getHeader.add(new SimpleTextTemplateApplier(headerTemplate))
 
-		val cause = Cause.builder().owner(player).suggestNamed(s"${LibPlugin.Id}.editor", editor)
-		val messageChannel = player.getMessageChannel
-		val event = SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText, false)
-		val cancelled = Sponge.getEventManager.post(event)
+				val cause = Cause.builder().owner(player).suggestNamed(s"${LibPlugin.Id}.editor", editor)
+				val messageChannel = player.getMessageChannel
+				val event = SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText, false)
+				val cancelled = Sponge.getEventManager.post(event)
 
-		if(!cancelled) {
-			event.getChannel.ifPresent(m => m.send(player, event.getMessage))
+				if(!cancelled) {
+					event.getChannel.ifPresent(m => m.send(player, event.getMessage))
+				}
+
+				true
+			case None => true
 		}
-
-		true
 	}
 }

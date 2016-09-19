@@ -1,9 +1,10 @@
-package io.github.katrix.chateditor.editor.command
+package io.github.katrix.chateditor.editor.command.core
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.command.TextCommand
 
 object TCmdText extends TextCommand {
 
@@ -14,6 +15,7 @@ object TCmdText extends TextCommand {
 		newText.sendPreview(newEditor, player)
 		newEditor
 	}
+
 	override def aliases: Seq[String] = Seq("")
 	override def help: Text = ???
 	override def permission: String = ???

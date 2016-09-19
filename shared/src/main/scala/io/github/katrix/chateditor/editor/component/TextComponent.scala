@@ -25,18 +25,53 @@ import org.spongepowered.api.entity.living.player.Player
 import io.github.katrix.chateditor.editor.Editor
 
 abstract class TextComponent {
+
+	/**
+		* The preview type that the text will be printed as
+		*/
 	type Preview
 	type Self <: TextComponent
 
+	/**
+		* Builds the string this [[TextComponent]] represents
+		*/
 	def builtString: String
+
+	/**
+		* Gets the currently selected string
+		*/
 	def selectedString: String
 
+	/**
+		* Gets a preview of this [[TextComponent]]. This might
+		* return a result including stuff like colors to make reading easier
+		* @param editor The current editor
+		*/
 	def preview(editor: Editor): Preview
+
+	/**
+		* Gets a preview of the selected area
+		* @param editor The current editor
+		*/
 	def selectedPreview(editor: Editor): Preview
+
+	/**
+		* Sends a preview to a player
+		* @param editor The current editor
+		* @param player The player to send to
+		*/
 	def sendPreview(editor: Editor, player: Player): Unit
 
+	/**
+		* Adds a new string to this [[TextComponent]]
+		* @param string The string to add
+		* @return The new [[TextComponent]] to use.
+		*/
 	def addString(string: String): Self
 
+	/**
+		* Check if there is currently something selected
+		*/
 	def hasSelection: Boolean = pos != select
 
 	def pos: Int

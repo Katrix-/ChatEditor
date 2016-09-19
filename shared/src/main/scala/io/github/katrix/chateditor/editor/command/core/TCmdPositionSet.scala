@@ -18,44 +18,45 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.command
+package io.github.katrix.chateditor.editor.command.core
+
+import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.command.TextCommand
 import io.github.katrix.katlib.helper.Implicits._
 
-object TCmdPositionSubtract extends TextCommand {
+object TCmdPositionSet extends TextCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		val text = editor.text
 
-		val intString = if(raw.startsWith("p-")) {
+		val intString = if(raw.startsWith("p=")) {
 			raw.substring(2)
 		}
 		else {
 			raw.split(" ", 1)(1)
 		}
 
-		try {
-			val amount = intString.toInt
-			val newText = text.pos -= amount
-			val newEditor = editor.copy(text = newText)
-			val position = text.pos
-			player.sendMessage(t"${GREEN}The position is now at $position")
-			newEditor.text.sendPreview(newEditor, player)
-			newEditor
-		}
-		catch {
-			case e: NumberFormatException =>
+		Try(intString.toInt) match {
+			case Success(amount) =>
+				val newText = text.pos = amount
+				val newEditor = editor.copy(text = newText)
+				val position = text.pos
+				player.sendMessage(t"${GREEN}The position is now at $position")
+				newEditor.text.sendPreview(newEditor, player)
+				newEditor
+			case Failure(e) =>
 				player.sendMessage(t"${RED}Not a number")
 				editor
 		}
 	}
 
-	override def aliases: Seq[String] = Seq("p-", "posSubtract", "subtractPos")
+	override def aliases: Seq[String] = Seq("p=", "posSet", "setPos")
 	override def help: Text = ???
 	override def permission: String = ???
 }

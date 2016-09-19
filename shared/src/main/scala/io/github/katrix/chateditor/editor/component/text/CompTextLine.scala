@@ -18,7 +18,7 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-package io.github.katrix.chateditor.editor.component
+package io.github.katrix.chateditor.editor.component.text
 
 import scala.collection.JavaConverters._
 
@@ -31,6 +31,8 @@ import org.spongepowered.api.text.action.TextActions
 import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.chateditor.editor.component.TextComponent
+import io.github.katrix.chateditor.misc.ShiftClickCallback
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends TextComponent {
@@ -40,6 +42,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 	require(select <= content.size)
 
 	override type Preview = Seq[Text]
+	override type Self = CompTextLine
 
 	def currentLine: String = content(pos)
 
@@ -62,9 +65,8 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 			}
 		}
 
-		val siftCallback: (CommandSource, Int) => Unit = (src, textLine) => {
-			val (newPos, newSelect) = if(textLine < pos) (textLine, pos)
-			else (pos, textLine)
+		val shiftCallback: (CommandSource, Int) => Unit = (src, textLine) => {
+			val (newPos, newSelect) = if(textLine < pos) (textLine, pos) else (pos, textLine)
 			val newCompText = copy(pos = newPos, select = newSelect)
 			editor.useNewTextComponent(newCompText)
 
@@ -76,8 +78,8 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 
 		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + pos)
 		val interactive = display.indices.map(i => display(i).toBuilder
-			.onClick(TextActions.executeCallback(t => clickCallback(t, i)))
-			.onShiftClick(???)
+			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
+			.onShiftClick(ShiftClickCallback(src => shiftCallback(src, i)))
 			.build())
 
 		interactive
@@ -91,7 +93,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 		builder.sendTo(player)
 	}
 
-	override def addString(string: String): Unit = if(hasSelection) {
+	override def addString(string: String): Self = if(hasSelection) {
 		val newStrings = string.split('\n')
 		val top = content.take(pos)
 		val bottom = content.drop(pos + select)
@@ -99,6 +101,6 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 	}
 	else copy(content = content ++ string.split('\n'))
 
-	override def pos_=(pos: Int): Unit = copy(pos = pos)
-	override def select_=(pos: Int): Unit = copy(select = select)
+	override def pos_=(pos: Int): Self = copy(pos = pos)
+	override def select_=(pos: Int): Self = copy(select = select)
 }

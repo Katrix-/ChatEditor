@@ -1,4 +1,4 @@
-package io.github.katrix.chateditor.editor.component
+package io.github.katrix.chateditor.editor.component.text
 
 import scala.util.{Failure, Success, Try}
 
@@ -14,14 +14,14 @@ class CompTextJSON(pos: Int, select: Int, content: Seq[String]) extends CompText
 	private val gson = (new GsonBuilder).setPrettyPrinting().create()
 
 	override def lint: Text = {
-		Try(parser.parse(content.mkString)) match {
-			case Failure(e) => e.getMessage.text
+		Try(parser.parse(builtString)) match {
+			case Failure(e) => t"$RED${e.getMessage}"
 			case Success(_) => t"${GREEN}All is well"
 		}
 	}
 
 	override def prettify: Seq[String] = {
-		Try(parser.parse(content.mkString)) match {
+		Try(parser.parse(builtString)) match {
 			case Success(tree) => gson.toJson(tree).split('\n')
 			case Failure(e) => content
 		}

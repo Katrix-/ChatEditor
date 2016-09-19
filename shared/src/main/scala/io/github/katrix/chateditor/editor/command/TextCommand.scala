@@ -22,13 +22,39 @@ package io.github.katrix.chateditor.editor.command
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors
 
 import io.github.katrix.chateditor.editor.Editor
+import io.github.katrix.katlib.helper.Implicits._
 
+/**
+	* Represents a command that the player can use while in an editor.
+	*/
 abstract class TextCommand {
 
+	/**
+		* Executes this command, and optionally modifies the editor
+		* @param raw The raw string input without the ! character
+		* @param editor The current editor
+		* @param player The player that executes the command
+		* @return The new editor to use
+		*/
 	def execute(raw: String, editor: Editor, player: Player): Editor
+
+	/**
+		* The aliases of this command
+		*/
 	def aliases: Seq[String]
+
+	/**
+		* The help for this command
+		*/
 	def help: Text
+
+	/**
+		* The permission required to use this command
+		*/
 	def permission: String
+
+	def incompatibleCommand(player: Player): Unit = player.sendMessage(t"${TextColors.RED}Incompatible command for this editor")
 }
