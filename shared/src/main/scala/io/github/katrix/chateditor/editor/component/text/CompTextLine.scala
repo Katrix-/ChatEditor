@@ -34,7 +34,7 @@ import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
-case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends TextComponent {
+case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Map[String, Any]) extends TextComponent {
 	require(pos >= 0)
 	require(select >= pos)
 	require(pos <= content.size)
@@ -103,6 +103,17 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String]) extends Tex
 	}
 	else copy(content = content ++ string.split('\n'))
 
-	override def pos_=(pos: Int): Self = copy(pos = pos)
-	override def select_=(pos: Int): Self = copy(select = select)
+	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.size, pos))
+	override def select_=(selected: Int): Self = copy(select = clamp(pos, content.size, selected))
+
+	private def clamp(min: Int, max: Int, orig: Int): Int = {
+		if(orig > max) max
+		else if(orig < min) min
+		else orig
+	}
+
+	override def data(key: String): Option[Any] = dataMap.get(key)
+	override def dataPut(key: String, value: Any): Self = copy(dataMap = dataMap + ((key, value)))
+	override def dataRemove(key: String): Self = copy(dataMap = dataMap.filterKeys(_ != key))
+	override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value})
 }

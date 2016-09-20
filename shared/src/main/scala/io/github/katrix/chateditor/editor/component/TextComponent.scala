@@ -63,7 +63,8 @@ abstract class TextComponent {
 	def sendPreview(editor: Editor, player: Player): Unit
 
 	/**
-		* Adds a new string to this [[TextComponent]]
+		* Adds a new string to this [[TextComponent]] or
+		* replaces if a selection is made
 		* @param string The string to add
 		* @return The new [[TextComponent]] to use.
 		*/
@@ -79,4 +80,24 @@ abstract class TextComponent {
 
 	def select: Int
 	def select_=(pos: Int): Self
+
+	/**
+		* Get data in this [[TextComponent]]
+		*/
+	def data(key: String): Option[Any]
+
+	/**
+		* Store data in this [[TextComponent]]
+		*/
+	def dataPut(key: String, value: Any): Self
+
+	/**
+		* Remove data from this [[TextComponent]]
+		*/
+	def dataRemove(key: String): Self
+
+	/**
+		* Remove data from this [[TextComponent]]
+		*/
+	def dataRemove(value: Any): Self
 }

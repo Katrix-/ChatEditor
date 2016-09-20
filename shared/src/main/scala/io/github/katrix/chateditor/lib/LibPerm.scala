@@ -8,6 +8,7 @@ object LibPerm {
 	final val ECmd = s"$Editor.command"
 	final val ECmdLint = s"$ECmd.lint"
 	final val ECmdPrettify = s"$ECmd.prettify"
+	final val ECmdCopyPaste = s"$ECmd.copypaste"
 
 	final val TextComp = s"$Editor.text"
 
