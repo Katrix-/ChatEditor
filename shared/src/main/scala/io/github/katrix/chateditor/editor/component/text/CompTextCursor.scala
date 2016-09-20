@@ -28,7 +28,7 @@ import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
-case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[String, Any]) extends TextComponent {
+case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[String, Any] = Map()) extends TextComponent {
 	require(pos >= 0)
 	require(select >= pos)
 	require(select <= content.length)

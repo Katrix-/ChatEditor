@@ -11,7 +11,10 @@ import org.spongepowered.api.plugin.{Dependency, Plugin, PluginContainer}
 
 import com.google.inject.Inject
 
+import io.github.katrix.chateditor.command.CmdEditor
+import io.github.katrix.chateditor.editor.command.EditorCommandRegistry
 import io.github.katrix.chateditor.lib.LibPlugin
+import io.github.katrix.chateditor.listener.EditorHandler
 import io.github.katrix.katlib.lib.LibKatLibPlugin
 import io.github.katrix.katlib.persistant.Config
 import io.github.katrix.katlib.{ImplKatPlugin, KatLib}
@@ -27,6 +30,15 @@ object ChatEditor {
 	implicit def plugin: ChatEditor = _plugin
 
 	def init(event: GameInitializationEvent): Unit = {
+		val registry = new EditorCommandRegistry
+		registry.registerCore(_plugin)
+		registry.registerFeatures()
+
+		val editorHandler = new EditorHandler(registry)
+		Sponge.getEventManager.registerListeners(_plugin, editorHandler)
+
+		val editorCmd = new CmdEditor(editorHandler)
+		Sponge.getCommandManager.register(plugin, editorCmd.commandSpec, editorCmd.aliases: _*)
 		Sponge.getCommandManager.register(plugin, plugin.pluginCmd.commandSpec, plugin.pluginCmd.aliases: _*)
 	}
 }

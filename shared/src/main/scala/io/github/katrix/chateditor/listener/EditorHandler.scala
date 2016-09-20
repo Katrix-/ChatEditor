@@ -20,7 +20,7 @@ import io.github.katrix.chateditor.editor.component.end.CompEndCommandBlock
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-class EditorListener(textCommandRegistry: EditorCommandRegistry) {
+class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 
 	private val editorPlayers = new mutable.WeakHashMap[Player, Editor]
 
@@ -54,7 +54,7 @@ class EditorListener(textCommandRegistry: EditorCommandRegistry) {
 								case componentEnd: CompEndCommandBlock =>
 									event.setCancelled(true)
 
-									val newEditor = editor.copy(end = new CompEndCommandBlock(location))(editor.listener)
+									val newEditor = editor.copy(end = new CompEndCommandBlock(location))
 									editorPlayers.put(player, newEditor)
 									player.sendMessage(t"${YELLOW}Edit location set to ${location.getBlockPosition}")
 								case _ =>
@@ -72,7 +72,7 @@ class EditorListener(textCommandRegistry: EditorCommandRegistry) {
 													|Once you are done, write !end to submit the command. Write !help to get more help""".stripMargin.richText.info())
 										val text = CompTextCursor(0, 0, commandString)
 										val end = new CompEndCommandBlock(location)
-										editorPlayers.put(player, Editor(text, end, WeakReference(player))(this))
+										editorPlayers.put(player, Editor(text, end, WeakReference(player), this))
 									case None => player.sendMessage(t"${RED}Error while getting tile entity for command block")
 								}
 						}
@@ -85,36 +85,43 @@ class EditorListener(textCommandRegistry: EditorCommandRegistry) {
 
 	@Listener(order = Order.FIRST)
 	def onChat(event: MessageChannelEvent.Chat, @First player: Player): Unit = {
-		editorPlayers.get(player) match {
-			case Some(editor) =>
-				val rawText = event.getRawMessage.toPlain
-				textCommandRegistry.getCommand(rawText) match {
-					case Some(command) /*if player.hasPermission(command.permission)*/ =>
-						val commandText = if(rawText.startsWith("!")) rawText.substring(1) else rawText
-						editorPlayers.put(player, command.execute(commandText, editor, player))
-						event.setCancelled(true)
-					case Some(command) => player.sendMessage(t"${RED}You don't have permissions to use that command")
-					case None => player.sendMessage(t"${RED}Command not found")
-				}
-			case None =>
+		if(!event.getCause.contains(BypassEditor)) {
+			editorPlayers.get(player) match {
+				case Some(editor) =>
+					event.setCancelled(true)
+
+					val rawText = event.getRawMessage.toPlain
+					editorCommandRegistry.getCommand(rawText) match {
+						case Some(command) /*if player.hasPermission(command.permission)*/ =>
+							val commandText = if(rawText.startsWith("!")) rawText.substring(1) else rawText
+							editorPlayers.put(player, command.execute(commandText, editor, player))
+						case Some(command) =>
+							player.sendMessage(t"${RED}You don't have permissions to use that command")
+						case None =>
+							player.sendMessage(t"${RED}Command not found")
+					}
+				case None =>
+			}
 		}
 	}
 
 	@Listener(order = Order.FIRST)
 	def onCommand(event: SendCommandEvent, @First player: Player): Unit = {
-		editorPlayers.get(player) match {
-			case Some(editor) =>
-				val newText = editor.text.addString(s"/${event.getCommand} ${event.getArguments}")
-				val newEditor = editor.copy(text = newText)(editor.listener)
-				newText.sendPreview(newEditor, player)
-				editorPlayers.put(player, newEditor)
-				event.setCancelled(true)
-			case None =>
-		}
+		if(!event.getCause.contains(BypassEditor) && event.getCommand != "sponge:callback") {
+			editorPlayers.get(player) match {
+				case Some(editor) =>
+					val newText = editor.text.addString(s"/${event.getCommand} ${event.getArguments}")
+					val newEditor = editor.copy(text = newText)
+					newText.sendPreview(newEditor, player)
+					editorPlayers.put(player, newEditor)
+					event.setCancelled(true)
+				case None =>
+			}		}
 	}
 
 	@Listener
 	def onTabComplete(event: TabCompleteEvent, @First player: Player): Unit = {
+		println("Test")
 		editorPlayers.get(player) match {
 			case Some(editor) =>
 				editor.text match {
@@ -129,3 +136,9 @@ class EditorListener(textCommandRegistry: EditorCommandRegistry) {
 		}
 	}
 }
+
+/**
+	* The bypass object. If an event wants to escape the
+	* editor processing, it needs to include this in it's caused.
+	*/
+object BypassEditor

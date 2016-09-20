@@ -20,6 +20,8 @@
  */
 package io.github.katrix.chateditor.editor.component.text
 
+import java.util
+
 import scala.collection.JavaConverters._
 
 import org.spongepowered.api.Sponge
@@ -34,11 +36,11 @@ import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
-case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Map[String, Any]) extends TextComponent {
+case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Map[String, Any] = Map()) extends TextComponent {
 	require(pos >= 0)
 	require(select >= pos)
-	require(pos <= content.size)
-	require(select <= content.size)
+	require(pos - 1 <= content.size)
+	require(select - 1 <= content.size)
 
 	override type Preview = Seq[Text]
 	override type Self = CompTextLine
@@ -51,8 +53,8 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 	override def preview(editor: Editor): Seq[Text] = {
 		val raw = content.map(_.text)
 
-		val currentLine = raw(pos).toBuilder.color(AQUA).build()
-		val selectedLines = currentLine +: (pos to select map raw).drop(1).map(_.toBuilder.color(BLUE).build())
+		val currentLine = t"$AQUA${raw(pos)}"
+		val selectedLines = currentLine +: (pos + 1 to select map raw).map(l => t"$BLUE$l")
 
 		val clickCallback: (CommandSource, Int) => Unit = (src, textLine) => {
 			val newCompText = copy(pos = textLine, select = textLine)
@@ -66,19 +68,10 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 
 		val shiftCallback: (Int) => String = (textLine) => {
 			val (newPos, newSelect) = if(textLine < pos) (textLine, pos) else (pos, textLine)
-			val newCompText = copy(pos = newPos, select = newSelect)
-			editor.useNewTextComponent(newCompText)
-
-			/*
-			src match {
-				case player: Player => newCompText.sendPreview(editor, player)
-				case _ =>
-			}
-			*/
-			""
+			s"!posSelect $newPos $newSelect"
 		}
 
-		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + pos)
+		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + 1)
 		val interactive = display.indices.map(i => display(i).toBuilder
 			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
 			.onShiftClick(TextActions.insertText(shiftCallback(i)))
@@ -86,6 +79,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 
 		interactive
 	}
+
 	override def selectedPreview(editor: Editor): Seq[Text] = content.slice(pos, select).map(s => t"$s")
 	override def sendPreview(editor: Editor, player: Player): Unit = {
 		val text = preview(editor)
@@ -95,16 +89,20 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 		builder.sendTo(player)
 	}
 
-	override def addString(string: String): Self = if(hasSelection) {
-		val newStrings = string.split('\n')
+	override def addString(string: String): Self = {
+		println(string)
+		val newStrings = string.split("""\\n""").flatMap(_.split('\n')) //We must also account for player inserted newlines
+		println(newStrings.toSeq)
 		val top = content.take(pos)
-		val bottom = content.drop(pos + select)
-		copy(content = top ++ newStrings ++ bottom)
-	}
-	else copy(content = content ++ string.split('\n'))
+		val bottom = content.drop(select + 1)
 
-	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.size, pos))
-	override def select_=(selected: Int): Self = copy(select = clamp(pos, content.size, selected))
+		val newContent = top ++ newStrings ++ bottom
+		val newPos = clamp(0, newContent.size, pos)
+		copy(content = newContent, pos = newPos, select = clamp(newPos, newContent.size - 1, select))
+	}
+
+	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.size - 1, pos))
+	override def select_=(selected: Int): Self = copy(select = clamp(pos, content.size - 1, selected))
 
 	private def clamp(min: Int, max: Int, orig: Int): Int = {
 		if(orig > max) max

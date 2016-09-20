@@ -7,7 +7,7 @@ import org.spongepowered.api.text.Text
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.lib.LibPerm
-import io.github.katrix.chateditor.listener.EditorListener
+import io.github.katrix.chateditor.listener.EditorHandler
 import io.github.katrix.katlib.KatPlugin
 
 class ECmdEnd(plugin: KatPlugin) extends EditorCommand {
@@ -20,10 +20,11 @@ class ECmdEnd(plugin: KatPlugin) extends EditorCommand {
 				Sponge.getScheduler.createTaskBuilder()
 					.delayTicks(1)
 					.execute(() => editor.listener.removeEditorPlayer(player))
-					.submit(player)
+					.submit(plugin)
 				editor
 		}
 	}
+
 	override def aliases: Seq[String] = Seq("end")
 	override def help: Text = ???
 	override def permission: String = LibPerm.Editor

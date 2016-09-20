@@ -12,7 +12,7 @@ object ECmdText extends EditorCommand {
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		val componentText = editor.text
 		val newText = componentText.addString(raw)
-		val newEditor = editor.copy(text = newText)(editor.listener)
+		val newEditor = editor.copy(text = newText)
 		newText.sendPreview(newEditor, player)
 		newEditor
 	}

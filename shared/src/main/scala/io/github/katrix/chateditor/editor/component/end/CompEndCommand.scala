@@ -20,49 +20,31 @@
  */
 package io.github.katrix.chateditor.editor.component.end
 
-import java.util.Optional
-
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.event.SpongeEventFactory
-import org.spongepowered.api.event.cause.Cause
-import org.spongepowered.api.event.message.MessageEvent.MessageFormatter
-import org.spongepowered.api.text.TextTemplate
-import org.spongepowered.api.text.transform.SimpleTextTemplateApplier
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.EndComponent
-import io.github.katrix.chateditor.lib.LibPlugin
-import io.github.katrix.chateditor.listener.BypassEditor
 import io.github.katrix.katlib.helper.Implicits._
 
-object CompEndChat extends EndComponent {
+object CompEndCommand extends EndComponent {
 
 	override def end(editor: Editor): Option[Editor] = {
 		editor.player.get match {
 			case Some(player) =>
-				val rawText = t"${editor.text.builtString}"
-				val formatter = new MessageFormatter
-				formatter.setBody(rawText)
-
-				val headerTemplate = tt"<${"header"}>"
-				val applier = new SimpleTextTemplateApplier(headerTemplate)
-				applier.setParameter("header", t"${player.getName}")
-
-				formatter.getHeader.add(applier)
-
-				val cause = Cause.builder().owner(player).named(s"${LibPlugin.Id}.editor", editor).named("bypass", BypassEditor)
-				val messageChannel = player.getMessageChannel
-				val event = SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText, false)
-				val cancelled = Sponge.getEventManager.post(event)
-
-				println(cancelled)
-
-				if(!cancelled) {
-					event.getChannel.ifPresent(m => m.send(player, event.getMessage))
+				val Array(command, rest @ _*) = editor.text.builtString.split(' ')
+				Sponge.getCommandManager.get(command, player).toOption match {
+					case Some(mapping) if mapping.getCallable.testPermission(player) =>
+						mapping.getCallable.process(player, rest.mkString(" "))
+						None
+					case Some(_) =>
+						player.sendMessage(t"${RED}You don't have the permissions for that command")
+						Some(editor)
+					case None =>
+						player.sendMessage(t"${RED}No command by that name found")
+						Some(editor)
 				}
-
-				None
-			case None => None
+			case None => None //If no player is found, just remove the editor and call it done
 		}
 	}
 }

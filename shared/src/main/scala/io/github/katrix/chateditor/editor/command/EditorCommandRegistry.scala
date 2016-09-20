@@ -2,8 +2,7 @@ package io.github.katrix.chateditor.editor.command
 
 import scala.collection.mutable
 
-import io.github.katrix.chateditor.editor.command.core.{ECmdEnd, ECmdHelp, ECmdSetEnd, ECmdSetText, ECmdText, ECmdView}
-import io.github.katrix.chateditor.listener.EditorListener
+import io.github.katrix.chateditor.editor.command.core.{ECmdEnd, ECmdHelp, ECmdPosSelect, ECmdSetEnd, ECmdSetText, ECmdText, ECmdView}
 import io.github.katrix.katlib.KatPlugin
 
 class EditorCommandRegistry {
@@ -19,7 +18,7 @@ class EditorCommandRegistry {
 			//We need to iterate over all the possible values as a TextCommand can have args together with the command
 			//For example p=5
 			for(i <- commandString.indices) {
-				val subString = commandString.take(i)
+				val subString = commandString.take(i + 1)
 
 				if(commandMap.contains(subString)) {
 					return commandMap.get(subString)
@@ -33,14 +32,25 @@ class EditorCommandRegistry {
 		}
 	}
 
-	def registerDefault(listener: EditorListener,plugin: KatPlugin): Unit = {
-		val defaults = Seq(
+	def registerCore(plugin: KatPlugin): Unit = {
+		//Note ECmdText should NOT be registered
+		val cmds = Seq(
 			new ECmdEnd(plugin),
 			ECmdHelp,
+			ECmdPosSelect,
 			ECmdSetEnd,
 			ECmdSetText,
-			ECmdText,
-			ECmdView,
+			ECmdView
+		)
+
+		cmds.foreach(register)
+	}
+
+	def registerFeatures(): Unit = {
+		val cmds = Seq(
+			ECmdCopy,
+			ECmdCut,
+			ECmdPaste,
 
 			ECmdLintHocon,
 			ECmdLintJson,
@@ -48,6 +58,6 @@ class EditorCommandRegistry {
 			ECmdPrettifyJson
 		)
 
-		defaults.foreach(register)
+		cmds.foreach(register)
 	}
 }

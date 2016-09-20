@@ -25,9 +25,9 @@ import scala.ref.WeakReference
 import org.spongepowered.api.entity.living.player.Player
 
 import io.github.katrix.chateditor.editor.component.{EndComponent, TextComponent}
-import io.github.katrix.chateditor.listener.EditorListener
+import io.github.katrix.chateditor.listener.EditorHandler
 
-case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[Player])(implicit val listener: EditorListener) {
+case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[Player], listener: EditorHandler) {
 
 	/**
 		* Replace the text component of this editor with a new one

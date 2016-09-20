@@ -41,7 +41,7 @@ object ECmdSetEnd extends EditorCommand {
 			args(1) match {
 				case "chat" =>
 					player.sendMessage(t"${GREEN}Set end behavior to chat")
-					editor.copy(end = CompEndChat)(editor.listener)
+					editor.copy(end = CompEndChat)
 				case "commandblock" if player.hasPermission(LibPerm.CommandBlock) =>
 					if(args.length > 5) {
 						val tryLoc = for {
@@ -53,7 +53,7 @@ object ECmdSetEnd extends EditorCommand {
 						tryLoc match {
 							case Success(loc) =>
 								player.sendMessage(t"${GREEN}Set end behavior to commandblock")
-								editor.copy(end = new CompEndCommandBlock(loc))(editor.listener)
+								editor.copy(end = new CompEndCommandBlock(loc))
 							case Failure(e) =>
 								player.sendMessage(t"Not a valid location")
 								editor
@@ -63,12 +63,15 @@ object ECmdSetEnd extends EditorCommand {
 						player.sendMessage(t"${RED}Please specify a location")
 						editor
 					}
-				case "commandblock" =>
+				case "command" if player.hasPermission(LibPerm.Command) =>
+					player.sendMessage(t"${GREEN}Set end behavior to command")
+					editor.copy(end = CompEndChat)
+				case "commandblock" | "command" =>
 					player.sendMessage(t"${RED}You don't have permission to use that end behavior")
 					editor
 				case "cancel" =>
 					player.sendMessage(t"End behavior set to none. Use !end to close the editor")
-					editor.copy(end = CompEndNOOP)(editor.listener)
+					editor.copy(end = CompEndNOOP)
 				case _ =>
 					player.sendMessage(t"${RED}Unrecognized end behavior")
 					editor

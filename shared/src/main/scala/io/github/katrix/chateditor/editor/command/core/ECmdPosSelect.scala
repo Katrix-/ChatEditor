@@ -20,8 +20,6 @@
  */
 package io.github.katrix.chateditor.editor.command.core
 
-import java.nio.file.Paths
-
 import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
@@ -30,57 +28,38 @@ import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
-import io.github.katrix.chateditor.editor.component.end.CompEndSave
-import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTextFile, CompTextLine}
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-object ECmdSetText extends EditorCommand {
+object ECmdPosSelect extends EditorCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		val args = raw.split(' ')
-		if(args.length >= 2) {
-			val behavior = args(1)
-			behavior match {
-				case "cursor" =>
-					player.sendMessage(t"${GREEN}Set text behavior to cursor")
-					editor.copy(text = CompTextCursor(0, 0, editor.text.builtString))
-				case "line" =>
-					player.sendMessage(t"${GREEN}Set text behavior to line")
-					val currentStrings = editor.text.builtString.split(' ')
-					val strings = if(currentStrings.forall(_.isEmpty)) Seq() else currentStrings: Seq[String]
-					editor.copy(text = CompTextLine(0, 0, strings))
-				case "file" if player.hasPermission(LibPerm.UnsafeFile) =>
-					if(args.length > 2) {
-						Try(Paths.get(args(2))) match {
-							case Success(path) =>
-								val newText = new CompTextFile(0, 0, editor.text.builtString.split('\n'), path)
-								player.sendMessage(t"${GREEN}Set text behavior to file, set end behavior to save")
-								editor.copy(text = newText, end = CompEndSave)
-							case Failure(e) =>
-								player.sendMessage(t"Invalid path: ${e.getMessage}")
-								editor
-						}
-					}
-					else {
-						player.sendMessage(t"${RED}Please specify a file path")
-						editor
-					}
-				case "file" =>
-					player.sendMessage(t"${RED}You don't have permission to use that text behavior")
-					editor
-				case _ =>
-					player.sendMessage(t"${RED}Unrecognized text behavior")
+		if(args.length >= 3) {
+			val tryParse = for {
+				pos <- Try(args(1).toInt)
+				select <- Try(args(2).toInt)
+			} yield (pos, select)
+
+			tryParse match {
+				case Success((pos, select)) =>
+					val posText = editor.text.pos = pos
+					val selectText = posText.select = select
+					val newEditor = editor.copy(text = selectText)
+					//Normally we don't send a preview in the command, but as this functions mostly as a callback we do it here
+					selectText.sendPreview(newEditor, player)
+					newEditor
+				case Failure(e) =>
+					player.sendMessage(t"${RED}Invalid position or selection")
 					editor
 			}
 		}
 		else {
-			player.sendMessage(t"${RED}You need to specify a new text behavior")
+			player.sendMessage(t"${RED}Please specify a position and a selection")
 			editor
 		}
 	}
-
-	override def aliases: Seq[String] = Seq("setText", "changeText")
+	override def aliases: Seq[String] = Seq("posSelect")
 	override def help: Text = ???
 	override def permission: String = LibPerm.Editor
 }

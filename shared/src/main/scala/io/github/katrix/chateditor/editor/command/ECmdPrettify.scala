@@ -13,7 +13,7 @@ abstract class ECmdPrettify extends EditorCommand {
 			case cursor: CompTextCursor => cursor.copy(content = prettify(cursor.builtString).mkString("\n"))
 			case line: CompTextLine => line.copy(content = prettify(line.builtString))
 		}
-		val newEditor = editor.copy(text = newText)(editor.listener)
+		val newEditor = editor.copy(text = newText)
 		newText.sendPreview(newEditor, player)
 		newEditor
 	}

@@ -43,6 +43,6 @@ object ECmdLintJson extends ECmdLint {
 		}
 	}
 
-	override def aliases: Seq[String] = Seq("jsonLint")
+	override def aliases: Seq[String] = Seq("lintJson")
 	override def help: Text = ???
 }

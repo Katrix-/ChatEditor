@@ -17,10 +17,9 @@ class CompEndCommandBlock(location: Location[World]) extends EndComponent {
 			case Some(player) =>
 				val optTileEntity = location.getTileEntity.toOption
 				val builtString = editor.text.builtString
-
 				optTileEntity match {
 					case Some(tileEntity) if tileEntity.getType == TileEntityTypes.COMMAND_BLOCK =>
-						Sponge.getCommandManager.get(builtString, player).toOption match {
+						Sponge.getCommandManager.get(builtString.split(' ').head, player).toOption match {
 							case Some(mapping) if mapping.getCallable.testPermission(player) =>
 								val result = tileEntity.offer(Keys.COMMAND, builtString)
 								if(result.isSuccessful) {
