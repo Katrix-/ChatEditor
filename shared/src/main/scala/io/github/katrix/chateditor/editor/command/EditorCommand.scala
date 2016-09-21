@@ -34,6 +34,7 @@ trait EditorCommand {
 
 	/**
 		* Executes this command, and optionally modifies the editor
+		*
 		* @param raw The raw string input without the ! character
 		* @param editor The current editor
 		* @param player The player that executes the command

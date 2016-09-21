@@ -26,7 +26,6 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.event.SpongeEventFactory
 import org.spongepowered.api.event.cause.Cause
 import org.spongepowered.api.event.message.MessageEvent.MessageFormatter
-import org.spongepowered.api.text.TextTemplate
 import org.spongepowered.api.text.transform.SimpleTextTemplateApplier
 
 import io.github.katrix.chateditor.editor.Editor
@@ -52,7 +51,8 @@ object CompEndChat extends EndComponent {
 
 				val cause = Cause.builder().owner(player).named(s"${LibPlugin.Id}.editor", editor).named("bypass", BypassEditor)
 				val messageChannel = player.getMessageChannel
-				val event = SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText, false)
+				val event = SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText,
+					false)
 				val cancelled = Sponge.getEventManager.post(event)
 
 				println(cancelled)

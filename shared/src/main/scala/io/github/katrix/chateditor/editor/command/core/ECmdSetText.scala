@@ -31,7 +31,7 @@ import org.spongepowered.api.text.format.TextColors._
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.editor.component.end.CompEndSave
-import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, FileEditorHelper, CompTextLine}
+import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTextLine}
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 

@@ -4,9 +4,7 @@ import java.nio.file.{Files, Path}
 
 import scala.collection.JavaConverters._
 import scala.io.Source
-import scala.util.{Failure, Success, Try}
-
-import org.spongepowered.api.text.format.TextColors._
+import scala.util.Try
 
 import io.github.katrix.chateditor.editor.Editor
 

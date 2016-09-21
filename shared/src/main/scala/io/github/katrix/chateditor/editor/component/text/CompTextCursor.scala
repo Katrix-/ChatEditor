@@ -31,6 +31,7 @@ import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[String, Any] = Map()) extends TextComponent {
+
 	require(pos >= 0)
 	require(select >= pos)
 	require(select <= content.length)
@@ -88,7 +89,7 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 	}
 
 	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.length - 1, pos))
-	override def select_=(select: Int): Self = copy(select = clamp(pos, content.length -1, select))
+	override def select_=(select: Int): Self = copy(select = clamp(pos, content.length - 1, select))
 
 	private def clamp(min: Int, max: Int, orig: Int): Int = {
 		if(orig > max) max
@@ -99,5 +100,5 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 	override def data(key: String): Option[Any] = dataMap.get(key)
 	override def dataPut(key: String, value: Any): Self = copy(dataMap = dataMap + ((key, value)))
 	override def dataRemove(key: String): Self = copy(dataMap = dataMap.filterKeys(_ != key))
-	override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value})
+	override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value })
 }

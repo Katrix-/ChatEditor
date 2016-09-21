@@ -26,9 +26,6 @@ import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.text.Text
 
-import com.google.gson.{GsonBuilder, JsonParser}
-
-import io.github.katrix.chateditor.lib.LibPerm
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
 object ECmdPrettifyHocon extends ECmdPrettify {

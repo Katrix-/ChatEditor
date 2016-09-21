@@ -7,7 +7,6 @@ import org.spongepowered.api.text.Text
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.lib.LibPerm
-import io.github.katrix.chateditor.listener.EditorHandler
 import io.github.katrix.katlib.KatPlugin
 
 class ECmdEnd(plugin: KatPlugin) extends EditorCommand {

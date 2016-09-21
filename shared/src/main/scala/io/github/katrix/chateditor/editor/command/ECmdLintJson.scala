@@ -27,14 +27,12 @@ import org.spongepowered.api.text.format.TextColors._
 
 import com.google.gson.{GsonBuilder, JsonParser}
 
-import io.github.katrix.chateditor.lib.LibPerm
-
 import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdLintJson extends ECmdLint {
 
 	private val parser = new JsonParser
-	private val gson = (new GsonBuilder).setPrettyPrinting().create()
+	private val gson   = (new GsonBuilder).setPrettyPrinting().create()
 
 	override def lint(string: String): Text = {
 		Try(parser.parse(string)) match {

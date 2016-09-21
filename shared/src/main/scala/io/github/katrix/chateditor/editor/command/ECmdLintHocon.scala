@@ -27,9 +27,6 @@ import scala.util.{Failure, Success, Try}
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
-import com.google.gson.{GsonBuilder, JsonParser}
-
-import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 

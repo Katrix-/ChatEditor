@@ -22,9 +22,9 @@ package io.github.katrix.chateditor.command
 
 import scala.ref.WeakReference
 
-import org.spongepowered.api.command.{CommandResult, CommandSource}
 import org.spongepowered.api.command.args.CommandContext
 import org.spongepowered.api.command.spec.CommandSpec
+import org.spongepowered.api.command.{CommandResult, CommandSource}
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.format.TextColors._
 
@@ -48,11 +48,11 @@ class CmdEditor(handler: EditorHandler)(implicit plugin: KatPlugin) extends Comm
 	}
 
 	override def commandSpec: CommandSpec = CommandSpec.builder()
-	  .description(t"Opens a minimal editor with an end behavior of chat")
-	  .permission(LibPerm.Editor)
-	  .children(this)
-	  .executor(this)
-	  .build()
+		.description(t"Opens a minimal editor with an end behavior of chat")
+		.permission(LibPerm.Editor)
+		.children(this)
+		.executor(this)
+		.build()
 
 	override def aliases: Seq[String] = Seq("editor")
 }

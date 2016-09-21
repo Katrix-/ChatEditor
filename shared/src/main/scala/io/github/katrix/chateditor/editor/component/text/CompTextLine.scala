@@ -35,6 +35,7 @@ import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Map[String, Any] = Map()) extends TextComponent {
+
 	require(pos >= 0)
 	require(select >= pos)
 	require(pos - 1 <= content.size)
@@ -110,5 +111,5 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 	override def data(key: String): Option[Any] = dataMap.get(key)
 	override def dataPut(key: String, value: Any): Self = copy(dataMap = dataMap + ((key, value)))
 	override def dataRemove(key: String): Self = copy(dataMap = dataMap.filterKeys(_ != key))
-	override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value})
+	override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value })
 }

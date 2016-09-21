@@ -45,18 +45,21 @@ trait TextComponent {
 	/**
 		* Gets a preview of this [[TextComponent]]. This might
 		* return a result including stuff like colors to make reading easier
+		*
 		* @param editor The current editor
 		*/
 	def preview(editor: Editor): Preview
 
 	/**
 		* Gets a preview of the selected area
+		*
 		* @param editor The current editor
 		*/
 	def selectedPreview(editor: Editor): Preview
 
 	/**
 		* Sends a preview to a player
+		*
 		* @param editor The current editor
 		* @param player The player to send to
 		*/
@@ -65,6 +68,7 @@ trait TextComponent {
 	/**
 		* Adds a new string to this [[TextComponent]] or
 		* replaces if a selection is made
+		*
 		* @param string The string to add
 		* @return The new [[TextComponent]] to use.
 		*/

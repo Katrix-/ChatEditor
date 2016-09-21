@@ -22,6 +22,6 @@ package io.github.katrix.chateditor.lib
 
 object LibPlugin {
 
-	final val Id = "chateditor"
+	final val Id   = "chateditor"
 	final val Name = "ChatEditor"
 }

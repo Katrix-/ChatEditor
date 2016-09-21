@@ -15,8 +15,8 @@ import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommandRegistry
-import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTextLine}
 import io.github.katrix.chateditor.editor.component.end.CompEndCommandBlock
+import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTextLine}
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
@@ -26,12 +26,14 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 
 	/**
 		* Adds a new editor player binding
+		*
 		* @return The old editor if there was one
 		*/
 	def addEditorPlayer(player: Player, editor: Editor): Option[Editor] = editorPlayers.put(player, editor)
 
 	/**
 		* Removes a editor player binding
+		*
 		* @return The editor used by the player, if any
 		*/
 	def removeEditorPlayer(player: Player): Option[Editor] = editorPlayers.remove(player)
@@ -116,7 +118,8 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 					editorPlayers.put(player, newEditor)
 					event.setCancelled(true)
 				case None =>
-			}		}
+			}
+		}
 	}
 
 	@Listener

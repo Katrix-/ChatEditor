@@ -32,7 +32,7 @@ object CompEndCommand extends EndComponent {
 	override def end(editor: Editor): Option[Editor] = {
 		editor.player.get match {
 			case Some(player) =>
-				val Array(command, rest @ _*) = editor.text.builtString.split(' ')
+				val Array(command, rest@_*) = editor.text.builtString.split(' ')
 				Sponge.getCommandManager.get(command, player).toOption match {
 					case Some(mapping) if mapping.getCallable.testPermission(player) =>
 						mapping.getCallable.process(player, rest.mkString(" "))

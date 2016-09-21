@@ -26,12 +26,10 @@ import org.spongepowered.api.text.Text
 
 import com.google.gson.{GsonBuilder, JsonParser}
 
-import io.github.katrix.chateditor.lib.LibPerm
-
 object ECmdPrettifyJson extends ECmdPrettify {
 
 	private val parser = new JsonParser
-	private val gson = (new GsonBuilder).setPrettyPrinting().create()
+	private val gson   = (new GsonBuilder).setPrettyPrinting().create()
 
 	override def prettify(string: String): Seq[String] = {
 		Try(parser.parse(string)) match {

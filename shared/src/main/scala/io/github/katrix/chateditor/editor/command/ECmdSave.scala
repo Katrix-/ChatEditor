@@ -1,9 +1,8 @@
 package io.github.katrix.chateditor.editor.command
 
-import java.nio.file.{Files, Path}
+import java.nio.file.Path
 
-import scala.collection.JavaConverters._
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
