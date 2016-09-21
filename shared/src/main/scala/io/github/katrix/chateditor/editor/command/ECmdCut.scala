@@ -13,7 +13,7 @@ object ECmdCut extends EditorCommand {
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		if(editor.text.hasSelection) {
 			val selected = editor.text.selectedString
-			val newCompCopy = editor.text.dataPut("copy", selected)
+			val newCompCopy = editor.text.dataPut("clipboard", selected)
 			val newCompCut = newCompCopy.addString("")
 			player.sendMessage(t"${GREEN}Copied: $selected")
 			editor.copy(text = newCompCut)

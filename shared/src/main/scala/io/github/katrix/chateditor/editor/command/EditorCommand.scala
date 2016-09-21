@@ -30,7 +30,7 @@ import io.github.katrix.katlib.helper.Implicits._
 /**
 	* Represents a command that the player can use while in an editor.
 	*/
-abstract class EditorCommand {
+trait EditorCommand {
 
 	/**
 		* Executes this command, and optionally modifies the editor
@@ -56,5 +56,5 @@ abstract class EditorCommand {
 		*/
 	def permission: String
 
-	def incompatibleCommand(player: Player): Unit = player.sendMessage(t"${TextColors.RED}Incompatible command for this editor")
+	final val IncompatibleCommand = t"${TextColors.RED}Incompatible command for this editor"
 }

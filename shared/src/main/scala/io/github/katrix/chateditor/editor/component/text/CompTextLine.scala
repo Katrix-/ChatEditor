@@ -20,8 +20,6 @@
  */
 package io.github.katrix.chateditor.editor.component.text
 
-import java.util
-
 import scala.collection.JavaConverters._
 
 import org.spongepowered.api.Sponge
@@ -40,7 +38,6 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 	require(pos >= 0)
 	require(select >= pos)
 	require(pos - 1 <= content.size)
-	require(select - 1 <= content.size)
 
 	override type Preview = Seq[Text]
 	override type Self = CompTextLine
@@ -97,7 +94,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 		val bottom = content.drop(select + 1)
 
 		val newContent = top ++ newStrings ++ bottom
-		val newPos = clamp(0, newContent.size, pos)
+		val newPos = clamp(0, newContent.size - 1, pos)
 		copy(content = newContent, pos = newPos, select = clamp(newPos, newContent.size - 1, select))
 	}
 

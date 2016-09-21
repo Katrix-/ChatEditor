@@ -20,8 +20,10 @@
  */
 package io.github.katrix.chateditor.editor.component.text
 
+import org.spongepowered.api.command.CommandSource
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.action.TextActions
 import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.editor.Editor
@@ -40,11 +42,35 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 	override def selectedString: String = content.substring(pos, select)
 
 	override def preview(editor: Editor): Text = {
+		val clickCallback: (CommandSource, Int) => Unit = (src, textLine) => {
+			val newCompText = copy(pos = textLine, select = textLine)
+			editor.useNewTextComponent(newCompText)
+
+			src match {
+				case player: Player => newCompText.sendPreview(editor, player)
+				case _ =>
+			}
+		}
+
+		val shiftCallback: (Int) => String = (textLine) => {
+			val (newPos, newSelect) = if(textLine < pos) (textLine, pos) else (pos, textLine)
+			s"!posSelect $newPos $newSelect"
+		}
+
+		def stringToText(offset: Int, string: String): Seq[Text] = string.indices.map(i => Text.builder(string(i))
+			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
+			.onShiftClick(TextActions.insertText(shiftCallback(i)))
+			.build())
+
 		val top = content.substring(0, pos)
-		val selected = content.substring(pos, if(hasSelection) select + 1 else select)
-		val bottom = content.substring(if(hasSelection) select + 1 else select, content.length)
-		//TODO: Callback
-		t"$top$BLUE[$selected]$RESET$bottom"
+		val topText = Text.of(stringToText(0, top): _*)
+
+		val selected = content.substring(pos + 1, select)
+		val selectedText = Text.of(stringToText(top.length, selected): _*)
+
+		val bottom = content.substring(select, content.length)
+		val bottomText = Text.of(stringToText(top.length + selected.length, bottom): _*)
+		t"$topText$BLUE[$selectedText]$RESET$bottomText"
 	}
 	override def selectedPreview(editor: Editor): Text = t"$BLUE$selectedString"
 	override def sendPreview(editor: Editor, player: Player): Unit = player.sendMessage(preview(editor))
@@ -53,13 +79,16 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 		if(hasSelection) {
 			val builder = new StringBuilder(content)
 			builder.replace(pos, select, string)
-			copy(content = builder.mkString)
+			val newContent = builder.mkString
+
+			val newPos = clamp(0, newContent.length - 1, pos)
+			copy(content = newContent, pos = newPos, select = clamp(newPos, newContent.length - 1, select))
 		}
 		else copy(content = content + string)
 	}
 
-	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.length, pos))
-	override def select_=(select: Int): Self = copy(select = clamp(pos, content.length, select))
+	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.length - 1, pos))
+	override def select_=(select: Int): Self = copy(select = clamp(pos, content.length -1, select))
 
 	private def clamp(min: Int, max: Int, orig: Int): Int = {
 		if(orig > max) max

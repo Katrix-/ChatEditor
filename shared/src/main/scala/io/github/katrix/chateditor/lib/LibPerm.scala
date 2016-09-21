@@ -17,5 +17,5 @@ object LibPerm {
 	final val Command = s"$EndComp.command"
 
 	final val Unsafe = s"${ChatEditor}unsafe"
-	final val UnsafeFile = s"$Unsafe.file"
+	final val UnsafeFile = s"${Unsafe}file"
 }

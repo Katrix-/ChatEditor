@@ -24,7 +24,7 @@ import org.spongepowered.api.entity.living.player.Player
 
 import io.github.katrix.chateditor.editor.Editor
 
-abstract class TextComponent {
+trait TextComponent {
 
 	/**
 		* The preview type that the text will be printed as

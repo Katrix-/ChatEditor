@@ -10,7 +10,7 @@ import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdPaste extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = editor.text.data("copy") match {
+	override def execute(raw: String, editor: Editor, player: Player): Editor = editor.text.data("clipboard") match {
 		case Some(string: String) =>
 			player.sendMessage(t"${GREEN}Pasted: $string")
 			editor.copy(text = editor.text.addString(string))

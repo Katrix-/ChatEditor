@@ -31,7 +31,7 @@ import org.spongepowered.api.text.format.TextColors._
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.editor.component.end.CompEndSave
-import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTextFile, CompTextLine}
+import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, FileEditorHelper, CompTextLine}
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
@@ -54,7 +54,7 @@ object ECmdSetText extends EditorCommand {
 					if(args.length > 2) {
 						Try(Paths.get(args(2))) match {
 							case Success(path) =>
-								val newText = new CompTextFile(0, 0, editor.text.builtString.split('\n'), path)
+								val newText = editor.text.dataPut("path", path)
 								player.sendMessage(t"${GREEN}Set text behavior to file, set end behavior to save")
 								editor.copy(text = newText, end = CompEndSave)
 							case Failure(e) =>

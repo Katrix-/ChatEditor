@@ -13,7 +13,7 @@ object ECmdCopy extends EditorCommand {
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		if(editor.text.hasSelection) {
 			val selected = editor.text.selectedString
-			val newComp = editor.text.dataPut("copy", selected)
+			val newComp = editor.text.dataPut("clipboard", selected)
 			player.sendMessage(t"${GREEN}Copied: $selected")
 			editor.copy(text = newComp)
 		}

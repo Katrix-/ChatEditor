@@ -22,7 +22,7 @@ package io.github.katrix.chateditor.editor.component
 
 import io.github.katrix.chateditor.editor.Editor
 
-abstract class EndComponent {
+trait EndComponent {
 
 	/**
 		* A callback that will be executed when the `!end`
