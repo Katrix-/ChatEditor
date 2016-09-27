@@ -28,14 +28,7 @@ import org.spongepowered.api.text.Text
 
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
-object ECmdPrettifyHocon extends ECmdPrettify {
-
-	private def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
-		val builder = HoconConfigurationLoader.builder()
-			.setSource(() => new BufferedReader(new StringReader(string)))
-		writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
-		builder.build()
-	}
+object ECmdPrettifyHocon extends ECmdPrettify with HoconParser {
 
 	override def prettify(string: String): Seq[String] = {
 		val writer = new StringWriter()

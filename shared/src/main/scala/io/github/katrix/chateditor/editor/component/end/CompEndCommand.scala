@@ -31,19 +31,24 @@ object CompEndCommand extends EndComponent {
 
 	override def end(editor: Editor): Option[Editor] = {
 		editor.player.get match {
-			case Some(player) =>
-				val Array(command, rest@_*) = editor.text.builtString.split(' ')
-				Sponge.getCommandManager.get(command, player).toOption match {
-					case Some(mapping) if mapping.getCallable.testPermission(player) =>
-						mapping.getCallable.process(player, rest.mkString(" "))
-						None
-					case Some(_) =>
-						player.sendMessage(t"${RED}You don't have the permissions for that command")
-						Some(editor)
-					case None =>
-						player.sendMessage(t"${RED}No command by that name found")
-						Some(editor)
-				}
+			case Some(player) => editor.text.builtString.split(' ') match {
+				case Array(command, arguments@_*) =>
+
+					Sponge.getCommandManager.get(command, player).toOption match {
+						case Some(mapping) if mapping.getCallable.testPermission(player) =>
+							mapping.getCallable.process(player, arguments.mkString(" "))
+							None
+						case Some(_) =>
+							player.sendMessage(t"${RED}You don't have the permissions for that command")
+							Some(editor)
+						case None =>
+							player.sendMessage(t"${RED}No command by that name found")
+							Some(editor)
+					}
+				case _ =>
+					player.sendMessage(t"No command specified, please set a command")
+					Some(editor)
+			}
 			case None => None //If no player is found, just remove the editor and call it done
 		}
 	}

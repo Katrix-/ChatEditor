@@ -20,26 +20,17 @@
  */
 package io.github.katrix.chateditor.editor.command
 
-import scala.util.{Failure, Success, Try}
+import java.io.{BufferedReader, BufferedWriter, StringReader, StringWriter}
 
-import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors._
+import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
-import com.google.gson.{GsonBuilder, JsonParser}
+trait HoconParser {
 
-import io.github.katrix.katlib.helper.Implicits._
-
-object ECmdLintJson extends ECmdLint {
-
-	private val parser = new JsonParser
-
-	override def lint(string: String): Text = {
-		Try(parser.parse(string)) match {
-			case Failure(e) => t"$RED${e.getMessage}"
-			case Success(_) => t"${GREEN}All is well"
-		}
+	def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
+		val builder = HoconConfigurationLoader.builder()
+			.setSource(() => new BufferedReader(new StringReader(string)))
+		writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
+		builder.build()
 	}
 
-	override def aliases: Seq[String] = Seq("lintJson")
-	override def help: Text = ???
 }

@@ -40,11 +40,10 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 
 	@Listener
 	def interactCommandBlock(event: InteractBlockEvent.Secondary, @First player: Player): Unit = {
-		if(player.get(Keys.IS_SNEAKING).orElse(false)) {
+		if(player.get(Keys.IS_SNEAKING).orElse(false) && !event.getCause.contains(BypassEditor)) {
 			val blockSnapshot = event.getTargetBlock
 			if(blockSnapshot.getState.getType == BlockTypes.COMMAND_BLOCK) {
-				val optName = blockSnapshot.get(Keys.DISPLAY_NAME).toOption
-				val permCmdBlock = optName match {
+				val permCmdBlock = blockSnapshot.get(Keys.DISPLAY_NAME).toOption match {
 					case Some(name) => s"${LibPerm.CommandBlock}.${name.toPlain}"
 					case None => LibPerm.CommandBlock
 				}
@@ -124,10 +123,9 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 
 	@Listener
 	def onTabComplete(event: TabCompleteEvent, @First player: Player): Unit = {
-		println("Test")
-		editorPlayers.get(player) match {
-			case Some(editor) =>
-				editor.text match {
+		if(!event.getCause.contains(BypassEditor)) {
+			editorPlayers.get(player) match {
+				case Some(editor) => editor.text match {
 					case lineEditor: CompTextLine =>
 						val suggestions = event.getTabCompletions
 						if(suggestions.isEmpty) {
@@ -135,7 +133,8 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 						}
 					case _ =>
 				}
-			case None =>
+				case None =>
+			}
 		}
 	}
 }

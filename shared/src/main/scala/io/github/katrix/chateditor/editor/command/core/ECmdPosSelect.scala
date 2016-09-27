@@ -46,7 +46,6 @@ object ECmdPosSelect extends EditorCommand {
 					val posText = editor.text.pos = pos
 					val selectText = posText.select = select
 					val newEditor = editor.copy(text = selectText)
-					//Normally we don't send a preview in the command, but as this functions mostly as a callback we do it here
 					selectText.sendPreview(newEditor, player)
 					newEditor
 				case Failure(e) =>

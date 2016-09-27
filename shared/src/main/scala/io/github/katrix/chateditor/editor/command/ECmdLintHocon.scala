@@ -30,14 +30,7 @@ import org.spongepowered.api.text.format.TextColors._
 import io.github.katrix.katlib.helper.Implicits._
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
-object ECmdLintHocon extends ECmdLint {
-
-	private def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
-		val builder = HoconConfigurationLoader.builder()
-			.setSource(() => new BufferedReader(new StringReader(string)))
-		writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
-		builder.build()
-	}
+object ECmdLintHocon extends ECmdLint with HoconParser {
 
 	override def lint(string: String): Text = {
 		Try(loader(string, None).load()) match {

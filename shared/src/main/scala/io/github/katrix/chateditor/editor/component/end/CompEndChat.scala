@@ -43,19 +43,15 @@ object CompEndChat extends EndComponent {
 				val formatter = new MessageFormatter
 				formatter.setBody(rawText)
 
-				val headerTemplate = tt"<${"header"}>"
-				val applier = new SimpleTextTemplateApplier(headerTemplate)
+				val applier = new SimpleTextTemplateApplier(tt"<${"header"}>")
 				applier.setParameter("header", t"${player.getName}")
 
 				formatter.getHeader.add(applier)
 
-				val cause = Cause.builder().owner(player).named(s"${LibPlugin.Id}.editor", editor).named("bypass", BypassEditor)
+				val cause = Cause.builder().owner(player).named(s"${LibPlugin.Id}.editor", editor).named("bypass", BypassEditor).build()
 				val messageChannel = player.getMessageChannel
-				val event = SpongeEventFactory.createMessageChannelEventChat(cause.build(), messageChannel, Optional.of(messageChannel), formatter, rawText,
-					false)
+				val event = SpongeEventFactory.createMessageChannelEventChat(cause, messageChannel, Optional.of(messageChannel), formatter, rawText, false)
 				val cancelled = Sponge.getEventManager.post(event)
-
-				println(cancelled)
 
 				if(!cancelled) {
 					event.getChannel.ifPresent(m => m.send(player, event.getMessage))

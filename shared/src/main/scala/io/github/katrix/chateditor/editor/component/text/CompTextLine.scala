@@ -35,7 +35,6 @@ import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Map[String, Any] = Map()) extends TextComponent {
-
 	require(pos >= 0)
 	require(select >= pos)
 	require(pos - 1 <= content.size)
@@ -88,9 +87,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 	}
 
 	override def addString(string: String): Self = {
-		println(string)
 		val newStrings = string.split("""\\n""").flatMap(_.split('\n')) //We must also account for player inserted newlines
-		println(newStrings.toSeq)
 		val top = content.take(pos)
 		val bottom = content.drop(select + 1)
 

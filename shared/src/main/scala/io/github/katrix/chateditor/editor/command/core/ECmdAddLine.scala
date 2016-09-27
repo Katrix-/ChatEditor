@@ -7,6 +7,7 @@ import org.spongepowered.api.text.format.TextColors._
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.editor.component.text.CompTextLine
+import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdAddLine extends EditorCommand {
@@ -22,5 +23,5 @@ object ECmdAddLine extends EditorCommand {
 
 	override def aliases: Seq[String] = Seq("addLine")
 	override def help: Text = ???
-	override def permission: String = ???
+	override def permission: String = LibPerm.Editor
 }

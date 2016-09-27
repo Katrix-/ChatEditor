@@ -31,7 +31,6 @@ import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[String, Any] = Map()) extends TextComponent {
-
 	require(pos >= 0)
 	require(select >= pos)
 	require(select <= content.length)
@@ -43,8 +42,8 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 	override def selectedString: String = content.substring(pos, select)
 
 	override def preview(editor: Editor): Text = {
-		val clickCallback: (CommandSource, Int) => Unit = (src, textLine) => {
-			val newCompText = copy(pos = textLine, select = textLine)
+		val clickCallback: (CommandSource, Int) => Unit = (src, textPos) => {
+			val newCompText = copy(pos = textPos, select = textPos)
 			editor.useNewTextComponent(newCompText)
 
 			src match {
@@ -53,8 +52,8 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 			}
 		}
 
-		val shiftCallback: (Int) => String = (textLine) => {
-			val (newPos, newSelect) = if(textLine < pos) (textLine, pos) else (pos, textLine)
+		val shiftCallback: (Int) => String = (textPos) => {
+			val (newPos, newSelect) = if(textPos < pos) (textPos, pos) else (pos, textPos)
 			s"!posSelect $newPos $newSelect"
 		}
 
