@@ -59,6 +59,6 @@ object ECmdPosSelect extends EditorCommand {
 		}
 	}
 	override def aliases: Seq[String] = Seq("posSelect")
-	override def help: Text = ???
+	override def help: Text = t"Set a new position and selection"
 	override def permission: String = LibPerm.Editor
 }

@@ -25,6 +25,6 @@ object ECmdCut extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("copy")
-	override def help: Text = ???
+	override def help: Text = t"Cut the selected text to the clipboard. Paste with !paste"
 	override def permission: String = LibPerm.ECmdCopyPaste
 }

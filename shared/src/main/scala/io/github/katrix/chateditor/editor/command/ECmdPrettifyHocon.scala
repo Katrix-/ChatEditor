@@ -27,6 +27,7 @@ import scala.util.{Failure, Success, Try}
 import org.spongepowered.api.text.Text
 
 import ninja.leaping.configurate.hocon.HoconConfigurationLoader
+import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdPrettifyHocon extends ECmdPrettify with HoconParser {
 
@@ -40,5 +41,5 @@ object ECmdPrettifyHocon extends ECmdPrettify with HoconParser {
 	}
 
 	override def aliases: Seq[String] = Seq("prettifyHocon")
-	override def help: Text = ???
+	override def help: Text = t"Prettify your HOCON"
 }

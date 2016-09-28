@@ -40,5 +40,5 @@ object ECmdLintHocon extends ECmdLint with HoconParser {
 	}
 
 	override def aliases: Seq[String] = Seq("hoconLint")
-	override def help: Text = ???
+	override def help: Text = t"Check if your HOCON is formatted correctly"
 }

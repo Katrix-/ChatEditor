@@ -26,6 +26,8 @@ import org.spongepowered.api.text.Text
 
 import com.google.gson.{GsonBuilder, JsonParser}
 
+import io.github.katrix.katlib.helper.Implicits._
+
 object ECmdPrettifyJson extends ECmdPrettify {
 
 	private val parser = new JsonParser
@@ -38,5 +40,5 @@ object ECmdPrettifyJson extends ECmdPrettify {
 		}
 	}
 	override def aliases: Seq[String] = Seq("prettifyJson")
-	override def help: Text = ???
+	override def help: Text = t"Prettify your JSON"
 }

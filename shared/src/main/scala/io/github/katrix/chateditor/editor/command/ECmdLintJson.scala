@@ -41,5 +41,5 @@ object ECmdLintJson extends ECmdLint {
 	}
 
 	override def aliases: Seq[String] = Seq("lintJson")
-	override def help: Text = ???
+	override def help: Text = t"Check if your JSON is formatted correctly"
 }

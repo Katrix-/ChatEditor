@@ -22,6 +22,6 @@ object ECmdAddLine extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("addLine")
-	override def help: Text = ???
+	override def help: Text = t"Adds a new line to a line editor"
 	override def permission: String = LibPerm.Editor
 }

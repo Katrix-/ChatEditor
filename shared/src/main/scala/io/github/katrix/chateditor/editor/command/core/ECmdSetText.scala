@@ -81,6 +81,6 @@ object ECmdSetText extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("setText", "changeText")
-	override def help: Text = ???
+	override def help: Text = t"Set a new text behavior. Valid behaviors are: cursor, line, file <path>"
 	override def permission: String = LibPerm.Editor
 }

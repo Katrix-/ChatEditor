@@ -8,6 +8,7 @@ import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.KatPlugin
+import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdEnd(plugin: KatPlugin) extends EditorCommand {
 
@@ -25,6 +26,6 @@ class ECmdEnd(plugin: KatPlugin) extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("end")
-	override def help: Text = ???
+	override def help: Text = t"Ends an editor session"
 	override def permission: String = LibPerm.Editor
 }

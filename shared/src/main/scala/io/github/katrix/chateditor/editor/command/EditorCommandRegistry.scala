@@ -43,7 +43,7 @@ class EditorCommandRegistry {
 		//Note ECmdText should NOT be registered
 		val cmds = Seq(
 			new ECmdEnd(plugin),
-			ECmdHelp,
+			new ECmdHelp(this),
 			ECmdPosSelect,
 			ECmdSetEnd,
 			ECmdSetText,

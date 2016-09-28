@@ -40,6 +40,6 @@ object ECmdReload extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("saveFile")
-	override def help: Text = ???
+	override def help: Text = t"If you have a file loaded, reloads the content of the file from disk"
 	override def permission: String = LibPerm.UnsafeFile
 }

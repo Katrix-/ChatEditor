@@ -20,6 +20,6 @@ object ECmdPaste extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("copy")
-	override def help: Text = ???
+	override def help: Text = t"Pastes the text currently in the clipboard"
 	override def permission: String = LibPerm.ECmdCopyPaste
 }

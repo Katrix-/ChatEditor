@@ -84,6 +84,6 @@ object ECmdSetEnd extends EditorCommand {
 	}
 
 	override def aliases: Seq[String] = Seq("setEnd", "changeEnd")
-	override def help: Text = ???
+	override def help: Text = t"Set a new end behavior. Valid behaviors are: chat, command, commandblock <x> <y> <z>, cancel"
 	override def permission: String = LibPerm.Editor
 }
