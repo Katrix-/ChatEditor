@@ -14,12 +14,10 @@ trait EditorConfig extends Config {
 		final val Behavior = "behavior"
 		final val Message  = "message"
 
-		val textSet: ConfigValue[TextTemplate]
-		//1 arg behavior
+		val textSet: ConfigValue[TextTemplate] //1 arg behavior
 		val endSet: ConfigValue[TextTemplate] //1 arg behavior
 
-		val commandBlockLocationSet: ConfigValue[TextTemplate]
-		//1 arg location
+		val commandBlockLocationSet: ConfigValue[TextTemplate] //1 arg location
 		val commandBlockStart: ConfigValue[TextTemplate] //1 arg location
 
 		val pathInvalid: ConfigValue[TextTemplate] //1 arg message
@@ -55,7 +53,6 @@ trait EditorConfig extends Config {
 		val commandBlockErrorTileEntity: ConfigValue[Text]
 		val commandBlockErrorLocation  : ConfigValue[Text]
 
-
 		val pathMissing        : ConfigValue[Text]
 		val behaviorMissing    : ConfigValue[Text]
 		val behaviorUnknown    : ConfigValue[Text]
@@ -86,4 +83,73 @@ trait EditorConfig extends Config {
 		val fileSaved         : ConfigValue[Text]
 		val fileReloaded      : ConfigValue[Text]
 	}
+
+	override def seq: Seq[ConfigValue[_]] = Seq(
+		version,
+
+		text.textSet,
+		text.endSet,
+
+		text.commandBlockLocationSet,
+		text.commandBlockStart,
+
+		text.pathInvalid,
+
+		text.commandEditorSuccess,
+		text.commandEditorFileSuccess,
+		text.commandEditorFilePathNotFoundNoCreate,
+		text.commandEditorFilePermError,
+		text.commandEditorFilePermError,
+
+		text.commandErrorParseBoolean,
+		text.commandErrorInvalidPath,
+
+		text.eCmdAddLine,
+
+		text.eCmdHelpSpecifyCommand,
+
+		text.eCmdPosSelectInvalid,
+		text.eCmdPosSelectSpecify,
+
+		text.eCmdCopyCutNoneSelected,
+		text.eCmdCopy,
+		text.eCmdCut,
+		text.eCmdPaste,
+		text.eCmdPasteClipboardEmpty,
+
+		text.eCmdLintSuccess,
+
+		text.commandBlockErrorTileEntity,
+		text.commandBlockErrorLocation,
+
+		text.pathMissing,
+		text.behaviorMissing,
+		text.behaviorUnknown,
+		text.behaviorMissingPerm,
+
+		text.endCommandNoCommand,
+		text.endCommandCommandNotFound,
+		text.endCommandPermMissing,
+
+		text.endCommandBlockSet,
+		text.endCommandBlockSetError,
+		text.endCommandCommandNotFound,
+		text.endCommandBlockPermMissing,
+		text.endCommandBlockNotFound,
+
+		text.endIncompatible,
+
+		text.endNOOP,
+		text.endSetNOOPHelp,
+
+		text.endSetCommandBlockInvalidPos,
+		text.endSetCommandBlockSpecifyPos,
+
+		text.endFileSaveSuccess,
+		text.endFileSaveFailed,
+		text.fileMissingPerm,
+		text.fileNotOpen,
+		text.fileSaved,
+		text.fileReloaded
+	)
 }
