@@ -29,18 +29,17 @@ import org.spongepowered.api.command.args.{CommandContext, GenericArguments}
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.command.{CommandException, CommandPermissionException, CommandResult, CommandSource}
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.end.CompEndChat
 import io.github.katrix.chateditor.editor.component.text.CompTextCursor
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.chateditor.listener.EditorHandler
-import io.github.katrix.katlib.KatPlugin
 import io.github.katrix.katlib.command.CommandBase
 import io.github.katrix.katlib.helper.Implicits._
 
-class CmdEditorFile(handler: EditorHandler, parent: CmdEditor)(implicit plugin: KatPlugin) extends CommandBase(Some(parent)) {
+class CmdEditorFile(handler: EditorHandler, parent: CmdEditor)(implicit plugin: EditorPlugin) extends CommandBase(Some(parent)) {
 
 	final val Create   = t"Create"
 	final val FilePath = t"File path"
@@ -48,33 +47,35 @@ class CmdEditorFile(handler: EditorHandler, parent: CmdEditor)(implicit plugin: 
 	override def execute(src: CommandSource, args: CommandContext): CommandResult = {
 		val data = (for {
 			player <- src.asInstanceOfOpt[Player].toRight(nonPlayerError).right
-			create <- args.getOne[Boolean](Create).toOption.toRight(new CommandException(t"Could not parse boolean")).right
+			create <- args.getOne[Boolean](Create).toOption.toRight(new CommandException(plugin.config.text.commandErrorParseBoolean.value)).right
 			path <- args.getOne[String](FilePath).toOption
-				.flatMap(s => Try(Paths.get(s)).toOption).toRight(new CommandException(t"Invalid file path")).right
+				.flatMap(s => Try(Paths.get(s)).toOption).toRight(new CommandException(plugin.config.text.commandErrorInvalidPath.value)).right
 		} yield {
 			val exists = path.toFile.exists()
 
 			if((!exists && create) || exists) Right((player, path))
-			else Left(new CommandException(t"The passed in path doesn't exist, and file creation is not set to true"))
+			else Left(new CommandException(plugin.config.text.commandEditorFilePathNotFoundNoCreate.value))
 		}).right.flatMap(identity) //No flatten D:
 
 		data match {
 			case Right((player, path)) if player.hasPermission(LibPerm.UnsafeFile) =>
-				player.sendMessage(t"${GREEN}You are now in an file editor. Start typing")
+				player.sendMessage(plugin.config.text.commandEditorFileSuccess.value)
 				val editor = Editor(CompTextCursor(0, 0, ""), CompEndChat, WeakReference(player), handler)
 				editor.text.dataPut("path", path)
 				handler.addEditorPlayer(player, editor)
 				CommandResult.success()
 			case Right((player, _, path)) =>
-				throw new CommandPermissionException(t"You NEED to have the permission to use a file chat editor to use this command")
+				throw new CommandPermissionException(plugin.config.text.commandEditorFilePermError.value)
 			case Left(e) => throw e
 		}
 	}
+
 	override def commandSpec: CommandSpec = CommandSpec.builder()
 		.description(t"Opens a editor to a specific file path")
 		.permission(LibPerm.UnsafeFile)
 		.arguments(GenericArguments.bool(Create), GenericArguments.remainingJoinedStrings(FilePath))
 		.executor(this)
 		.build()
+
 	override def aliases: Seq[String] = Seq("file")
 }

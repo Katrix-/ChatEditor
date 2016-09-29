@@ -21,13 +21,13 @@
 package io.github.katrix.chateditor.editor.component.end
 
 import org.spongepowered.api.Sponge
-import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.EndComponent
 import io.github.katrix.katlib.helper.Implicits._
 
-object CompEndCommand extends EndComponent {
+class CompEndCommand(implicit plugin: EditorPlugin) extends EndComponent {
 
 	override def end(editor: Editor): Option[Editor] = {
 		editor.player.get match {
@@ -39,14 +39,14 @@ object CompEndCommand extends EndComponent {
 							mapping.getCallable.process(player, arguments.mkString(" "))
 							None
 						case Some(_) =>
-							player.sendMessage(t"${RED}You don't have the permissions for that command")
+							player.sendMessage(plugin.config.text.endCommandPermMissing.value)
 							Some(editor)
 						case None =>
-							player.sendMessage(t"${RED}No command by that name found")
+							player.sendMessage(plugin.config.text.endCommandCommandNotFound.value)
 							Some(editor)
 					}
 				case _ =>
-					player.sendMessage(t"No command specified, please set a command")
+					player.sendMessage(plugin.config.text.endCommandNoCommand.value)
 					Some(editor)
 			}
 			case None => None //If no player is found, just remove the editor and call it done

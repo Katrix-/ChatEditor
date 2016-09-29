@@ -20,13 +20,12 @@
  */
 package io.github.katrix.chateditor.editor.command
 
-import java.io.{BufferedReader, BufferedWriter, StringReader, StringWriter}
+import java.io.StringWriter
 
 import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.text.Text
 
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdPrettifyHocon extends ECmdPrettify with HoconParser {

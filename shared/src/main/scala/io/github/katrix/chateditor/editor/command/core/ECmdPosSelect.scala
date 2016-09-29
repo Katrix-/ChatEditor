@@ -24,14 +24,14 @@ import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-object ECmdPosSelect extends EditorCommand {
+class ECmdPosSelect(implicit plugin: EditorPlugin) extends EditorCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		val args = raw.split(' ')
@@ -49,12 +49,12 @@ object ECmdPosSelect extends EditorCommand {
 					selectText.sendPreview(newEditor, player)
 					newEditor
 				case Failure(e) =>
-					player.sendMessage(t"${RED}Invalid position or selection")
+					player.sendMessage(plugin.config.text.eCmdPosSelectInvalid.value)
 					editor
 			}
 		}
 		else {
-			player.sendMessage(t"${RED}Please specify a position and a selection")
+			player.sendMessage(plugin.config.text.eCmdPosSelectSpecify.value)
 			editor
 		}
 	}

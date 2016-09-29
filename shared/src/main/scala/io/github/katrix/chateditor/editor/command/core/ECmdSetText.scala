@@ -22,12 +22,13 @@ package io.github.katrix.chateditor.editor.command.core
 
 import java.nio.file.Paths
 
+import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.editor.component.end.CompEndSave
@@ -35,7 +36,7 @@ import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTe
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-object ECmdSetText extends EditorCommand {
+class ECmdSetText(implicit plugin: EditorPlugin) extends EditorCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		val args = raw.split(' ')
@@ -43,10 +44,10 @@ object ECmdSetText extends EditorCommand {
 			val behavior = args(1)
 			behavior match {
 				case "cursor" =>
-					player.sendMessage(t"${GREEN}Set text behavior to cursor")
+					player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava).build())
 					editor.copy(text = CompTextCursor(0, 0, editor.text.builtString))
 				case "line" =>
-					player.sendMessage(t"${GREEN}Set text behavior to line")
+					player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "line").asJava).build())
 					val currentStrings = editor.text.builtString.split(' ')
 					val strings = if(currentStrings.forall(_.isEmpty)) Seq() else currentStrings: Seq[String]
 					editor.copy(text = CompTextLine(0, 0, strings))
@@ -55,27 +56,28 @@ object ECmdSetText extends EditorCommand {
 						Try(Paths.get(args(2))) match {
 							case Success(path) =>
 								val newText = editor.text.dataPut("path", path)
-								player.sendMessage(t"${GREEN}Set text behavior to file, set end behavior to save")
-								editor.copy(text = newText, end = CompEndSave)
+								player.sendMessage(t"${plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava)}, ${
+									plugin.config.text.endSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava)}")
+								editor.copy(text = newText, end = new CompEndSave)
 							case Failure(e) =>
-								player.sendMessage(t"Invalid path: ${e.getMessage}")
+								player.sendMessage(plugin.config.text.pathInvalid.value(Map(plugin.config.text.Behavior -> e.getMessage).asJava).build())
 								editor
 						}
 					}
 					else {
-						player.sendMessage(t"${RED}Please specify a file path")
+						player.sendMessage(plugin.config.text.pathMissing.value)
 						editor
 					}
 				case "file" =>
-					player.sendMessage(t"${RED}You don't have permission to use that text behavior")
+					player.sendMessage(plugin.config.text.behaviorMissingPerm.value)
 					editor
 				case _ =>
-					player.sendMessage(t"${RED}Unrecognized text behavior")
+					player.sendMessage(plugin.config.text.behaviorUnknown.value)
 					editor
 			}
 		}
 		else {
-			player.sendMessage(t"${RED}You need to specify a new text behavior")
+			player.sendMessage(plugin.config.text.behaviorMissing.value)
 			editor
 		}
 	}

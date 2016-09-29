@@ -4,33 +4,31 @@ import java.nio.file.Path
 
 import scala.util.{Failure, Success}
 
-import org.spongepowered.api.text.format.TextColors._
-
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.EndComponent
 import io.github.katrix.chateditor.editor.component.text.FileEditorHelper
 import io.github.katrix.chateditor.lib.LibPerm
-import io.github.katrix.katlib.helper.Implicits._
 
-object CompEndSave extends EndComponent {
+class CompEndSave(implicit plugin: EditorPlugin) extends EndComponent {
 
 	override def end(editor: Editor): Option[Editor] = {
 		if(editor.player.get.exists(_.hasPermission(LibPerm.UnsafeFile))) {
 			editor.text.data("path") match {
 				case Some(path: Path) => FileEditorHelper.save(path, editor) match {
 					case Success(_) =>
-						editor.player.get.foreach(_.sendMessage(t"${GREEN}Saved and closed file"))
+						editor.player.get.foreach(_.sendMessage(plugin.config.text.endFileSaveSuccess.value))
 						None
 					case Failure(_) =>
-						editor.player.get.foreach(_.sendMessage(t"${RED}Failed to save file. Not closing"))
+						editor.player.get.foreach(_.sendMessage(plugin.config.text.endFileSaveFailed.value))
 						Some(editor)
 				}
-				case _ => editor.player.get.foreach(_.sendMessage(t"${RED}Invalid end component for: $editor"))
+				case _ => editor.player.get.foreach(_.sendMessage(plugin.config.text.endIncompatible.value))
 					None
 			}
 		}
 		else {
-			editor.player.get.foreach(_.sendMessage(t"${RED}You don't have permissions to save a file using a file editor"))
+			editor.player.get.foreach(_.sendMessage(plugin.config.text.fileMissingPerm.value))
 			Some(editor)
 		}
 	}

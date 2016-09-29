@@ -2,8 +2,8 @@ package io.github.katrix.chateditor.editor.command
 
 import scala.collection.mutable
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.command.core.{ECmdAddLine, ECmdEnd, ECmdHelp, ECmdPosSelect, ECmdSetEnd, ECmdSetText, ECmdText, ECmdView}
-import io.github.katrix.katlib.KatPlugin
 
 class EditorCommandRegistry {
 
@@ -39,29 +39,29 @@ class EditorCommandRegistry {
 		}
 	}
 
-	def registerCore(plugin: KatPlugin): Unit = {
+	def registerCore(implicit plugin: EditorPlugin): Unit = {
 		//Note ECmdText should NOT be registered
 		val cmds = Seq(
-			new ECmdEnd(plugin),
+			new ECmdEnd,
 			new ECmdHelp(this),
-			ECmdPosSelect,
-			ECmdSetEnd,
-			ECmdSetText,
+			new ECmdPosSelect,
+			new ECmdSetEnd,
+			new ECmdSetText,
 			ECmdView,
-			ECmdAddLine
+			new ECmdAddLine
 		)
 
 		cmds.foreach(register)
 	}
 
-	def registerFeatures(): Unit = {
+	def registerFeatures(implicit plugin: EditorPlugin): Unit = {
 		val cmds = Seq(
-			ECmdCopy,
-			ECmdCut,
-			ECmdPaste,
+			new ECmdCopy,
+			new ECmdCut,
+			new ECmdPaste,
 
-			ECmdLintHocon,
-			ECmdLintJson,
+			new ECmdLintHocon,
+			new ECmdLintJson,
 			ECmdPrettifyHocon,
 			ECmdPrettifyJson
 		)

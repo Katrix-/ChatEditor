@@ -1,5 +1,6 @@
 package io.github.katrix.chateditor.listener
 
+import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.ref.WeakReference
 
@@ -11,8 +12,8 @@ import org.spongepowered.api.event.command.{SendCommandEvent, TabCompleteEvent}
 import org.spongepowered.api.event.filter.cause.First
 import org.spongepowered.api.event.message.MessageChannelEvent
 import org.spongepowered.api.event.{Listener, Order}
-import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommandRegistry
 import io.github.katrix.chateditor.editor.component.end.CompEndCommandBlock
@@ -20,7 +21,7 @@ import io.github.katrix.chateditor.editor.component.text.{CompTextCursor, CompTe
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
+class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugin: EditorPlugin) {
 
 	private val editorPlayers = new mutable.WeakHashMap[Player, Editor]
 
@@ -57,7 +58,7 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 
 									val newEditor = editor.copy(end = new CompEndCommandBlock(location))
 									editorPlayers.put(player, newEditor)
-									player.sendMessage(t"${YELLOW}Edit location set to ${location.getBlockPosition}")
+									player.sendMessage(plugin.config.text.commandBlockLocationSet.value(Map(plugin.config.text.Location -> location.getBlockPosition).asJava).build())
 								case _ =>
 							}
 							case None =>
@@ -66,18 +67,14 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 										event.setCancelled(true)
 
 										val commandString = tileEntity.get(Keys.COMMAND).orElse("")
-										player.sendMessage(
-											//We use the old methods here as we need to strip the margin
-											s"""Now editing command block at ${location.getBlockPosition}.
-													|Just start typing to fill in what should go into the commandblock.
-													|Once you are done, write !end to submit the command. Write !help to get more help""".stripMargin.richText.info())
+										player.sendMessage(plugin.config.text.commandBlockStart.value(Map(plugin.config.text.Location -> location.getBlockPosition).asJava).build())
 										val text = CompTextCursor(0, 0, commandString)
 										val end = new CompEndCommandBlock(location)
 										editorPlayers.put(player, Editor(text, end, WeakReference(player), this))
-									case None => player.sendMessage(t"${RED}Error while getting tile entity for command block")
+									case None => player.sendMessage(plugin.config.text.commandBlockErrorTileEntity.value)
 								}
 						}
-						case None => player.sendMessage(t"${RED}Could not get location of the command block")
+						case None => player.sendMessage(plugin.config.text.commandBlockErrorLocation.value)
 					}
 				}
 			}
@@ -97,9 +94,9 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry) {
 							val commandText = if(rawText.startsWith("!")) rawText.substring(1) else rawText
 							editorPlayers.put(player, command.execute(commandText, editor, player))
 						case Some(command) =>
-							player.sendMessage(t"${RED}You don't have permissions to use that command")
+							player.sendMessage(plugin.config.text.eCommandMissingPerm.value)
 						case None =>
-							player.sendMessage(t"${RED}Command not found")
+							player.sendMessage(plugin.config.text.eCommandNotFound.value)
 					}
 				case None =>
 			}

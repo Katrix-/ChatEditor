@@ -26,22 +26,21 @@ import org.spongepowered.api.command.args.CommandContext
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.command.{CommandResult, CommandSource}
 import org.spongepowered.api.entity.living.player.Player
-import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.end.CompEndChat
 import io.github.katrix.chateditor.editor.component.text.CompTextCursor
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.chateditor.listener.EditorHandler
-import io.github.katrix.katlib.KatPlugin
 import io.github.katrix.katlib.command.CommandBase
 import io.github.katrix.katlib.helper.Implicits._
 
-class CmdEditor(handler: EditorHandler)(implicit plugin: KatPlugin) extends CommandBase(None) {
+class CmdEditor(handler: EditorHandler)(implicit plugin: EditorPlugin) extends CommandBase(None) {
 
 	override def execute(src: CommandSource, args: CommandContext): CommandResult = src match {
 		case player: Player =>
-			player.sendMessage(t"${GREEN}You are now in an editor. Start typing")
+			player.sendMessage(plugin.config.text.commandEditorSuccess.value)
 			handler.addEditorPlayer(player, Editor(CompTextCursor(0, 0, ""), CompEndChat, WeakReference(player), handler))
 			CommandResult.success()
 		case _ => throw nonPlayerError

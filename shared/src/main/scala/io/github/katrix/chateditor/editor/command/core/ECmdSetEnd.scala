@@ -20,27 +20,28 @@
  */
 package io.github.katrix.chateditor.editor.command.core
 
+import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
-import org.spongepowered.api.text.format.TextColors._
 import org.spongepowered.api.world.{Location, World}
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.editor.component.end.{CompEndChat, CompEndCommandBlock, CompEndNOOP}
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.katlib.helper.Implicits._
 
-object ECmdSetEnd extends EditorCommand {
+class ECmdSetEnd(implicit plugin: EditorPlugin) extends EditorCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		val args = raw.split(' ')
 		if(args.length >= 2) {
 			args(1) match {
 				case "chat" =>
-					player.sendMessage(t"${GREEN}Set end behavior to chat")
+					player.sendMessage(plugin.config.text.endSet.value(Map(plugin.config.text.Behavior -> "chat").asJava).build())
 					editor.copy(end = CompEndChat)
 				case "commandblock" if player.hasPermission(LibPerm.CommandBlock) =>
 					if(args.length > 5) {
@@ -52,33 +53,34 @@ object ECmdSetEnd extends EditorCommand {
 
 						tryLoc match {
 							case Success(loc) =>
-								player.sendMessage(t"${GREEN}Set end behavior to commandblock")
+								player.sendMessage(plugin.config.text.endSet.value(Map(plugin.config.text.Behavior -> "commandblock").asJava).build())
 								editor.copy(end = new CompEndCommandBlock(loc))
 							case Failure(e) =>
-								player.sendMessage(t"Not a valid location")
+								player.sendMessage(plugin.config.text.endSetCommandBlockInvalidPos.value)
 								editor
 						}
 					}
 					else {
-						player.sendMessage(t"${RED}Please specify a location")
+						player.sendMessage(plugin.config.text.endSetCommandBlockSpecifyPos.value)
 						editor
 					}
 				case "command" if player.hasPermission(LibPerm.Command) =>
-					player.sendMessage(t"${GREEN}Set end behavior to command")
+					player.sendMessage(plugin.config.text.endSet.value(Map(plugin.config.text.Behavior -> "command").asJava).build())
 					editor.copy(end = CompEndChat)
 				case "commandblock" | "command" =>
-					player.sendMessage(t"${RED}You don't have permission to use that end behavior")
+					player.sendMessage(plugin.config.text.behaviorMissingPerm.value)
 					editor
 				case "cancel" =>
-					player.sendMessage(t"End behavior set to none. Use !end to close the editor")
-					editor.copy(end = CompEndNOOP)
+					player.sendMessage(t"${plugin.config.text.endSet.value(Map(plugin.config.text.Behavior -> "none").asJava)}. ${
+						plugin.config.text.endSetNOOPHelp.value}")
+					editor.copy(end = new CompEndNOOP)
 				case _ =>
-					player.sendMessage(t"${RED}Unrecognized end behavior")
+					player.sendMessage(plugin.config.text.behaviorUnknown.value)
 					editor
 			}
 		}
 		else {
-			player.sendMessage(t"${RED}You need to specify a new end behavior")
+			player.sendMessage(plugin.config.text.behaviorMissing.value)
 			editor
 		}
 	}

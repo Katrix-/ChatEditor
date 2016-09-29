@@ -25,18 +25,19 @@ import scala.util.{Failure, Success, Try}
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
-import com.google.gson.{GsonBuilder, JsonParser}
+import com.google.gson.JsonParser
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.katlib.helper.Implicits._
 
-object ECmdLintJson extends ECmdLint {
+class ECmdLintJson(implicit plugin: EditorPlugin) extends ECmdLint {
 
 	private val parser = new JsonParser
 
 	override def lint(string: String): Text = {
 		Try(parser.parse(string)) match {
 			case Failure(e) => t"$RED${e.getMessage}"
-			case Success(_) => t"${GREEN}All is well"
+			case Success(_) => plugin.config.text.eCmdLintSuccess.value
 		}
 	}
 

@@ -4,13 +4,13 @@ import org.spongepowered.api.Sponge
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.command.EditorCommand
 import io.github.katrix.chateditor.lib.LibPerm
-import io.github.katrix.katlib.KatPlugin
 import io.github.katrix.katlib.helper.Implicits._
 
-class ECmdEnd(plugin: KatPlugin) extends EditorCommand {
+class ECmdEnd(implicit plugin: EditorPlugin) extends EditorCommand {
 
 	override def execute(raw: String, editor: Editor, player: Player): Editor = {
 		editor.end.end(editor) match {

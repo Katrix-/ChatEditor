@@ -20,22 +20,20 @@
  */
 package io.github.katrix.chateditor.editor.command
 
-import java.io.{BufferedReader, BufferedWriter, StringReader, StringWriter}
-
 import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.text.Text
 import org.spongepowered.api.text.format.TextColors._
 
+import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.katlib.helper.Implicits._
-import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
-object ECmdLintHocon extends ECmdLint with HoconParser {
+class ECmdLintHocon(implicit plugin: EditorPlugin) extends ECmdLint with HoconParser {
 
 	override def lint(string: String): Text = {
 		Try(loader(string, None).load()) match {
 			case Failure(e) => t"$RED${e.getMessage}"
-			case Success(_) => t"${GREEN}All is well"
+			case Success(_) => plugin.config.text.eCmdLintSuccess.value
 		}
 	}
 
