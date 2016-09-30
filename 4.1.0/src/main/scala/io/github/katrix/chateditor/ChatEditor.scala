@@ -15,14 +15,14 @@ import io.github.katrix.chateditor.command.CmdEditor
 import io.github.katrix.chateditor.editor.command.EditorCommandRegistry
 import io.github.katrix.chateditor.lib.LibPlugin
 import io.github.katrix.chateditor.listener.EditorHandler
+import io.github.katrix.chateditor.persistant.{EditorConfig, EditorConfigLoader}
 import io.github.katrix.katlib.lib.LibKatLibPlugin
-import io.github.katrix.katlib.persistant.Config
 import io.github.katrix.katlib.{ImplKatPlugin, KatLib}
 
 object ChatEditor {
 
-	final val Version         = s"${KatLib.CompiledAgainst}-1.0.0"
-	final val ConstantVersion = "4.1.0-1.0.0"
+	final val Version         = s"${KatLib.CompiledAgainst}-0.1.0"
+	final val ConstantVersion = "4.1.0-0.1.0"
 	assert(Version == ConstantVersion)
 
 	private var _plugin: ChatEditor = _
@@ -31,8 +31,8 @@ object ChatEditor {
 
 	def init(event: GameInitializationEvent): Unit = {
 		val registry = new EditorCommandRegistry
-		registry.registerCore(_plugin)
-		registry.registerFeatures()
+		registry.registerCore
+		registry.registerFeatures
 
 		val editorHandler = new EditorHandler(registry)
 		Sponge.getEventManager.registerListeners(_plugin, editorHandler)
@@ -45,11 +45,12 @@ object ChatEditor {
 
 @Plugin(id = LibPlugin.Id, name = LibPlugin.Name, version = ChatEditor.ConstantVersion, dependencies = Array(new Dependency(id = LibKatLibPlugin.Id)))
 class ChatEditor @Inject()(logger: Logger, @ConfigDir(sharedRoot = false) cfgDir: Path, spongeContainer: PluginContainer)
-	extends ImplKatPlugin(logger, cfgDir, spongeContainer, LibPlugin.Id) {
+	extends ImplKatPlugin(logger, cfgDir, spongeContainer, LibPlugin.Id) with EditorPlugin {
 
 	implicit val plugin = this
 
-	override def config: Config = ???
+	private val configLoader = new EditorConfigLoader(cfgDir)
+	override def config: EditorConfig = configLoader.loadData()
 
 	@Listener
 	def gameConstruct(event: GameConstructionEvent) {

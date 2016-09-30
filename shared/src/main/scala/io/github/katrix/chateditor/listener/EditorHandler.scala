@@ -58,7 +58,8 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
 
 									val newEditor = editor.copy(end = new CompEndCommandBlock(location))
 									editorPlayers.put(player, newEditor)
-									player.sendMessage(plugin.config.text.commandBlockLocationSet.value(Map(plugin.config.text.Location -> location.getBlockPosition).asJava).build())
+									player.sendMessage(plugin.config.text.commandBlockLocationSet.value(Map(plugin.config.text.Location -> location.getBlockPosition)
+										.asJava).build())
 								case _ =>
 							}
 							case None =>
@@ -67,7 +68,8 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
 										event.setCancelled(true)
 
 										val commandString = tileEntity.get(Keys.COMMAND).orElse("")
-										player.sendMessage(plugin.config.text.commandBlockStart.value(Map(plugin.config.text.Location -> location.getBlockPosition).asJava).build())
+										player.sendMessage(plugin.config.text.commandBlockStart.value(Map(plugin.config.text.Location -> location.getBlockPosition)
+											.asJava).build())
 										val text = CompTextCursor(0, 0, commandString)
 										val end = new CompEndCommandBlock(location)
 										editorPlayers.put(player, Editor(text, end, WeakReference(player), this))
@@ -122,14 +124,21 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
 	def onTabComplete(event: TabCompleteEvent, @First player: Player): Unit = {
 		if(!event.getCause.contains(BypassEditor)) {
 			editorPlayers.get(player) match {
-				case Some(editor) => editor.text match {
-					case lineEditor: CompTextLine =>
-						val suggestions = event.getTabCompletions
-						if(suggestions.isEmpty) {
-							suggestions.add(lineEditor.currentLine)
-						}
-					case _ =>
-				}
+				case Some(editor) =>
+					val rawMessage = event.getRawMessage
+					val suggestions = event.getTabCompletions
+					if(rawMessage.startsWith("!")) {
+						val withoutExclamation = rawMessage.drop(1)
+						val relevantCommands = editorCommandRegistry.registeredCommands.keys.filter(s => s.startsWith(withoutExclamation)).map(str => s"!$str")
+						suggestions.addAll(relevantCommands.toSeq.asJava)
+					}
+					else editor.text match {
+						case lineEditor: CompTextLine =>
+							if(suggestions.isEmpty) {
+								suggestions.add(lineEditor.currentLine)
+							}
+						case _ =>
+					}
 				case None =>
 			}
 		}

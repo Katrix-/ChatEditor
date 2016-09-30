@@ -33,7 +33,7 @@ import io.github.katrix.katlib.helper.Implicits._
 case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[String, Any] = Map()) extends TextComponent {
 	require(pos >= 0)
 	require(select >= pos)
-	require(select <= content.length)
+	require(select - 1 <= content.length)
 
 	override type Preview = Text
 	override type Self = CompTextCursor
@@ -62,29 +62,36 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
 			.onShiftClick(TextActions.insertText(shiftCallback(i)))
 			.build())
 
-		val top = content.substring(0, pos)
-		val topText = Text.of(stringToText(0, top): _*)
+		val raw = content.map(_.toString.text)
 
-		val selected = content.substring(pos + 1, select)
-		val selectedText = Text.of(stringToText(top.length, selected): _*)
+		val currentLine = t"$AQUA${raw(pos)}"
+		val selectedLines = currentLine +: (pos + 1 to select map raw).map(l => t"$BLUE$l")
 
-		val bottom = content.substring(select, content.length)
-		val bottomText = Text.of(stringToText(top.length + selected.length, bottom): _*)
-		t"$topText$BLUE[$selectedText]$RESET$bottomText"
+		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + 1)
+		val interactive = display.indices.map(i => display(i).toBuilder
+			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
+			.onShiftClick(TextActions.insertText(shiftCallback(i)))
+			.build())
+
+		Text.of(interactive: _*)
 	}
+
 	override def selectedPreview(editor: Editor): Text = t"$BLUE$selectedString"
 	override def sendPreview(editor: Editor, player: Player): Unit = player.sendMessage(preview(editor))
 
 	override def addString(string: String): Self = {
 		if(hasSelection) {
 			val builder = new StringBuilder(content)
-			builder.replace(pos, select, string)
+			builder.replace(pos, select + 1, string)
 			val newContent = builder.mkString
 
 			val newPos = clamp(0, newContent.length - 1, pos)
 			copy(content = newContent, pos = newPos, select = clamp(newPos, newContent.length - 1, select))
 		}
-		else copy(content = content + string)
+		else {
+			val newContent = content + string
+			copy(content = newContent, pos = newContent.length - 1, select = newContent.length - 1)
+		}
 	}
 
 	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.length - 1, pos))

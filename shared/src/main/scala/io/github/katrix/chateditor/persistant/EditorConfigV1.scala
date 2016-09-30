@@ -47,7 +47,6 @@ class EditorConfigV1(cfgRoot: CommentedConfigurationNode, default: EditorConfig)
 		override val commandBlockErrorTileEntity = ConfigValue(cfgRoot, default.text.commandBlockErrorTileEntity)
 		override val commandBlockErrorLocation   = ConfigValue(cfgRoot, default.text.commandBlockErrorLocation)
 
-		override val pathMissing         = ConfigValue(cfgRoot, default.text.pathMissing)
 		override val behaviorMissing     = ConfigValue(cfgRoot, default.text.behaviorMissing)
 		override val behaviorUnknown     = ConfigValue(cfgRoot, default.text.behaviorUnknown)
 		override val behaviorMissingPerm = ConfigValue(cfgRoot, default.text.behaviorMissingPerm)

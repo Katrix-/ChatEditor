@@ -32,8 +32,8 @@ import org.spongepowered.api.entity.living.player.Player
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
-import io.github.katrix.chateditor.editor.component.end.CompEndChat
-import io.github.katrix.chateditor.editor.component.text.CompTextCursor
+import io.github.katrix.chateditor.editor.component.end.CompEndSave
+import io.github.katrix.chateditor.editor.component.text.FileEditorHelper
 import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.chateditor.listener.EditorHandler
 import io.github.katrix.katlib.command.CommandBase
@@ -60,11 +60,11 @@ class CmdEditorFile(handler: EditorHandler, parent: CmdEditor)(implicit plugin: 
 		data match {
 			case Right((player, path)) if player.hasPermission(LibPerm.UnsafeFile) =>
 				player.sendMessage(plugin.config.text.commandEditorFileSuccess.value)
-				val editor = Editor(CompTextCursor(0, 0, ""), CompEndChat, WeakReference(player), handler)
+				val editor = Editor(FileEditorHelper.loadOrCreate(path), new CompEndSave, WeakReference(player), handler)
 				editor.text.dataPut("path", path)
 				handler.addEditorPlayer(player, editor)
 				CommandResult.success()
-			case Right((player, _, path)) =>
+			case Right((player, path)) =>
 				throw new CommandPermissionException(plugin.config.text.commandEditorFilePermError.value)
 			case Left(e) => throw e
 		}

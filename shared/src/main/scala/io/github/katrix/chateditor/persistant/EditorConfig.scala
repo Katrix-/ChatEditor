@@ -53,7 +53,6 @@ trait EditorConfig extends Config {
 		val commandBlockErrorTileEntity: ConfigValue[Text]
 		val commandBlockErrorLocation  : ConfigValue[Text]
 
-		val pathMissing        : ConfigValue[Text]
 		val behaviorMissing    : ConfigValue[Text]
 		val behaviorUnknown    : ConfigValue[Text]
 		val behaviorMissingPerm: ConfigValue[Text]
@@ -122,7 +121,6 @@ trait EditorConfig extends Config {
 		text.commandBlockErrorTileEntity,
 		text.commandBlockErrorLocation,
 
-		text.pathMissing,
 		text.behaviorMissing,
 		text.behaviorUnknown,
 		text.behaviorMissingPerm,

@@ -22,14 +22,14 @@ lazy val editorShared = project in file("shared") settings(commonSettings: _*)  
 
 lazy val editorV410 = project in file("4.1.0") dependsOn editorShared settings(commonSettings: _*) settings(
 	name := "ChatEditor-4.1.0",
-	version := "1.0.0",
+	version := "0.1.0",
 	libraryDependencies += "org.spongepowered" % "spongeapi" % "4.1.0" % "provided",
 	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-4-1-0" % "develop-SNAPSHOT" % "provided"
 	)
 
 lazy val editorV500 = project in file("5.0.0") dependsOn editorShared settings(commonSettings: _*) settings(
 	name := "ChatEditor-5.0.0",
-	version := "1.0.0",
+	version := "0.1.0",
 	libraryDependencies += "org.spongepowered" % "spongeapi" % "5.0.0-SNAPSHOT" % "provided",
 	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-5-0-0" % "develop-SNAPSHOT" % "provided"
 	)

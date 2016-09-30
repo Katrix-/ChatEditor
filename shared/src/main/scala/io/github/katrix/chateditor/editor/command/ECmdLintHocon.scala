@@ -37,6 +37,6 @@ class ECmdLintHocon(implicit plugin: EditorPlugin) extends ECmdLint with HoconPa
 		}
 	}
 
-	override def aliases: Seq[String] = Seq("hoconLint")
+	override def aliases: Seq[String] = Seq("lintHocon")
 	override def help: Text = t"Check if your HOCON is formatted correctly"
 }

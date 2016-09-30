@@ -63,9 +63,14 @@ class EditorCommandRegistry {
 			new ECmdLintHocon,
 			new ECmdLintJson,
 			ECmdPrettifyHocon,
-			ECmdPrettifyJson
+			ECmdPrettifyJson,
+
+			new ECmdReload,
+			new ECmdSave
 		)
 
 		cmds.foreach(register)
 	}
+
+	def registeredCommands: Map[String, EditorCommand] = Map(commandMap.toSeq: _*)
 }

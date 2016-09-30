@@ -48,7 +48,7 @@ class ECmdSetText(implicit plugin: EditorPlugin) extends EditorCommand {
 					editor.copy(text = CompTextCursor(0, 0, editor.text.builtString))
 				case "line" =>
 					player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "line").asJava).build())
-					val currentStrings = editor.text.builtString.split(' ')
+					val currentStrings = editor.text.builtString.split('\n').flatMap(_.split("""\\n"""))
 					val strings = if(currentStrings.forall(_.isEmpty)) Seq() else currentStrings: Seq[String]
 					editor.copy(text = CompTextLine(0, 0, strings))
 				case "file" if player.hasPermission(LibPerm.UnsafeFile) =>
@@ -65,7 +65,7 @@ class ECmdSetText(implicit plugin: EditorPlugin) extends EditorCommand {
 						}
 					}
 					else {
-						player.sendMessage(plugin.config.text.pathMissing.value)
+						player.sendMessage(plugin.config.text.pathInvalid.value)
 						editor
 					}
 				case "file" =>

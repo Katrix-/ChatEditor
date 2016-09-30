@@ -37,7 +37,7 @@ import io.github.katrix.katlib.helper.Implicits._
 case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Map[String, Any] = Map()) extends TextComponent {
 	require(pos >= 0)
 	require(select >= pos)
-	require(pos - 1 <= content.size)
+	require(select - 1 <= content.size)
 
 	override type Preview = Seq[Text]
 	override type Self = CompTextLine
@@ -48,11 +48,6 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 	override def selectedString: String = content.slice(pos, select).mkString("\n")
 
 	override def preview(editor: Editor): Seq[Text] = {
-		val raw = content.map(_.text)
-
-		val currentLine = t"$AQUA${raw(pos)}"
-		val selectedLines = currentLine +: (pos + 1 to select map raw).map(l => t"$BLUE$l")
-
 		val clickCallback: (CommandSource, Int) => Unit = (src, textLine) => {
 			val newCompText = copy(pos = textLine, select = textLine)
 			editor.useNewTextComponent(newCompText)
@@ -67,6 +62,11 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 			val (newPos, newSelect) = if(textLine < pos) (textLine, pos) else (pos, textLine)
 			s"!posSelect $newPos $newSelect"
 		}
+
+		val raw = content.map(_.text)
+
+		val currentLine = t"$AQUA${raw(pos)}"
+		val selectedLines = currentLine +: (pos + 1 to select map raw).map(l => t"$BLUE$l")
 
 		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + 1)
 		val interactive = display.indices.map(i => display(i).toBuilder
@@ -97,7 +97,7 @@ case class CompTextLine(pos: Int, select: Int, content: Seq[String], dataMap: Ma
 	}
 
 	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.size - 1, pos))
-	override def select_=(selected: Int): Self = copy(select = clamp(pos, content.size - 1, selected))
+	override def select_=(select: Int): Self = copy(select = clamp(pos, content.size - 1, select))
 
 	private def clamp(min: Int, max: Int, orig: Int): Int = {
 		if(orig > max) max
