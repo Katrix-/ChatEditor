@@ -3,7 +3,7 @@ lazy val commonSettings = Seq(
 	scalaVersion := "2.11.8",
 	resolvers += "SpongePowered" at "https://repo.spongepowered.org/maven",
 	resolvers += "jitpack" at "https://jitpack.io",
-	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-shared" % "develop-SNAPSHOT" % "provided",
+	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-shared" % "1.1.0" % "provided",
 	scalacOptions += "-Xexperimental",
 	crossPaths := false,
 	assemblyShadeRules in assembly := Seq(
@@ -24,14 +24,14 @@ lazy val editorV410 = project in file("4.1.0") dependsOn editorShared settings(c
 	name := "ChatEditor-4.1.0",
 	version := "0.1.0",
 	libraryDependencies += "org.spongepowered" % "spongeapi" % "4.1.0" % "provided",
-	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-4-1-0" % "develop-SNAPSHOT" % "provided"
+	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-4-1-0" % "1.1.0" % "provided"
 	)
 
 lazy val editorV500 = project in file("5.0.0") dependsOn editorShared settings(commonSettings: _*) settings(
 	name := "ChatEditor-5.0.0",
 	version := "0.1.0",
 	libraryDependencies += "org.spongepowered" % "spongeapi" % "5.0.0-SNAPSHOT" % "provided",
-	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-5-0-0" % "develop-SNAPSHOT" % "provided"
+	libraryDependencies += "com.github.Katrix-.KatLib" % "katlib-5-0-0" % "1.1.0" % "provided"
 	)
 
 lazy val editorRoot = project in file(".") settings (publishArtifact := false) disablePlugins AssemblyPlugin aggregate(editorV410, editorV500)

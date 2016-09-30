@@ -92,7 +92,7 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
 
 					val rawText = event.getRawMessage.toPlain
 					editorCommandRegistry.getCommand(rawText) match {
-						case Some(command) /*if player.hasPermission(command.permission)*/ =>
+						case Some(command) if player.hasPermission(command.permission) =>
 							val commandText = if(rawText.startsWith("!")) rawText.substring(1) else rawText
 							editorPlayers.put(player, command.execute(commandText, editor, player))
 						case Some(command) =>
