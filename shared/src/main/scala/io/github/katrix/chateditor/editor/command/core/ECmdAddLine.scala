@@ -12,16 +12,16 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdAddLine(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = editor.text match {
-		case line: CompTextLine =>
-			player.sendMessage(plugin.config.text.eCmdAddLine.value)
-			editor.copy(text = line.copy(content = line.content :+ ""))
-		case _ =>
-			player.sendMessage(IncompatibleCommand)
-			editor
-	}
+  override def execute(raw: String, editor: Editor, player: Player): Editor = editor.text match {
+    case line: CompTextLine =>
+      player.sendMessage(plugin.config.text.eCmdAddLine.value)
+      editor.copy(text = line.copy(content = line.content :+ ""))
+    case _ =>
+      player.sendMessage(IncompatibleCommand)
+      editor
+  }
 
-	override def aliases: Seq[String] = Seq("addLine")
-	override def help: Text = t"Adds a new line to a line editor"
-	override def permission: String = LibPerm.Editor
+  override def aliases:    Seq[String] = Seq("addLine")
+  override def help:       Text        = t"Adds a new line to a line editor"
+  override def permission: String      = LibPerm.Editor
 }

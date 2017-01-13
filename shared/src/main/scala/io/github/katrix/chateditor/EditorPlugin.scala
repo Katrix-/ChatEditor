@@ -5,6 +5,6 @@ import io.github.katrix.katlib.KatPlugin
 
 trait EditorPlugin extends KatPlugin {
 
-	override def config: EditorConfig
+  override def config: EditorConfig
 
 }

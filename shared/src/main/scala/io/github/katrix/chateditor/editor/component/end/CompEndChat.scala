@@ -36,29 +36,28 @@ import io.github.katrix.katlib.helper.Implicits._
 
 object CompEndChat extends EndComponent {
 
-	override def end(editor: Editor): Option[Editor] = {
-		editor.player.get match {
-			case Some(player) =>
-				val rawText = t"${editor.text.builtString}"
-				val formatter = new MessageFormatter
-				formatter.setBody(rawText)
+  override def end(editor: Editor): Option[Editor] =
+    editor.player.get match {
+      case Some(player) =>
+        val rawText   = t"${editor.text.builtString}"
+        val formatter = new MessageFormatter
+        formatter.setBody(rawText)
 
-				val applier = new SimpleTextTemplateApplier(tt"<${"header"}>")
-				applier.setParameter("header", t"${player.getName}")
+        val applier = new SimpleTextTemplateApplier(tt"<${"header"}>")
+        applier.setParameter("header", t"${player.getName}")
 
-				formatter.getHeader.add(applier)
+        formatter.getHeader.add(applier)
 
-				val cause = Cause.builder().owner(player).named(s"${LibPlugin.Id}.editor", editor).named("bypass", BypassEditor).build()
-				val messageChannel = player.getMessageChannel
-				val event = SpongeEventFactory.createMessageChannelEventChat(cause, messageChannel, Optional.of(messageChannel), formatter, rawText, false)
-				val cancelled = Sponge.getEventManager.post(event)
+        val cause          = Cause.builder().owner(player).named(s"${LibPlugin.Id}.editor", editor).named("bypass", BypassEditor).build()
+        val messageChannel = player.getMessageChannel
+        val event          = SpongeEventFactory.createMessageChannelEventChat(cause, messageChannel, Optional.of(messageChannel), formatter, rawText, false)
+        val cancelled      = Sponge.getEventManager.post(event)
 
-				if(!cancelled) {
-					event.getChannel.ifPresent(m => m.send(player, event.getMessage))
-				}
+        if (!cancelled) {
+          event.getChannel.ifPresent(m => m.send(player, event.getMessage))
+        }
 
-				None
-			case None => None
-		}
-	}
+        None
+      case None => None
+    }
 }

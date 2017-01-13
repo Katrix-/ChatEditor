@@ -10,16 +10,16 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdPaste(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = editor.text.data("clipboard") match {
-		case Some(string: String) =>
-			player.sendMessage(plugin.config.text.eCmdPaste.value)
-			editor.copy(text = editor.text.addString(string))
-		case _ =>
-			player.sendMessage(plugin.config.text.eCmdPasteClipboardEmpty.value)
-			editor
-	}
+  override def execute(raw: String, editor: Editor, player: Player): Editor = editor.text.data("clipboard") match {
+    case Some(string: String) =>
+      player.sendMessage(plugin.config.text.eCmdPaste.value)
+      editor.copy(text = editor.text.addString(string))
+    case _ =>
+      player.sendMessage(plugin.config.text.eCmdPasteClipboardEmpty.value)
+      editor
+  }
 
-	override def aliases: Seq[String] = Seq("copy")
-	override def help: Text = t"Pastes the text currently in the clipboard"
-	override def permission: String = LibPerm.ECmdCopyPaste
+  override def aliases:    Seq[String] = Seq("copy")
+  override def help:       Text        = t"Pastes the text currently in the clipboard"
+  override def permission: String      = LibPerm.ECmdCopyPaste
 }

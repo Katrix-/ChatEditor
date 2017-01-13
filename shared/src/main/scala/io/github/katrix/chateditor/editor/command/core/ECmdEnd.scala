@@ -12,20 +12,20 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdEnd(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		editor.end.end(editor) match {
-			case Some(newEditor) => newEditor
-			case None =>
-				//TODO: Hacky, need better way
-				Sponge.getScheduler.createTaskBuilder()
-					.delayTicks(1)
-					.execute(() => editor.listener.removeEditorPlayer(player))
-					.submit(plugin)
-				editor
-		}
-	}
+  override def execute(raw: String, editor: Editor, player: Player): Editor =
+    editor.end.end(editor) match {
+      case Some(newEditor) => newEditor
+      case None            =>
+        //TODO: Hacky, need better way
+        Sponge.getScheduler
+          .createTaskBuilder()
+          .delayTicks(1)
+          .execute(() => editor.listener.removeEditorPlayer(player))
+          .submit(plugin)
+        editor
+    }
 
-	override def aliases: Seq[String] = Seq("end")
-	override def help: Text = t"Ends an editor session"
-	override def permission: String = LibPerm.Editor
+  override def aliases:    Seq[String] = Seq("end")
+  override def help:       Text        = t"Ends an editor session"
+  override def permission: String      = LibPerm.Editor
 }

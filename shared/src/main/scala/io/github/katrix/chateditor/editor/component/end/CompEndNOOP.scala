@@ -26,8 +26,8 @@ import io.github.katrix.chateditor.editor.component.EndComponent
 
 class CompEndNOOP(implicit plugin: EditorPlugin) extends EndComponent {
 
-	override def end(editor: Editor): Option[Editor] = {
-		editor.player.get.foreach(_.sendMessage(plugin.config.text.endNOOP.value))
-		None
-	}
+  override def end(editor: Editor): Option[Editor] = {
+    editor.player.get.foreach(_.sendMessage(plugin.config.text.endNOOP.value))
+    None
+  }
 }

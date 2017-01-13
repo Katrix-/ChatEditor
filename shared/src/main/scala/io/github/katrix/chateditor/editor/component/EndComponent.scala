@@ -24,7 +24,7 @@ import io.github.katrix.chateditor.editor.Editor
 
 trait EndComponent {
 
-	/**
+  /**
 		* A callback that will be executed when the `!end`
 		* command is executed
 		*
@@ -32,5 +32,5 @@ trait EndComponent {
 		* @return The editor to use after this.
 		* None if the player should exit editor mode
 		*/
-	def end(editor: Editor): Option[Editor]
+  def end(editor: Editor): Option[Editor]
 }

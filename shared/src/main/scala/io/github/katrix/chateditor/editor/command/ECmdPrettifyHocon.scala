@@ -30,15 +30,15 @@ import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdPrettifyHocon extends ECmdPrettify with HoconParser {
 
-	override def prettify(string: String): Seq[String] = {
-		val writer = new StringWriter()
-		val configLoader = loader(string, Some(writer))
-		Try(configLoader.load()).map(n => configLoader.save(n)) match {
-			case Success(root) => writer.toString.split('\n')
-			case Failure(e) => string.split('\n')
-		}
-	}
+  override def prettify(string: String): Seq[String] = {
+    val writer       = new StringWriter()
+    val configLoader = loader(string, Some(writer))
+    Try(configLoader.load()).map(n => configLoader.save(n)) match {
+      case Success(root) => writer.toString.split('\n')
+      case Failure(e)    => string.split('\n')
+    }
+  }
 
-	override def aliases: Seq[String] = Seq("prettifyHocon")
-	override def help: Text = t"Prettify your HOCON"
+  override def aliases: Seq[String] = Seq("prettifyHocon")
+  override def help:    Text        = t"Prettify your HOCON"
 }

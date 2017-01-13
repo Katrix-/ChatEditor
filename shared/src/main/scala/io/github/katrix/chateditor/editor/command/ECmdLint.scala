@@ -8,12 +8,12 @@ import io.github.katrix.chateditor.lib.LibPerm
 
 abstract class ECmdLint extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		player.sendMessage(lint(editor.text.builtString))
-		editor
-	}
+  override def execute(raw: String, editor: Editor, player: Player): Editor = {
+    player.sendMessage(lint(editor.text.builtString))
+    editor
+  }
 
-	def lint(string: String): Text
+  def lint(string: String): Text
 
-	override def permission: String = LibPerm.ECmdLint
+  override def permission: String = LibPerm.ECmdLint
 }

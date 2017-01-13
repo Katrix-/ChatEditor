@@ -10,20 +10,18 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdCopy(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		if(editor.text.hasSelection) {
-			val selected = editor.text.selectedString
-			val newComp = editor.text.dataPut("clipboard", selected)
-			player.sendMessage(plugin.config.text.eCmdCopy.value)
-			editor.copy(text = newComp)
-		}
-		else {
-			player.sendMessage(plugin.config.text.eCmdCopyCutNoneSelected.value)
-			editor
-		}
-	}
+  override def execute(raw: String, editor: Editor, player: Player): Editor =
+    if (editor.text.hasSelection) {
+      val selected = editor.text.selectedString
+      val newComp  = editor.text.dataPut("clipboard", selected)
+      player.sendMessage(plugin.config.text.eCmdCopy.value)
+      editor.copy(text = newComp)
+    } else {
+      player.sendMessage(plugin.config.text.eCmdCopyCutNoneSelected.value)
+      editor
+    }
 
-	override def aliases: Seq[String] = Seq("copy")
-	override def help: Text = t"Copy the selected text to the clipboard. Paste with !paste"
-	override def permission: String = LibPerm.ECmdCopyPaste
+  override def aliases:    Seq[String] = Seq("copy")
+  override def help:       Text        = t"Copy the selected text to the clipboard. Paste with !paste"
+  override def permission: String      = LibPerm.ECmdCopyPaste
 }

@@ -12,24 +12,23 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdHelp(cmdRegistry: EditorCommandRegistry)(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		val args = raw.split(' ')
-		if(args.length >= 2) {
-			cmdRegistry.getCommand(args(1)) match {
-				case Some(cmd) =>
-					player.sendMessage(t"$YELLOW!${cmd.aliases.head}\n${cmd.help}")
-					editor
-				case None =>
-					player.sendMessage(plugin.config.text.eCommandNotFound.value)
-					editor
-			}
-		}
-		else {
-			player.sendMessage(plugin.config.text.eCmdHelpSpecifyCommand.value)
-			editor
-		}
-	}
-	override def aliases: Seq[String] = Seq("help")
-	override def help: Text = t"This right here"
-	override def permission: String = LibPerm.Editor
+  override def execute(raw: String, editor: Editor, player: Player): Editor = {
+    val args = raw.split(' ')
+    if (args.length >= 2) {
+      cmdRegistry.getCommand(args(1)) match {
+        case Some(cmd) =>
+          player.sendMessage(t"$YELLOW!${cmd.aliases.head}\n${cmd.help}")
+          editor
+        case None =>
+          player.sendMessage(plugin.config.text.eCommandNotFound.value)
+          editor
+      }
+    } else {
+      player.sendMessage(plugin.config.text.eCmdHelpSpecifyCommand.value)
+      editor
+    }
+  }
+  override def aliases:    Seq[String] = Seq("help")
+  override def help:       Text        = t"This right here"
+  override def permission: String      = LibPerm.Editor
 }

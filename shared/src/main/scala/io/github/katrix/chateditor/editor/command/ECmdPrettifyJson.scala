@@ -30,15 +30,14 @@ import io.github.katrix.katlib.helper.Implicits._
 
 object ECmdPrettifyJson extends ECmdPrettify {
 
-	private val parser = new JsonParser
-	private val gson   = (new GsonBuilder).setPrettyPrinting().create()
+  private val parser = new JsonParser
+  private val gson   = (new GsonBuilder).setPrettyPrinting().create()
 
-	override def prettify(string: String): Seq[String] = {
-		Try(parser.parse(string)) match {
-			case Success(tree) => gson.toJson(tree).split('\n')
-			case Failure(e) => string.split('\n')
-		}
-	}
-	override def aliases: Seq[String] = Seq("prettifyJson")
-	override def help: Text = t"Prettify your JSON"
+  override def prettify(string: String): Seq[String] =
+    Try(parser.parse(string)) match {
+      case Success(tree) => gson.toJson(tree).split('\n')
+      case Failure(e)    => string.split('\n')
+    }
+  override def aliases: Seq[String] = Seq("prettifyJson")
+  override def help:    Text        = t"Prettify your JSON"
 }

@@ -31,80 +31,85 @@ import io.github.katrix.chateditor.editor.component.TextComponent
 import io.github.katrix.katlib.helper.Implicits._
 
 case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[String, Any] = Map()) extends TextComponent {
-	require(pos >= 0)
-	require(select >= pos)
-	require(select - 1 <= content.length)
+  require(pos >= 0)
+  require(select >= pos)
+  require(select - 1 <= content.length)
 
-	override type Preview = Text
-	override type Self = CompTextCursor
+  override type Preview = Text
+  override type Self    = CompTextCursor
 
-	override def builtString: String = content
-	override def selectedString: String = content.substring(pos, select)
+  override def builtString:    String = content
+  override def selectedString: String = content.substring(pos, select)
 
-	override def preview(editor: Editor): Text = {
-		val clickCallback: (CommandSource, Int) => Unit = (src, textPos) => {
-			val newCompText = copy(pos = textPos, select = textPos)
-			editor.useNewTextComponent(newCompText)
+  override def preview(editor: Editor): Text = {
+    val clickCallback: (CommandSource, Int) => Unit = (src, textPos) => {
+      val newCompText = copy(pos = textPos, select = textPos)
+      editor.useNewTextComponent(newCompText)
 
-			src match {
-				case player: Player => newCompText.sendPreview(editor, player)
-				case _ =>
-			}
-		}
+      src match {
+        case player: Player => newCompText.sendPreview(editor, player)
+        case _ =>
+      }
+    }
 
-		val shiftCallback: (Int) => String = (textPos) => {
-			val (newPos, newSelect) = if(textPos < pos) (textPos, pos) else (pos, textPos)
-			s"!posSelect $newPos $newSelect"
-		}
+    val shiftCallback: (Int) => String = (textPos) => {
+      val (newPos, newSelect) = if (textPos < pos) (textPos, pos) else (pos, textPos)
+      s"!posSelect $newPos $newSelect"
+    }
 
-		def stringToText(offset: Int, string: String): Seq[Text] = string.indices.map(i => Text.builder(string(i))
-			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
-			.onShiftClick(TextActions.insertText(shiftCallback(i)))
-			.build())
+    def stringToText(offset: Int, string: String): Seq[Text] =
+      string.indices.map(
+        i =>
+          Text
+            .builder(string(i))
+            .onClick(TextActions.executeCallback(src => clickCallback(src, i)))
+            .onShiftClick(TextActions.insertText(shiftCallback(i)))
+            .build()
+      )
 
-		val raw = content.map(_.toString.text)
+    val raw = content.map(_.toString.text)
 
-		val currentLine = t"$AQUA${raw(pos)}"
-		val selectedLines = currentLine +: (pos + 1 to select map raw).map(l => t"$BLUE$l")
+    val currentLine   = t"$AQUA${raw(pos)}"
+    val selectedLines = currentLine +: (pos + 1 to select map raw).map(l => t"$BLUE$l")
 
-		val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + 1)
-		val interactive = display.indices.map(i => display(i).toBuilder
-			.onClick(TextActions.executeCallback(src => clickCallback(src, i)))
-			.onShiftClick(TextActions.insertText(shiftCallback(i)))
-			.build())
+    val display = raw.take(pos) ++ selectedLines ++ raw.drop(select + 1)
+    val interactive = display.indices.map(
+      i =>
+        display(i).toBuilder
+          .onClick(TextActions.executeCallback(src => clickCallback(src, i)))
+          .onShiftClick(TextActions.insertText(shiftCallback(i)))
+          .build()
+    )
 
-		Text.of(interactive: _*)
-	}
+    Text.of(interactive: _*)
+  }
 
-	override def selectedPreview(editor: Editor): Text = t"$BLUE$selectedString"
-	override def sendPreview(editor: Editor, player: Player): Unit = player.sendMessage(preview(editor))
+  override def selectedPreview(editor: Editor): Text = t"$BLUE$selectedString"
+  override def sendPreview(editor:     Editor, player: Player): Unit = player.sendMessage(preview(editor))
 
-	override def addString(string: String): Self = {
-		if(hasSelection) {
-			val builder = new StringBuilder(content)
-			builder.replace(pos, select + 1, string)
-			val newContent = builder.mkString
+  override def addString(string: String): Self =
+    if (hasSelection) {
+      val builder = new StringBuilder(content)
+      builder.replace(pos, select + 1, string)
+      val newContent = builder.mkString
 
-			val newPos = clamp(0, newContent.length - 1, pos)
-			copy(content = newContent, pos = newPos, select = clamp(newPos, newContent.length - 1, select))
-		}
-		else {
-			val newContent = content + string
-			copy(content = newContent, pos = newContent.length - 1, select = newContent.length - 1)
-		}
-	}
+      val newPos = clamp(0, newContent.length - 1, pos)
+      copy(content = newContent, pos = newPos, select = clamp(newPos, newContent.length - 1, select))
+    } else {
+      val newContent = content + string
+      copy(content = newContent, pos = newContent.length - 1, select = newContent.length - 1)
+    }
 
-	override def pos_=(pos: Int): Self = copy(pos = clamp(0, content.length - 1, pos))
-	override def select_=(select: Int): Self = copy(select = clamp(pos, content.length - 1, select))
+  override def pos_=(pos:       Int): Self = copy(pos = clamp(0, content.length - 1, pos))
+  override def select_=(select: Int): Self = copy(select = clamp(pos, content.length - 1, select))
 
-	private def clamp(min: Int, max: Int, orig: Int): Int = {
-		if(orig > max) max
-		else if(orig < min) min
-		else orig
-	}
+  private def clamp(min: Int, max: Int, orig: Int): Int =
+    if (orig > max) max
+    else if (orig < min) min
+    else orig
 
-	override def data(key: String): Option[Any] = dataMap.get(key)
-	override def dataPut(key: String, value: Any): Self = copy(dataMap = dataMap + ((key, value)))
-	override def dataRemove(key: String): Self = copy(dataMap = dataMap.filterKeys(_ != key))
-	override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value })
+  override def data(key:         String): Option[Any] = dataMap.get(key)
+  override def dataPut(key:      String, value: Any): Self = copy(dataMap = dataMap + ((key, value)))
+  override def dataRemove(key:   String): Self = copy(dataMap = dataMap.filterKeys(_ != key))
+  override def dataRemove(value: Any): Self = copy(dataMap = dataMap.filter { case (_, otherVal) => otherVal != value })
 }

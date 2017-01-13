@@ -26,82 +26,82 @@ import io.github.katrix.chateditor.editor.Editor
 
 trait TextComponent {
 
-	/**
+  /**
 		* The preview type that the text will be printed as
 		*/
-	type Preview
-	type Self <: TextComponent
+  type Preview
+  type Self <: TextComponent
 
-	/**
+  /**
 		* Builds the string this [[TextComponent]] represents
 		*/
-	def builtString: String
+  def builtString: String
 
-	/**
+  /**
 		* Gets the currently selected string
 		*/
-	def selectedString: String
+  def selectedString: String
 
-	/**
+  /**
 		* Gets a preview of this [[TextComponent]]. This might
 		* return a result including stuff like colors to make reading easier
 		*
 		* @param editor The current editor
 		*/
-	def preview(editor: Editor): Preview
+  def preview(editor: Editor): Preview
 
-	/**
+  /**
 		* Gets a preview of the selected area
 		*
 		* @param editor The current editor
 		*/
-	def selectedPreview(editor: Editor): Preview
+  def selectedPreview(editor: Editor): Preview
 
-	/**
+  /**
 		* Sends a preview to a player
 		*
 		* @param editor The current editor
 		* @param player The player to send to
 		*/
-	def sendPreview(editor: Editor, player: Player): Unit
+  def sendPreview(editor: Editor, player: Player): Unit
 
-	/**
+  /**
 		* Adds a new string to this [[TextComponent]] or
 		* replaces if a selection is made
 		*
 		* @param string The string to add
 		* @return The new [[TextComponent]] to use.
 		*/
-	def addString(string: String): Self
+  def addString(string: String): Self
 
-	/**
+  /**
 		* Check if there is currently something selected
 		*/
-	def hasSelection: Boolean = pos != select
+  def hasSelection: Boolean = pos != select
 
-	def pos: Int
-	def pos_=(pos: Int): Self
+  def pos: Int
+  def pos_=(pos: Int): Self
 
-	def select: Int
-	def select_=(pos: Int): Self
+  def select: Int
+  def select_=(pos: Int): Self
 
-	/**
+  /**
 		* Get data in this [[TextComponent]]
 		*/
-	def data(key: String): Option[Any]
+  def data(key: String): Option[Any]
 
-	/**
+  /**
 		* Store data in this [[TextComponent]]
 		*/
-	def dataPut(key: String, value: Any): Self
+  def dataPut(key: String, value: Any): Self
 
-	/**
+  /**
 		* Remove data from this [[TextComponent]]
 		*/
-	def dataRemove(key: String): Self
+  def dataRemove(key: String): Self
 
-	/**
+  /**
 		* Remove data from this [[TextComponent]]
 		*/
-	def dataRemove(value: Any): Self
+  def dataRemove(value: Any): Self
 }

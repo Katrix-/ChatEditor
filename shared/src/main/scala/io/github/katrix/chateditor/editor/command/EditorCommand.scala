@@ -32,7 +32,7 @@ import io.github.katrix.katlib.helper.Implicits._
 	*/
 trait EditorCommand {
 
-	/**
+  /**
 		* Executes this command, and optionally modifies the editor
 		*
 		* @param raw The raw string input without the ! character
@@ -40,22 +40,22 @@ trait EditorCommand {
 		* @param player The player that executes the command
 		* @return The new editor to use
 		*/
-	def execute(raw: String, editor: Editor, player: Player): Editor
+  def execute(raw: String, editor: Editor, player: Player): Editor
 
-	/**
+  /**
 		* The aliases of this command
 		*/
-	def aliases: Seq[String]
+  def aliases: Seq[String]
 
-	/**
+  /**
 		* The help for this command
 		*/
-	def help: Text
+  def help: Text
 
-	/**
+  /**
 		* The permission required to use this command
 		*/
-	def permission: String
+  def permission: String
 
-	final val IncompatibleCommand = t"${TextColors.RED}Incompatible command for this editor"
+  final val IncompatibleCommand = t"${TextColors.RED}Incompatible command for this editor"
 }

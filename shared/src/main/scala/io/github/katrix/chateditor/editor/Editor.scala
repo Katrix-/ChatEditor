@@ -29,33 +29,33 @@ import io.github.katrix.chateditor.listener.EditorHandler
 
 case class Editor(text: TextComponent, end: EndComponent, player: WeakReference[Player], listener: EditorHandler) {
 
-	/**
+  /**
 		* Replace the text component of this editor with a new one
 		* and updates the listener. Only use this outside of
 		* command executions.
 		*/
-	def useNewTextComponent(comp: TextComponent): Editor = {
-		val newEditor = copy(text = comp)
-		player.get match {
-			case Some(online) =>
-				listener.addEditorPlayer(online, newEditor)
-				newEditor
-			case None => newEditor
-		}
-	}
+  def useNewTextComponent(comp: TextComponent): Editor = {
+    val newEditor = copy(text = comp)
+    player.get match {
+      case Some(online) =>
+        listener.addEditorPlayer(online, newEditor)
+        newEditor
+      case None => newEditor
+    }
+  }
 
-	/**
+  /**
 		* Replace the end component of this editor with a new one
 		* and updates the listener. Only use this outside of
 		* command executions.
 		*/
-	def useNewEndComponent(comp: EndComponent): Editor = {
-		val newEditor = copy(end = comp)
-		player.get match {
-			case Some(online) =>
-				listener.addEditorPlayer(online, newEditor)
-				newEditor
-			case None => newEditor
-		}
-	}
+  def useNewEndComponent(comp: EndComponent): Editor = {
+    val newEditor = copy(end = comp)
+    player.get match {
+      case Some(online) =>
+        listener.addEditorPlayer(online, newEditor)
+        newEditor
+      case None => newEditor
+    }
+  }
 }

@@ -33,32 +33,31 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdPosSelect(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		val args = raw.split(' ')
-		if(args.length >= 3) {
-			val tryParse = for {
-				pos <- Try(args(1).toInt)
-				select <- Try(args(2).toInt)
-			} yield (pos, select)
+  override def execute(raw: String, editor: Editor, player: Player): Editor = {
+    val args = raw.split(' ')
+    if (args.length >= 3) {
+      val tryParse = for {
+        pos    <- Try(args(1).toInt)
+        select <- Try(args(2).toInt)
+      } yield (pos, select)
 
-			tryParse match {
-				case Success((pos, select)) =>
-					val posText = editor.text.pos = pos
-					val selectText = posText.select = select
-					val newEditor = editor.copy(text = selectText)
-					selectText.sendPreview(newEditor, player)
-					newEditor
-				case Failure(e) =>
-					player.sendMessage(plugin.config.text.eCmdPosSelectInvalid.value)
-					editor
-			}
-		}
-		else {
-			player.sendMessage(plugin.config.text.eCmdPosSelectSpecify.value)
-			editor
-		}
-	}
-	override def aliases: Seq[String] = Seq("posSelect")
-	override def help: Text = t"Set a new position and selection"
-	override def permission: String = LibPerm.Editor
+      tryParse match {
+        case Success((pos, select)) =>
+          val posText    = editor.text.pos = pos
+          val selectText = posText.select = select
+          val newEditor  = editor.copy(text = selectText)
+          selectText.sendPreview(newEditor, player)
+          newEditor
+        case Failure(e) =>
+          player.sendMessage(plugin.config.text.eCmdPosSelectInvalid.value)
+          editor
+      }
+    } else {
+      player.sendMessage(plugin.config.text.eCmdPosSelectSpecify.value)
+      editor
+    }
+  }
+  override def aliases:    Seq[String] = Seq("posSelect")
+  override def help:       Text        = t"Set a new position and selection"
+  override def permission: String      = LibPerm.Editor
 }

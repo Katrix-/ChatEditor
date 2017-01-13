@@ -38,22 +38,24 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class CmdEditor(handler: EditorHandler)(implicit plugin: EditorPlugin) extends CommandBase(None) {
 
-	override def execute(src: CommandSource, args: CommandContext): CommandResult = src match {
-		case player: Player =>
-			player.sendMessage(plugin.config.text.commandEditorSuccess.value)
-			handler.addEditorPlayer(player, Editor(CompTextCursor(0, 0, ""), CompEndChat, WeakReference(player), handler))
-			CommandResult.success()
-		case _ => throw nonPlayerError
-	}
+  override def execute(src: CommandSource, args: CommandContext): CommandResult = src match {
+    case player: Player =>
+      player.sendMessage(plugin.config.text.commandEditorSuccess.value)
+      handler.addEditorPlayer(player, Editor(CompTextCursor(0, 0, ""), CompEndChat, WeakReference(player), handler))
+      CommandResult.success()
+    case _ => throw nonPlayerError
+  }
 
-	override def commandSpec: CommandSpec = CommandSpec.builder()
-		.description(t"Opens a minimal editor with an end behavior of chat")
-		.permission(LibPerm.Editor)
-		.children(this)
-		.executor(this)
-		.build()
+  override def commandSpec: CommandSpec =
+    CommandSpec
+      .builder()
+      .description(t"Opens a minimal editor with an end behavior of chat")
+      .permission(LibPerm.Editor)
+      .children(this)
+      .executor(this)
+      .build()
 
-	override def aliases: Seq[String] = Seq("editor")
+  override def aliases: Seq[String] = Seq("editor")
 
-	override def children: Seq[CommandBase] = Seq(new CmdEditorFile(handler, this))
+  override def children: Seq[CommandBase] = Seq(new CmdEditorFile(handler, this))
 }

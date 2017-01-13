@@ -38,51 +38,51 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdSetText(implicit plugin: EditorPlugin) extends EditorCommand {
 
-	override def execute(raw: String, editor: Editor, player: Player): Editor = {
-		val args = raw.split(' ')
-		if(args.length >= 2) {
-			val behavior = args(1)
-			behavior match {
-				case "cursor" =>
-					player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava).build())
-					editor.copy(text = CompTextCursor(0, 0, editor.text.builtString))
-				case "line" =>
-					player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "line").asJava).build())
-					val currentStrings = editor.text.builtString.split('\n').flatMap(_.split("""\\n"""))
-					val strings = if(currentStrings.forall(_.isEmpty)) Seq() else currentStrings: Seq[String]
-					editor.copy(text = CompTextLine(0, 0, strings))
-				case "file" if player.hasPermission(LibPerm.UnsafeFile) =>
-					if(args.length > 2) {
-						Try(Paths.get(args(2))) match {
-							case Success(path) =>
-								val newText = editor.text.dataPut("path", path)
-								player.sendMessage(t"${plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava)}, ${
-									plugin.config.text.endSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava)}")
-								editor.copy(text = newText, end = new CompEndSave)
-							case Failure(e) =>
-								player.sendMessage(plugin.config.text.pathInvalid.value(Map(plugin.config.text.Behavior -> e.getMessage).asJava).build())
-								editor
-						}
-					}
-					else {
-						player.sendMessage(plugin.config.text.pathInvalid.value)
-						editor
-					}
-				case "file" =>
-					player.sendMessage(plugin.config.text.behaviorMissingPerm.value)
-					editor
-				case _ =>
-					player.sendMessage(plugin.config.text.behaviorUnknown.value)
-					editor
-			}
-		}
-		else {
-			player.sendMessage(plugin.config.text.behaviorMissing.value)
-			editor
-		}
-	}
+  override def execute(raw: String, editor: Editor, player: Player): Editor = {
+    val args = raw.split(' ')
+    if (args.length >= 2) {
+      val behavior = args(1)
+      behavior match {
+        case "cursor" =>
+          player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava).build())
+          editor.copy(text = CompTextCursor(0, 0, editor.text.builtString))
+        case "line" =>
+          player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "line").asJava).build())
+          val currentStrings = editor.text.builtString.split('\n').flatMap(_.split("""\\n"""))
+          val strings        = if (currentStrings.forall(_.isEmpty)) Seq() else currentStrings: Seq[String]
+          editor.copy(text = CompTextLine(0, 0, strings))
+        case "file" if player.hasPermission(LibPerm.UnsafeFile) =>
+          if (args.length > 2) {
+            Try(Paths.get(args(2))) match {
+              case Success(path) =>
+                val newText = editor.text.dataPut("path", path)
+                player.sendMessage(
+                  t"${plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava)}, ${plugin.config.text.endSet
+                    .value(Map(plugin.config.text.Behavior                             -> "cursor").asJava)}"
+                )
+                editor.copy(text = newText, end = new CompEndSave)
+              case Failure(e) =>
+                player.sendMessage(plugin.config.text.pathInvalid.value(Map(plugin.config.text.Behavior -> e.getMessage).asJava).build())
+                editor
+            }
+          } else {
+            player.sendMessage(plugin.config.text.pathInvalid.value)
+            editor
+          }
+        case "file" =>
+          player.sendMessage(plugin.config.text.behaviorMissingPerm.value)
+          editor
+        case _ =>
+          player.sendMessage(plugin.config.text.behaviorUnknown.value)
+          editor
+      }
+    } else {
+      player.sendMessage(plugin.config.text.behaviorMissing.value)
+      editor
+    }
+  }
 
-	override def aliases: Seq[String] = Seq("setText", "changeText")
-	override def help: Text = t"Set a new text behavior. Valid behaviors are: cursor, line, file <path>"
-	override def permission: String = LibPerm.Editor
+  override def aliases:    Seq[String] = Seq("setText", "changeText")
+  override def help:       Text        = t"Set a new text behavior. Valid behaviors are: cursor, line, file <path>"
+  override def permission: String      = LibPerm.Editor
 }

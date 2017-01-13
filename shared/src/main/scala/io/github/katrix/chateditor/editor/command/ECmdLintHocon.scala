@@ -30,13 +30,12 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class ECmdLintHocon(implicit plugin: EditorPlugin) extends ECmdLint with HoconParser {
 
-	override def lint(string: String): Text = {
-		Try(loader(string, None).load()) match {
-			case Failure(e) => t"$RED${e.getMessage}"
-			case Success(_) => plugin.config.text.eCmdLintSuccess.value
-		}
-	}
+  override def lint(string: String): Text =
+    Try(loader(string, None).load()) match {
+      case Failure(e) => t"$RED${e.getMessage}"
+      case Success(_) => plugin.config.text.eCmdLintSuccess.value
+    }
 
-	override def aliases: Seq[String] = Seq("lintHocon")
-	override def help: Text = t"Check if your HOCON is formatted correctly"
+  override def aliases: Seq[String] = Seq("lintHocon")
+  override def help:    Text        = t"Check if your HOCON is formatted correctly"
 }

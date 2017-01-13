@@ -29,27 +29,26 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class CompEndCommand(implicit plugin: EditorPlugin) extends EndComponent {
 
-	override def end(editor: Editor): Option[Editor] = {
-		editor.player.get match {
-			case Some(player) => editor.text.builtString.split(' ') match {
-				case Array(command, arguments@_*) =>
-
-					Sponge.getCommandManager.get(command, player).toOption match {
-						case Some(mapping) if mapping.getCallable.testPermission(player) =>
-							mapping.getCallable.process(player, arguments.mkString(" "))
-							None
-						case Some(_) =>
-							player.sendMessage(plugin.config.text.endCommandPermMissing.value)
-							Some(editor)
-						case None =>
-							player.sendMessage(plugin.config.text.endCommandCommandNotFound.value)
-							Some(editor)
-					}
-				case _ =>
-					player.sendMessage(plugin.config.text.endCommandNoCommand.value)
-					Some(editor)
-			}
-			case None => None //If no player is found, just remove the editor and call it done
-		}
-	}
+  override def end(editor: Editor): Option[Editor] =
+    editor.player.get match {
+      case Some(player) =>
+        editor.text.builtString.split(' ') match {
+          case Array(command, arguments @ _ *) =>
+            Sponge.getCommandManager.get(command, player).toOption match {
+              case Some(mapping) if mapping.getCallable.testPermission(player) =>
+                mapping.getCallable.process(player, arguments.mkString(" "))
+                None
+              case Some(_) =>
+                player.sendMessage(plugin.config.text.endCommandPermMissing.value)
+                Some(editor)
+              case None =>
+                player.sendMessage(plugin.config.text.endCommandCommandNotFound.value)
+                Some(editor)
+            }
+          case _ =>
+            player.sendMessage(plugin.config.text.endCommandNoCommand.value)
+            Some(editor)
+        }
+      case None => None //If no player is found, just remove the editor and call it done
+    }
 }

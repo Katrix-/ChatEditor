@@ -41,41 +41,47 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class CmdEditorFile(handler: EditorHandler, parent: CmdEditor)(implicit plugin: EditorPlugin) extends CommandBase(Some(parent)) {
 
-	final val Create   = t"Create"
-	final val FilePath = t"File path"
+  final val Create   = t"Create"
+  final val FilePath = t"File path"
 
-	override def execute(src: CommandSource, args: CommandContext): CommandResult = {
-		val data = (for {
-			player <- src.asInstanceOfOpt[Player].toRight(nonPlayerError).right
-			create <- args.getOne[Boolean](Create).toOption.toRight(new CommandException(plugin.config.text.commandErrorParseBoolean.value)).right
-			path <- args.getOne[String](FilePath).toOption
-				.flatMap(s => Try(Paths.get(s)).toOption).toRight(new CommandException(plugin.config.text.commandErrorInvalidPath.value)).right
-		} yield {
-			val exists = path.toFile.exists()
+  override def execute(src: CommandSource, args: CommandContext): CommandResult = {
+    val data = (for {
+      player <- src.asInstanceOfOpt[Player].toRight(nonPlayerError).right
+      create <- args.getOne[Boolean](Create).toOption.toRight(new CommandException(plugin.config.text.commandErrorParseBoolean.value)).right
+      path <- args
+        .getOne[String](FilePath)
+        .toOption
+        .flatMap(s => Try(Paths.get(s)).toOption)
+        .toRight(new CommandException(plugin.config.text.commandErrorInvalidPath.value))
+        .right
+    } yield {
+      val exists = path.toFile.exists()
 
-			if((!exists && create) || exists) Right((player, path))
-			else Left(new CommandException(plugin.config.text.commandEditorFilePathNotFoundNoCreate.value))
-		}).right.flatMap(identity) //No flatten D:
+      if ((!exists && create) || exists) Right((player, path))
+      else Left(new CommandException(plugin.config.text.commandEditorFilePathNotFoundNoCreate.value))
+    }).right.flatMap(identity) //No flatten D:
 
-		data match {
-			case Right((player, path)) if player.hasPermission(LibPerm.UnsafeFile) =>
-				player.sendMessage(plugin.config.text.commandEditorFileSuccess.value)
-				val editor = Editor(FileEditorHelper.loadOrCreate(path), new CompEndSave, WeakReference(player), handler)
-				editor.text.dataPut("path", path)
-				handler.addEditorPlayer(player, editor)
-				CommandResult.success()
-			case Right((player, path)) =>
-				throw new CommandPermissionException(plugin.config.text.commandEditorFilePermError.value)
-			case Left(e) => throw e
-		}
-	}
+    data match {
+      case Right((player, path)) if player.hasPermission(LibPerm.UnsafeFile) =>
+        player.sendMessage(plugin.config.text.commandEditorFileSuccess.value)
+        val editor = Editor(FileEditorHelper.loadOrCreate(path), new CompEndSave, WeakReference(player), handler)
+        editor.text.dataPut("path", path)
+        handler.addEditorPlayer(player, editor)
+        CommandResult.success()
+      case Right((player, path)) =>
+        throw new CommandPermissionException(plugin.config.text.commandEditorFilePermError.value)
+      case Left(e) => throw e
+    }
+  }
 
-	override def commandSpec: CommandSpec = CommandSpec.builder()
-		.description(t"Opens a editor to a specific file path")
-		.permission(LibPerm.UnsafeFile)
-		.arguments(GenericArguments.bool(Create), GenericArguments.remainingJoinedStrings(FilePath))
-		.executor(this)
-		.build()
+  override def commandSpec: CommandSpec =
+    CommandSpec
+      .builder()
+      .description(t"Opens a editor to a specific file path")
+      .permission(LibPerm.UnsafeFile)
+      .arguments(GenericArguments.bool(Create), GenericArguments.remainingJoinedStrings(FilePath))
+      .executor(this)
+      .build()
 
-	override def aliases: Seq[String] = Seq("file")
+  override def aliases: Seq[String] = Seq("file")
 }

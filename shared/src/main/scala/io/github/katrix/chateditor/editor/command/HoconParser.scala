@@ -26,11 +26,12 @@ import ninja.leaping.configurate.hocon.HoconConfigurationLoader
 
 trait HoconParser {
 
-	def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
-		val builder = HoconConfigurationLoader.builder()
-			.setSource(() => new BufferedReader(new StringReader(string)))
-		writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
-		builder.build()
-	}
+  def loader(string: String, writer: Option[StringWriter]): HoconConfigurationLoader = {
+    val builder = HoconConfigurationLoader
+      .builder()
+      .setSource(() => new BufferedReader(new StringReader(string)))
+    writer.foreach(w => builder.setSink(() => new BufferedWriter(w)))
+    builder.build()
+  }
 
 }
