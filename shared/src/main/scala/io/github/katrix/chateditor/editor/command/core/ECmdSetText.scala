@@ -22,11 +22,11 @@ package io.github.katrix.chateditor.editor.command.core
 
 import java.nio.file.Paths
 
-import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -44,10 +44,10 @@ class ECmdSetText(implicit plugin: EditorPlugin) extends EditorCommand {
       val behavior = args(1)
       behavior match {
         case "cursor" =>
-          player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava).build())
+          player.sendMessage(t"${GREEN}Text behavior set to cursor")
           editor.copy(text = CompTextCursor(0, 0, editor.text.builtString))
         case "line" =>
-          player.sendMessage(plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "line").asJava).build())
+          player.sendMessage(t"${GREEN}Text behavior set to line")
           val currentStrings = editor.text.builtString.split('\n').flatMap(_.split("""\\n"""))
           val strings        = if (currentStrings.forall(_.isEmpty)) Seq() else currentStrings: Seq[String]
           editor.copy(text = CompTextLine(0, 0, strings))
@@ -56,28 +56,25 @@ class ECmdSetText(implicit plugin: EditorPlugin) extends EditorCommand {
             Try(Paths.get(args(2))) match {
               case Success(path) =>
                 val newText = editor.text.dataPut("path", path)
-                player.sendMessage(
-                  t"${plugin.config.text.textSet.value(Map(plugin.config.text.Behavior -> "cursor").asJava)}, ${plugin.config.text.endSet
-                    .value(Map(plugin.config.text.Behavior                             -> "cursor").asJava)}"
-                )
+                player.sendMessage(t"End behavior set to save")
                 editor.copy(text = newText, end = new CompEndSave)
               case Failure(e) =>
-                player.sendMessage(plugin.config.text.pathInvalid.value(Map(plugin.config.text.Behavior -> e.getMessage).asJava).build())
+                player.sendMessage(t"${RED}The path specified is not valid: ${e.getMessage}")
                 editor
             }
           } else {
-            player.sendMessage(plugin.config.text.pathInvalid.value)
+            player.sendMessage(t"${RED}No path specified")
             editor
           }
         case "file" =>
-          player.sendMessage(plugin.config.text.behaviorMissingPerm.value)
+          player.sendMessage(t"${RED}You don't have the permission to use this behavior")
           editor
         case _ =>
-          player.sendMessage(plugin.config.text.behaviorUnknown.value)
+          player.sendMessage(t"${RED}Unknown behavior")
           editor
       }
     } else {
-      player.sendMessage(plugin.config.text.behaviorMissing.value)
+      player.sendMessage(t"${RED}Please specify a behavior")
       editor
     }
   }

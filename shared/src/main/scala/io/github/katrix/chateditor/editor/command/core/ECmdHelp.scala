@@ -20,11 +20,11 @@ class ECmdHelp(cmdRegistry: EditorCommandRegistry)(implicit plugin: EditorPlugin
           player.sendMessage(t"$YELLOW!${cmd.aliases.head}\n${cmd.help}")
           editor
         case None =>
-          player.sendMessage(plugin.config.text.eCommandNotFound.value)
+          player.sendMessage(t"No command with that name found")
           editor
       }
     } else {
-      player.sendMessage(plugin.config.text.eCmdHelpSpecifyCommand.value)
+      player.sendMessage(t"${RED}You need to specify a command")
       editor
     }
   }

@@ -33,7 +33,7 @@ class ECmdLintHocon(implicit plugin: EditorPlugin) extends ECmdLint with HoconPa
   override def lint(string: String): Text =
     Try(loader(string, None).load()) match {
       case Failure(e) => t"$RED${e.getMessage}"
-      case Success(_) => plugin.config.text.eCmdLintSuccess.value
+      case Success(_) => t"${GREEN}All good!"
     }
 
   override def aliases: Seq[String] = Seq("lintHocon")

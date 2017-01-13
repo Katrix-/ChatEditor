@@ -21,6 +21,7 @@
 package io.github.katrix.chateditor.editor.component.end
 
 import org.spongepowered.api.Sponge
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -39,14 +40,14 @@ class CompEndCommand(implicit plugin: EditorPlugin) extends EndComponent {
                 mapping.getCallable.process(player, arguments.mkString(" "))
                 None
               case Some(_) =>
-                player.sendMessage(plugin.config.text.endCommandPermMissing.value)
+                player.sendMessage(t"${RED}You don't have the permission for that command")
                 Some(editor)
               case None =>
-                player.sendMessage(plugin.config.text.endCommandCommandNotFound.value)
+                player.sendMessage(t"${RED}Command not found")
                 Some(editor)
             }
           case _ =>
-            player.sendMessage(plugin.config.text.endCommandNoCommand.value)
+            player.sendMessage(t"${RED}You need to specify some command before you can do this")
             Some(editor)
         }
       case None => None //If no player is found, just remove the editor and call it done

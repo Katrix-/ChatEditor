@@ -36,7 +36,7 @@ object ECmdPrettifyJson extends ECmdPrettify {
   override def prettify(string: String): Seq[String] =
     Try(parser.parse(string)) match {
       case Success(tree) => gson.toJson(tree).split('\n')
-      case Failure(e)    => string.split('\n')
+      case Failure(_)    => string.split('\n')
     }
   override def aliases: Seq[String] = Seq("prettifyJson")
   override def help:    Text        = t"Prettify your JSON"

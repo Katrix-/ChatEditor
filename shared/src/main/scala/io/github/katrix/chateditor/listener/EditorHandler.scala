@@ -2,6 +2,7 @@ package io.github.katrix.chateditor.listener
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 import scala.ref.WeakReference
 
 import org.spongepowered.api.block.BlockTypes
@@ -12,6 +13,7 @@ import org.spongepowered.api.event.command.{SendCommandEvent, TabCompleteEvent}
 import org.spongepowered.api.event.filter.cause.First
 import org.spongepowered.api.event.message.MessageChannelEvent
 import org.spongepowered.api.event.{Listener, Order}
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -23,7 +25,9 @@ import io.github.katrix.katlib.helper.Implicits._
 
 class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugin: EditorPlugin) {
 
-  private val editorPlayers = new mutable.WeakHashMap[Player, Editor]
+  private val editorPlayers   = new mutable.WeakHashMap[Player, Editor]
+  private val ignoredCommands = new ArrayBuffer[String]()
+  ignoredCommands += "sponge:callback"
 
   /**
 		* Adds a new editor player binding
@@ -55,16 +59,12 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
               editorPlayers.get(player) match {
                 case Some(editor) =>
                   editor.end match {
-                    case componentEnd: CompEndCommandBlock =>
+                    case _: CompEndCommandBlock =>
                       event.setCancelled(true)
 
                       val newEditor = editor.copy(end = new CompEndCommandBlock(location))
                       editorPlayers.put(player, newEditor)
-                      player.sendMessage(
-                        plugin.config.text.commandBlockLocationSet
-                          .value(Map(plugin.config.text.Location -> location.getBlockPosition).asJava)
-                          .build()
-                      )
+                      player.sendMessage(t"${GREEN}Commandblock location set to ${location.getBlockPosition}")
                     case _ =>
                   }
                 case None =>
@@ -73,16 +73,14 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
                       event.setCancelled(true)
 
                       val commandString = tileEntity.get(Keys.COMMAND).orElse("")
-                      player.sendMessage(
-                        plugin.config.text.commandBlockStart.value(Map(plugin.config.text.Location -> location.getBlockPosition).asJava).build()
-                      )
+                      player.sendMessage(t"${GREEN}Created a new editor for the commandblock at ${location.getBlockPosition}")
                       val text = CompTextCursor(0, 0, commandString)
                       val end  = new CompEndCommandBlock(location)
                       editorPlayers.put(player, Editor(text, end, WeakReference(player), this))
-                    case None => player.sendMessage(plugin.config.text.commandBlockErrorTileEntity.value)
+                    case None => player.sendMessage(t"${RED}Tile entity not found for commandBlock")
                   }
               }
-            case None => player.sendMessage(plugin.config.text.commandBlockErrorLocation.value)
+            case None => player.sendMessage(t"${RED}Could not get position for commandblock")
           }
         }
       }
@@ -100,10 +98,10 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
             case Some(command) if player.hasPermission(command.permission) =>
               val commandText = if (rawText.startsWith("!")) rawText.substring(1) else rawText
               editorPlayers.put(player, command.execute(commandText, editor, player))
-            case Some(command) =>
-              player.sendMessage(plugin.config.text.eCommandMissingPerm.value)
+            case Some(_) =>
+              player.sendMessage(t"You don't have the permission to use that command")
             case None =>
-              player.sendMessage(plugin.config.text.eCommandNotFound.value)
+              player.sendMessage(t"No command with that name found")
           }
         case None =>
       }
@@ -111,9 +109,10 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
 
   @Listener(order = Order.FIRST)
   def onCommand(event: SendCommandEvent, @First player: Player): Unit =
-    if (!event.getCause.contains(BypassEditor) && event.getCommand != "sponge:callback") {
+    if (!event.getCause.contains(BypassEditor) && !ignoredCommands.contains(event.getCommand)) {
       editorPlayers.get(player) match {
         case Some(editor) =>
+          //TODO: Process commands like everything else?
           val newText   = editor.text.addString(s"/${event.getCommand} ${event.getArguments}")
           val newEditor = editor.copy(text = newText)
           newText.sendPreview(newEditor, player)
@@ -134,14 +133,13 @@ class EditorHandler(editorCommandRegistry: EditorCommandRegistry)(implicit plugi
             val withoutExclamation = rawMessage.drop(1)
             val relevantCommands   = editorCommandRegistry.registeredCommands.keys.filter(s => s.startsWith(withoutExclamation)).map(str => s"!$str")
             suggestions.addAll(relevantCommands.toSeq.asJava)
-          } else
+          } else if (suggestions.isEmpty) {
             editor.text match {
-              case lineEditor: CompTextLine =>
-                if (suggestions.isEmpty) {
-                  suggestions.add(lineEditor.currentLine)
-                }
+              //TODO: Let the component handle tab complete
+              case lineEditor: CompTextLine => suggestions.add(lineEditor.currentLine)
               case _ =>
             }
+          }
         case None =>
       }
     }

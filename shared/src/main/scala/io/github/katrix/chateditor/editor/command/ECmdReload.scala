@@ -2,6 +2,7 @@ package io.github.katrix.chateditor.editor.command
 
 import java.nio.file.Path
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
 import org.spongepowered.api.entity.living.player.Player
@@ -21,20 +22,20 @@ class ECmdReload(implicit plugin: EditorPlugin) extends EditorCommand {
     if (player.hasPermission(LibPerm.UnsafeFile)) {
       editor.text.data("path") match {
         case Some(path: Path) =>
-          FileEditorHelper.load(path) match {
+          FileEditorHelper.load(path).onComplete {
             case Success(newText) =>
-              player.sendMessage(plugin.config.text.fileReloaded.value)
-              editor.copy(text = newText)
-            case Failure(e) =>
-              player.sendMessage(t"$RED${e.getMessage}")
-              editor
+              player.sendMessage(t"${GREEN}File reloaded")
+              editor.listener.addEditorPlayer(player, editor.copy(text = newText))
+            case Failure(e) => player.sendMessage(t"$RED${e.getMessage}")
           }
+
+          editor
         case _ =>
-          player.sendMessage(plugin.config.text.fileNotOpen.value)
+          player.sendMessage(t"${GREEN}File not open")
           editor
       }
     } else {
-      player.sendMessage(plugin.config.text.fileMissingPerm.value)
+      player.sendMessage(t"${RED}You don't have the permissions to do this")
       editor.copy(text = editor.text.dataRemove("path"))
     }
 

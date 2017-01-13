@@ -3,6 +3,7 @@ package io.github.katrix.chateditor.editor.component.end
 import org.spongepowered.api.Sponge
 import org.spongepowered.api.block.tileentity.TileEntityTypes
 import org.spongepowered.api.data.key.Keys
+import org.spongepowered.api.text.format.TextColors._
 import org.spongepowered.api.world.{Location, World}
 
 import io.github.katrix.chateditor.EditorPlugin
@@ -23,22 +24,22 @@ class CompEndCommandBlock(location: Location[World])(implicit plugin: EditorPlug
               case Some(mapping) if mapping.getCallable.testPermission(player) =>
                 val result = tileEntity.offer(Keys.COMMAND, builtString)
                 if (result.isSuccessful) {
-                  player.sendMessage(plugin.config.text.endCommandBlockSet.value)
+                  player.sendMessage(t"${GREEN}Set command for commandblock")
                   None
                 } else {
                   tileEntity.undo(result)
-                  player.sendMessage(plugin.config.text.endCommandBlockSetError.value)
+                  player.sendMessage(t"${RED}Error when setting command for commandblock")
                   Some(editor)
                 }
               case Some(_) =>
-                player.sendMessage(plugin.config.text.endCommandBlockPermMissing.value)
+                player.sendMessage(t"${RED}You don't have the permission for that command")
                 Some(editor)
               case None =>
-                player.sendMessage(plugin.config.text.endCommandBlockCommandNotFound.value)
+                player.sendMessage(t"${RED}Command not found")
                 Some(editor)
             }
           case None | Some(_) =>
-            player.sendMessage(plugin.config.text.endCommandCommandNotFound.value)
+            player.sendMessage(t"${RED}Commandblock at that location not found")
             Some(editor)
         }
       case None => None //If no player is found, just remove the editor and call it done

@@ -2,6 +2,7 @@ package io.github.katrix.chateditor.editor.command
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -15,10 +16,10 @@ class ECmdCut(implicit plugin: EditorPlugin) extends EditorCommand {
       val selected    = editor.text.selectedString
       val newCompCopy = editor.text.dataPut("clipboard", selected)
       val newCompCut  = newCompCopy.addString("")
-      player.sendMessage(plugin.config.text.eCmdCut.value)
+      player.sendMessage(t"${GREEN}Cut the selected text")
       editor.copy(text = newCompCut)
     } else {
-      player.sendMessage(plugin.config.text.eCmdCopyCutNoneSelected.value)
+      player.sendMessage(t"${RED}Please make a selection before using this command")
       editor
     }
 

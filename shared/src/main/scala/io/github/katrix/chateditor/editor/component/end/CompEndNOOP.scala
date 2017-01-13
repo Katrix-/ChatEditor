@@ -20,14 +20,17 @@
  */
 package io.github.katrix.chateditor.editor.component.end
 
+import org.spongepowered.api.text.format.TextColors._
+
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
 import io.github.katrix.chateditor.editor.component.EndComponent
+import io.github.katrix.katlib.helper.Implicits._
 
 class CompEndNOOP(implicit plugin: EditorPlugin) extends EndComponent {
 
   override def end(editor: Editor): Option[Editor] = {
-    editor.player.get.foreach(_.sendMessage(plugin.config.text.endNOOP.value))
+    editor.player.get.foreach(_.sendMessage(t"${GREEN}You have now exited the editor"))
     None
   }
 }

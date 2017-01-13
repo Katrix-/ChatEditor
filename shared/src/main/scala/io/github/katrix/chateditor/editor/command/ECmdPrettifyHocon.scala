@@ -34,8 +34,8 @@ object ECmdPrettifyHocon extends ECmdPrettify with HoconParser {
     val writer       = new StringWriter()
     val configLoader = loader(string, Some(writer))
     Try(configLoader.load()).map(n => configLoader.save(n)) match {
-      case Success(root) => writer.toString.split('\n')
-      case Failure(e)    => string.split('\n')
+      case Success(_) => writer.toString.split('\n')
+      case Failure(_) => string.split('\n')
     }
   }
 

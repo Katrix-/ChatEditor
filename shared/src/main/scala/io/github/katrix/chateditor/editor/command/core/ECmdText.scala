@@ -17,7 +17,7 @@ object ECmdText extends EditorCommand {
     newEditor
   }
 
-  override def aliases:    Seq[String] = Seq(throw new IllegalStateException("ECmdText should NOT be registered"))
+  override def aliases:    Seq[String] = throw new IllegalStateException("ECmdText should NOT be registered")
   override def help:       Text        = t"Add new text to the editor"
   override def permission: String      = LibPerm.Editor
 }

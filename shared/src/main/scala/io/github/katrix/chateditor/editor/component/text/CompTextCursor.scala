@@ -57,16 +57,6 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
       s"!posSelect $newPos $newSelect"
     }
 
-    def stringToText(offset: Int, string: String): Seq[Text] =
-      string.indices.map(
-        i =>
-          Text
-            .builder(string(i))
-            .onClick(TextActions.executeCallback(src => clickCallback(src, i)))
-            .onShiftClick(TextActions.insertText(shiftCallback(i)))
-            .build()
-      )
-
     val raw = content.map(_.toString.text)
 
     val currentLine   = t"$AQUA${raw(pos)}"
@@ -81,7 +71,7 @@ case class CompTextCursor(pos: Int, select: Int, content: String, dataMap: Map[S
           .build()
     )
 
-    Text.of(interactive: _*)
+    Text.EMPTY.toBuilder.append(interactive: _*).build()
   }
 
   override def selectedPreview(editor: Editor): Text = t"$BLUE$selectedString"

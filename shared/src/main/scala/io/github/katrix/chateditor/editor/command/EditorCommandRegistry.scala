@@ -18,20 +18,11 @@ class EditorCommandRegistry {
       //We need to iterate over all the possible values as a TextCommand can have args together with the command
       val potentialCommands = commandString.indices.flatMap { i =>
         val subString = commandString.take(i + 1)
-
-        if (commandMap.contains(subString)) {
-          Some((subString, commandMap(subString)))
-        } else None
+        commandMap.get(subString).map(cmd => (subString, cmd))
       }
 
       //We try to select the longest valid command. A long command is normally more specific than a short one
-      val longestCmd = potentialCommands.foldLeft(None: Option[(String, EditorCommand)]) {
-        case (prevSome @ Some((prevString, _)), tuple @ (string, _)) =>
-          if (prevString.length > string.length) prevSome else Some(tuple)
-        case (None, tuple) => Some(tuple)
-      }
-
-      longestCmd.map(_._2)
+      potentialCommands.sortBy { case (string, _) => string.length }.lastOption.map(_._2)
     } else {
       Some(ECmdText)
     }

@@ -26,6 +26,7 @@ import org.spongepowered.api.command.args.CommandContext
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.command.{CommandResult, CommandSource}
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -40,7 +41,7 @@ class CmdEditor(handler: EditorHandler)(implicit plugin: EditorPlugin) extends C
 
   override def execute(src: CommandSource, args: CommandContext): CommandResult = src match {
     case player: Player =>
-      player.sendMessage(plugin.config.text.commandEditorSuccess.value)
+      player.sendMessage(t"${GREEN}You are now in an editor. Just start typing. Type !end to end the session, and !help for more help")
       handler.addEditorPlayer(player, Editor(CompTextCursor(0, 0, ""), CompEndChat, WeakReference(player), handler))
       CommandResult.success()
     case _ => throw nonPlayerError

@@ -22,13 +22,15 @@ package io.github.katrix.chateditor.command
 
 import java.nio.file.Paths
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.ref.WeakReference
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.command.args.{CommandContext, GenericArguments}
 import org.spongepowered.api.command.spec.CommandSpec
 import org.spongepowered.api.command.{CommandException, CommandPermissionException, CommandResult, CommandSource}
 import org.spongepowered.api.entity.living.player.Player
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -38,38 +40,51 @@ import io.github.katrix.chateditor.lib.LibPerm
 import io.github.katrix.chateditor.listener.EditorHandler
 import io.github.katrix.katlib.command.CommandBase
 import io.github.katrix.katlib.helper.Implicits._
+import io.github.katrix.katlib.helper.LogHelper
+import shapeless.Typeable
 
 class CmdEditorFile(handler: EditorHandler, parent: CmdEditor)(implicit plugin: EditorPlugin) extends CommandBase(Some(parent)) {
 
   final val Create   = t"Create"
   final val FilePath = t"File path"
 
+  private val playerTypeable = Typeable[Player]
+
   override def execute(src: CommandSource, args: CommandContext): CommandResult = {
     val data = (for {
-      player <- src.asInstanceOfOpt[Player].toRight(nonPlayerError).right
-      create <- args.getOne[Boolean](Create).toOption.toRight(new CommandException(plugin.config.text.commandErrorParseBoolean.value)).right
+      player <- playerTypeable.cast(src).toRight(nonPlayerError).right
+      create <- args.getOne[Boolean](Create).toOption.toRight(new CommandException(t"Failed to parse boolean")).right
       path <- args
         .getOne[String](FilePath)
         .toOption
         .flatMap(s => Try(Paths.get(s)).toOption)
-        .toRight(new CommandException(plugin.config.text.commandErrorInvalidPath.value))
+        .toRight(new CommandException(t"Failed to parse path"))
         .right
     } yield {
       val exists = path.toFile.exists()
 
       if ((!exists && create) || exists) Right((player, path))
-      else Left(new CommandException(plugin.config.text.commandEditorFilePathNotFoundNoCreate.value))
+      else Left(new CommandException(t"No file with that name found, and file creation is off"))
     }).right.flatMap(identity) //No flatten D:
 
     data match {
       case Right((player, path)) if player.hasPermission(LibPerm.UnsafeFile) =>
-        player.sendMessage(plugin.config.text.commandEditorFileSuccess.value)
-        val editor = Editor(FileEditorHelper.loadOrCreate(path), new CompEndSave, WeakReference(player), handler)
-        editor.text.dataPut("path", path)
-        handler.addEditorPlayer(player, editor)
+        FileEditorHelper.loadOrCreate(path).onComplete {
+          case Success(comp) =>
+            val editor = Editor(comp, new CompEndSave, WeakReference(player), handler)
+            player.sendMessage(
+              t"${GREEN}You are now in a file editor. Just start typing. Type !end to save and end the session, and !help for more help"
+            )
+            editor.text.dataPut("path", path)
+            handler.addEditorPlayer(player, editor)
+          case Failure(e) =>
+            player.sendMessage(t"${RED}Failed to load file")
+            LogHelper.error("Failed to load file", e)
+        }
+
         CommandResult.success()
-      case Right((player, path)) =>
-        throw new CommandPermissionException(plugin.config.text.commandEditorFilePermError.value)
+      case Right((_, _)) =>
+        throw new CommandPermissionException(t"You MUST have permission to use a file editor")
       case Left(e) => throw e
     }
   }

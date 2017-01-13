@@ -2,6 +2,7 @@ package io.github.katrix.chateditor.editor.command
 
 import java.nio.file.Path
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 
 import org.spongepowered.api.entity.living.player.Player
@@ -20,20 +21,17 @@ class ECmdSave(implicit plugin: EditorPlugin) extends EditorCommand {
     if (player.hasPermission(LibPerm.UnsafeFile)) {
       editor.text.data("path") match {
         case Some(path: Path) =>
-          FileEditorHelper.save(path, editor) match {
-            case Success(_) =>
-              player.sendMessage(plugin.config.text.fileSaved.value)
-              editor
-            case Failure(e) =>
-              player.sendMessage(t"$RED${e.getMessage}")
-              editor
+          FileEditorHelper.save(path, editor).onComplete {
+            case Success(_) => player.sendMessage(t"${GREEN}File saved.")
+            case Failure(e) => player.sendMessage(t"$RED${e.getMessage}")
           }
+          editor
         case _ =>
-          player.sendMessage(plugin.config.text.fileNotOpen.value)
+          player.sendMessage(t"${GREEN}File not open")
           editor
       }
     } else {
-      player.sendMessage(plugin.config.text.fileMissingPerm.value)
+      player.sendMessage(t"${RED}You don't have the permissions to do this")
       editor.copy(text = editor.text.dataRemove("path"))
     }
 

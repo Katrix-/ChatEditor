@@ -24,6 +24,7 @@ import scala.util.{Failure, Success, Try}
 
 import org.spongepowered.api.entity.living.player.Player
 import org.spongepowered.api.text.Text
+import org.spongepowered.api.text.format.TextColors._
 
 import io.github.katrix.chateditor.EditorPlugin
 import io.github.katrix.chateditor.editor.Editor
@@ -48,12 +49,12 @@ class ECmdPosSelect(implicit plugin: EditorPlugin) extends EditorCommand {
           val newEditor  = editor.copy(text = selectText)
           selectText.sendPreview(newEditor, player)
           newEditor
-        case Failure(e) =>
-          player.sendMessage(plugin.config.text.eCmdPosSelectInvalid.value)
+        case Failure(_) =>
+          player.sendMessage(t"${RED}The pos and select passed in are invalid")
           editor
       }
     } else {
-      player.sendMessage(plugin.config.text.eCmdPosSelectSpecify.value)
+      player.sendMessage(t"${RED}You need to specify a position and a selection")
       editor
     }
   }
